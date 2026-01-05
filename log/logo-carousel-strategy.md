@@ -496,8 +496,8 @@
 **FREE version টা COMPLETE!** সব essential features আছে। এখন PRO তে focus করুন। **$49/year perfect price!** 🚀
 
 ### Next Steps:
-1. ✅ FREE version launch করুন - READY!
-2. 🚀 WordPress.org এ submit করুন
+1. ✅ FREE version launch ~~করুন~~ - ✅ DONE! (Released with GSlider Blocks v1.1.5+)
+2. ✅ WordPress.org এ ~~submit করুন~~ - ✅ LIVE! (Logo Carousel block included)
 3. 💎 PRO features build করুন
 4. 💰 Revenue generate করা শুরু করুন!
 
