@@ -1,7 +1,7 @@
 # Weekly Plan: January 5-11, 2026
-## Focus: Image Carousel Complete করা 🎯
+## Focus: Image Slider Complete করা 🎯
 
-**Goal:** Image Carousel 100% complete + Plugin update release
+**Goal:** Image Slider 100% complete + Plugin update release
 
 ---
 
@@ -9,11 +9,11 @@
 
 ### 🗓️ Sunday, January 5
 
-**Focus:** Image Carousel Code Review & Gap Analysis
+**Focus:** Image Slider Code Review & Gap Analysis
 
 | Time | Task | Duration |
 |------|------|----------|
-| Morning | Image Carousel vs Logo Carousel code comparison | 1 hour |
+| Morning | Image Slider vs Logo Carousel code comparison | 1 hour |
 | Morning | Missing features list তৈরি | 30 min |
 | Afternoon | Fix any bugs found during review | 2 hours |
 | Evening | Test all existing features work properly | 1 hour |
@@ -132,7 +132,7 @@
 
 ---
 
-## ✅ Image Carousel - Feature Checklist
+## ✅ Image Slider - Feature Checklist
 
 ### General Settings:
 - [ ] Show/Hide Caption
@@ -197,7 +197,7 @@
 ## 🎯 Week End Goals
 
 ### Must Complete:
-1. ✅ Image Carousel 100% feature complete
+1. ✅ Image Slider 100% feature complete
 2. ✅ Parity with Logo Carousel (95%+)
 3. ✅ All bugs fixed
 4. ✅ v1.2.0 released
@@ -251,7 +251,7 @@
 
 ---
 
-## � Competitor Analysis - Image Carousel Plugins
+## 🔎 Competitor Analysis - Image Slider Plugins
 
 ### Top Competitors to Review (Jan 5-11)
 
@@ -353,5 +353,5 @@
 ## �📅 Document Info
 - **Week:** January 5-11, 2026
 - **Created:** January 4, 2026
-- **Focus:** Image Carousel Completion
+- **Focus:** Image Slider Completion
 - **Target Release:** v1.2.0

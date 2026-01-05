@@ -1,103 +1,187 @@
-# WordPress.org SEO Keyword Research
+# GSlider Blocks - SEO Keyword Research
 
-**Research Date:** January 5, 2026  
-**Plugin:** GSlider Blocks  
-
----
-
-## 📊 Keyword Competition Analysis
-
-| Keyword | Total Results | Competition | GSlider Rank | Recommendation |
-|---------|---------------|-------------|--------------|----------------|
-| **Logo Carousel** | 296 | ✅ Low | Page 2 (improving) | 🏆 **Best opportunity!** |
-| **Slider Block** | ~500 | ⚠️ Medium | **#6** | ✅ Keep targeting |
-| **Slideshow** | 670 | ⚠️ Medium | Not on Page 1 | Keep in tags |
-| **Gutenberg Slider** | 784 | 🔥 High | Not on Page 1 | Keep in tags |
-| **Photo Gallery** | 867 | 🔥 High | N/A | ❌ Avoid (Gallery ≠ Carousel) |
-| **Image Carousel** | 1,016 | 🔥 High | Not on Page 1 | Add when block ready |
-| **Image Slider** | 2,135 | 🔥🔥 Very High | Not on Page 1 | ❌ Avoid |
-| **Image Gallery** | 2,638 | 🔥🔥 Very High | N/A | ❌ Avoid |
-| **Gutenberg** (alone) | 4,909 | 🔥🔥🔥 Extreme | N/A | Too broad |
+> **Research Date:** January 5, 2026  
+> **Purpose:** Finding best keywords for Image Slider and Photo Gallery blocks
 
 ---
 
-## 🎯 Current Optimized Tags (5 max)
+## 🎯 Final Block Names (Confirmed)
 
-```
-slider, carousel, logo carousel, slideshow, gutenberg
-```
-
-| Tag | Why |
-|-----|-----|
-| `slider` | Main keyword, #6 position |
-| `carousel` | High volume, relevant |
-| `logo carousel` | **Low competition niche!** |
-| `slideshow` | Alternative search term |
-| `gutenberg` | Block editor users |
+| # | Block Name | Technical Name | Status |
+|---|-----------|----------------|--------|
+| 1 | Logo Carousel | `gslider/logo-carousel` | ✅ Existing |
+| 2 | **Image Slider** | `gslider/image-slider` | � New |
+| 3 | **Photo Gallery** | `gslider/photo-gallery` | 🆕 New |
 
 ---
 
-## 📝 Short Description (Optimized)
+## 📊 Keyword Research Results
 
-```
-Logo Carousel, Image Carousel & Testimonial Carousel blocks for Gutenberg. Create stunning carousels with 7+ effects, responsive design & full customization!
-```
+### "Image Slider" Search Results
 
-**Keywords included:** Logo Carousel, Image Carousel, Testimonial Carousel, Gutenberg, effects
-
----
-
-## 🔮 Future Keyword Strategy
-
-### When Image Carousel Block is Ready:
-- Add `image carousel` to Tags (replace `slideshow` if needed)
-- Update Short Description to highlight Image Carousel first
-
-### When Testimonial Carousel Block is Ready:
-- Add `testimonial` to Tags (replace `gutenberg` if needed)
-- Consider: `testimonial slider`, `testimonial carousel`
-
-### When Post Slider Block is Ready:
-- Consider: `post slider`, `post carousel`, `blog slider`
+| Plugin Name | Active Installations | Rating |
+|-------------|---------------------|--------|
+| **Smart Slider 3** | **900,000+** | ⭐ 5/5 |
+| **MetaSlider** | **500,000+** | ⭐ 4.5/5 |
+| Royal Addons for Elementor | 600,000+ | - |
+| NextGEN Gallery | 400,000+ | - |
+| Prime Slider for Elementor | 100,000+ | - |
+| Depicter | 90,000+ | - |
+| WP Carousel | 60,000+ | - |
+| Robo Gallery | 40,000+ | - |
+| Ultimate Responsive Image Slider | 30,000+ | - |
+| Slider by Soliloquy | 30,000+ | - |
 
 ---
 
-## 📈 Ranking Factors (WordPress.org)
+### "Image Carousel" Search Results
 
-| Factor | Priority | Your Status |
-|--------|----------|-------------|
-| **Title** | ⭐⭐⭐ Highest | "Slider Block" ✅ |
-| **Tags** | ⭐⭐⭐ High | Optimized ✅ |
-| **Short Description** | ⭐⭐ Medium | Optimized ✅ |
-| **Active Installs** | ⭐⭐⭐ High | 700+ (growing) |
-| **Ratings/Reviews** | ⭐⭐ Medium | 3 reviews (need more) |
-| **Long Description** | ⭐ Low | Good ✅ |
-
----
-
-## 🏆 Top Competitors
-
-| Search Term | Top Plugins | Their Installs |
-|-------------|-------------|----------------|
-| Slider | MetaSlider | 500,000+ |
-| Slider | Smart Slider 3 | 900,000+ |
-| Carousel | Carousel Slider Block | 40,000+ |
-| Logo Carousel | GS Logo Slider | 30,000+ |
-| Image Gallery | NextGEN Gallery | 400,000+ |
-| Image Gallery | FooGallery | 100,000+ |
+| Plugin Name | Active Installations |
+|-------------|---------------------|
+| **Elementor** | **10+ million** |
+| **Essential Addons for Elementor** | **2+ million** |
+| Royal Addons for Elementor | 600,000+ |
+| MetaSlider | 500,000+ |
+| WP Shortcodes Ultimate | 400,000+ |
+| WP Carousel | 60,000+ |
+| Carousel Slider | 50,000+ |
+| Divi Carousel Free | 30,000+ |
+| WP Slick Slider and Image Carousel | 10,000+ |
+| Image Carousel Module for Divi | 9,000+ |
 
 ---
 
-## ✅ Action Items
+### "Photo Gallery" Search Results
 
-- [x] Add "logo carousel" to Tags
-- [x] Update Short Description with keywords
-- [ ] SVN push readme.txt changes
-- [ ] Build Image Carousel block (January)
-- [ ] Build Testimonial Carousel block (January)
-- [ ] Update Tags when new blocks ready
-- [ ] Get more user reviews (improves ranking)
+| Plugin Name | Active Installations |
+|-------------|---------------------|
+| **Smash Balloon Social Photo Feed** | **1+ million** |
+| MetaSlider | 500,000+ |
+| NextGEN Gallery | 400,000+ |
+| Photo Gallery by 10Web | 200,000+ |
+| FooGallery | 100,000+ |
+| Modula Image Gallery | 100,000+ |
+| Envira Photo Gallery | 100,000+ |
+| Visual Portfolio | 60,000+ |
+| Robo Gallery | 40,000+ |
+| GT3 Image Gallery | 10,000+ |
 
 ---
 
-*Last Updated: January 5, 2026*
+### "Photo Slider" Search Results
+
+| Plugin | Active Installs |
+|--------|-----------------|
+| Smart Slider 3 | 900,000+ |
+| MetaSlider | 500,000+ |
+| NextGEN Gallery | 400,000+ |
+| Modula | 100,000+ |
+| Depicter | 90,000+ |
+| WP Carousel | 70,000+ |
+| Robo Gallery | 40,000+ |
+
+---
+
+### "Photo Carousel" Search Results
+
+| Plugin | Active Installs |
+|--------|-----------------|
+| Smash Balloon Social Photo Feed | 1+ million |
+| MetaSlider | 500,000+ |
+| NextGEN Gallery | 400,000+ |
+| FooGallery | 100,000+ |
+| WP Carousel | 70,000+ |
+| Visual Portfolio | 60,000+ |
+
+---
+
+### "Photo Grid" Search Results
+
+| Plugin | Active Installs |
+|--------|-----------------|
+| Smash Balloon | 1+ million |
+| Photo Gallery by 10Web | 200,000+ |
+| Modula | 100,000+ |
+| Envira Gallery | 100,000+ |
+| FooGallery | 100,000+ |
+| Visual Portfolio | 60,000+ |
+| Robo Gallery | 40,000+ |
+
+---
+
+### "Photo Album" Search Results
+
+| Plugin | Active Installs |
+|--------|-----------------|
+| NextGEN Gallery | 400,000+ |
+| Photo Gallery by 10Web | 200,000+ |
+| FooGallery | 100,000+ |
+| Envira Gallery | 100,000+ |
+| WP Photo Album Plus | 10,000+ |
+| Album Gallery | 4,000+ |
+
+---
+
+### "Photo Lightbox" Search Results
+
+| Plugin | Active Installs |
+|--------|-----------------|
+| Smash Balloon | 1+ million |
+| MetaSlider | 500,000+ |
+| NextGEN Gallery | 400,000+ |
+| Easy FancyBox | 200,000+ |
+| Modula | 100,000+ |
+| FooGallery | 100,000+ |
+| Meow Lightbox | 10,000+ |
+
+---
+
+### "Photo Portfolio" Search Results
+
+| Plugin | Active Installs |
+|--------|-----------------|
+| Modula | 100,000+ |
+| FooGallery | 100,000+ |
+| Visual Portfolio | 60,000+ |
+| Robo Gallery | 40,000+ |
+| Portfolio Filter Gallery | 20,000+ |
+| GT3 Photo Video Gallery | 10,000+ |
+
+---
+
+## 🏆 Top Reference Plugins
+
+### For Image Slider:
+1. **Smart Slider 3** (900K+) - Best for features reference
+2. **MetaSlider** (500K+) - Good for Gutenberg integration
+
+### For Photo Gallery:
+1. **NextGEN Gallery** (400K+) - Most comprehensive
+2. **Modula** (100K+) - Good UI/UX
+3. **FooGallery** (100K+) - Gutenberg focused
+
+---
+
+## 💡 Key Findings
+
+1. **"Slider"** keyword is more popular than **"Carousel"** for image blocks
+2. **"Photo"** keyword is stronger than **"Image"** for gallery blocks
+3. **Smart Slider 3** dominates the slider market (900K+ installs)
+4. **NextGEN, FooGallery, Modula** appear in most photo searches
+
+---
+
+## 📝 Block Behavior Differences
+
+| Block | Type | Behavior | Use Case |
+|-------|------|----------|----------|
+| **Logo Carousel** | Carousel | Multiple logos sliding | Client logos |
+| **Image Slider** | Slider | Single image at a time | Hero images, Banners |
+| **Photo Gallery** | Gallery | Grid layout with lightbox | Portfolio, Album |
+
+---
+
+## 🔗 Research Sources
+
+- WordPress.org Plugin Repository: https://wordpress.org/plugins/search/
+- Search Date: January 5, 2026

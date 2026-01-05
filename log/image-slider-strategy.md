@@ -1,12 +1,12 @@
-# Image Carousel - UPDATED Feature Analysis
+# Image Slider - UPDATED Feature Analysis
 ## Based on Actual Code Review (January 2026)
 
 ---
 
-## 📊 Code Comparison: Image Carousel vs Logo Carousel
+## 📊 Code Comparison: Image Slider vs Logo Carousel
 
-| Metric | Image Carousel | Logo Carousel | Status |
-|--------|----------------|---------------|--------|
+| Metric | Image Slider | Logo Carousel | Status |
+|--------|--------------|---------------|--------|
 | **attributes.js** | 2,500 lines | 2,580 lines | ✅ Similar |
 | **inspector.js** | 222,651 bytes | 233,763 bytes | ✅ Similar |
 | **Features** | 95%+ | 100% | ⚠️ Minor gaps |
@@ -26,7 +26,7 @@
 - ✅ Layout Height (responsive with units)
 - ✅ Vertical Alignment (top/center/bottom, responsive)
 
-### 3. Carousel Settings (14 features)
+### 3. Slider Settings (14 features)
 - ✅ Number of Columns (1-12, responsive)
 - ✅ Column Gap (0-200px, responsive)
 - ✅ Infinite Loop
@@ -40,9 +40,9 @@
 - ✅ Autoplay Delay (responsive)
 - ✅ Transition Speed (responsive)
 - ✅ Lazy Loading (`enableLazyLoad`)
-- ✅ Carousel Effect
+- ✅ Slider Effect
 
-### 4. Carousel Effects (7 effects)
+### 4. Slider Effects (7 effects)
 - ✅ Slide (default)
 - ✅ Fade
 - ✅ Cube
@@ -162,10 +162,10 @@
 
 ---
 
-## 📊 Feature Comparison: Image vs Logo Carousel
+## 📊 Feature Comparison: Image Slider vs Logo Carousel
 
-| Feature | Logo Carousel | Image Carousel | Status |
-|---------|---------------|----------------|--------|
+| Feature | Logo Carousel | Image Slider | Status |
+|---------|---------------|--------------|--------|
 | **Lazy Loading** | ✅ | ✅ | ✅ Match |
 | **Tooltip** | ✅ | ✅ | ✅ Match |
 | **Tooltip Styling** | ✅ | ✅ | ✅ Match |
@@ -173,12 +173,12 @@
 | **Move Up Hover** | ✅ | ✅ | ✅ Match |
 | **Caption Styling** | ✅ | ✅ | ✅ Match |
 | **Vertical Align** | ✅ | ✅ | ✅ Match |
-| **7 Carousel Effects** | ✅ | ✅ | ✅ Match |
+| **7 Slider Effects** | ✅ | ✅ | ✅ Match |
 | **Background Image** | ✅ Full | ⚠️ Color/Gradient only | ⚠️ Minor gap |
 
-### Missing in Image Carousel (vs Logo Carousel):
+### Missing in Image Slider (vs Logo Carousel):
 1. ⚠️ Logo has background IMAGE options (position, attachment, repeat, size)
-2. ⚠️ Image Carousel only has color/gradient backgrounds
+2. ⚠️ Image Slider only has color/gradient backgrounds
 
 **This is a MINOR difference - not critical.**
 
@@ -195,13 +195,13 @@
 
 ## 🎯 Conclusion
 
-### Image Carousel Status: **95% COMPLETE** ✅
+### Image Slider Status: **95% COMPLETE** ✅
 
-**What Image Carousel HAS:**
+**What Image Slider HAS:**
 - ✅ All hover effects (including Grayscale to Color!)
 - ✅ Tooltip with full styling
 - ✅ Lazy Loading
-- ✅ All 7 carousel effects
+- ✅ All 7 slider effects
 - ✅ Complete styling options
 - ✅ Toolbar actions (delete, duplicate, reorder)
 
@@ -209,16 +209,17 @@
 - ⚠️ Background image options for image container (Logo has this, Image doesn't)
 
 ### Recommendation:
-**Image Carousel is READY for production!** 🚀
+**Image Slider is READY for production!** 🚀
 
-The 5% gap (background image options) is not critical for image carousels since images themselves ARE the content. This is actually fine as-is.
+The 5% gap (background image options) is not critical for image sliders since images themselves ARE the content. This is actually fine as-is.
 
 ---
 
 ## 📅 Updated Analysis Date
-- **Analyzed:** January 4, 2026
+- **Analyzed:** January 5, 2026
 - **Code Version:** v1.1.5
 - **Feature Parity:** 95%+ with Logo Carousel
+- **Block Name Changed:** Image Carousel → Image Slider (SEO optimized)
 
 ---
 
@@ -256,11 +257,11 @@ The 5% gap (background image options) is not critical for image carousels since 
 
 | Feature | Description |
 |---------|-------------|
-| **Grid Layout** | Carousel alternative |
+| **Grid Layout** | Slider alternative |
 | **Masonry Layout** | Pinterest style |
 | **Justified Gallery** | Full-width aligned |
-| **Multi-row Carousel** | 2-3 rows |
-| **Vertical Carousel** | Vertical scrolling |
+| **Multi-row Slider** | 2-3 rows |
+| **Vertical Slider** | Vertical scrolling |
 
 ---
 
@@ -314,7 +315,7 @@ The 5% gap (background image options) is not critical for image carousels since 
 3. CSS Filters (brightness, contrast)
 
 ### Phase 3 - Advanced Features
-1. Grid Layout (alternative to carousel)
+1. Grid Layout (alternative to slider)
 2. Dynamic Gallery (CPT)
 3. ACF Integration
 4. Masonry Layout
@@ -343,7 +344,7 @@ The 5% gap (background image options) is not critical for image carousels since 
 
 ### ✅ KEEP IN FREE:
 - All current 40+ features
-- All 7 carousel effects
+- All 7 slider effects
 - All 6 hover effects (including Grayscale!)
 - Tooltip with styling
 - Lazy Loading
