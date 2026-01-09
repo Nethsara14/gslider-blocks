@@ -285,10 +285,10 @@ Download free from WordPress.org!
 |----------|----------|-------|---------|
 | Gmail | gsliderblocks | gsliderblocks@gmail.com | ✅ Jan 9, 2026 |
 | Twitter | @gsliderblocks | gsliderblocks@gmail.com | [ ] |
-| Facebook | /gsliderblocks | gsliderblocks@gmail.com | [ ] |
+| Facebook | /gsliderblocks | gsliderblocks@gmail.com | ✅ Jan 9, 2026 |
 | YouTube | @gsliderblocks | gsliderblocks@gmail.com | [ ] |
 | Instagram | @gsliderblocks | gsliderblocks@gmail.com | [ ] |
-| LinkedIn | /company/gslider-blocks | noruzzaman19@gmail.com | ✅ Jan 9, 2026 |
+| LinkedIn | /company/gsliderblocks | gsliderblocks@gmail.com | ✅ Jan 9, 2026 |
 
 ---
 
