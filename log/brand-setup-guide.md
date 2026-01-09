@@ -239,8 +239,10 @@ Download free from WordPress.org!
 
 | Purpose | URL |
 |---------|-----|
+| **Domain** | gsliderblocks.com (To be purchased) |
 | **WordPress.org** | wordpress.org/plugins/gslider-blocks |
 | **GitHub** | github.com/noruzzamans/gslider-blocks |
+| **LinkedIn** | linkedin.com/company/gslider-blocks |
 | **Support** | wordpress.org/support/plugin/gslider-blocks |
 | **Reviews** | wordpress.org/support/plugin/gslider-blocks/reviews |
 
