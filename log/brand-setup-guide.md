@@ -172,7 +172,7 @@ Requires: Domain purchase ($10-15/year)
 | **Type** | Self-Owned |
 | **Website** | wordpress.org/plugins/gslider-blocks |
 
-**Status:** [ ] Created
+**Status:** [x] Created ✅ (Jan 9, 2026)
 
 ---
 
@@ -270,7 +270,7 @@ Download free from WordPress.org!
 ### Phase 4: Future
 - [ ] Buy gsliderblocks.com domain
 - [ ] Create website
-- [ ] LinkedIn company page
+- [x] LinkedIn company page ✅ (Jan 9, 2026)
 - [ ] Newsletter setup
 
 ---
@@ -286,7 +286,7 @@ Download free from WordPress.org!
 | Facebook | /gsliderblocks | gsliderblocks@gmail.com | [ ] |
 | YouTube | @gsliderblocks | gsliderblocks@gmail.com | [ ] |
 | Instagram | @gsliderblocks | gsliderblocks@gmail.com | [ ] |
-| LinkedIn | /company/gslider-blocks | gsliderblocks@gmail.com | [ ] |
+| LinkedIn | /company/gslider-blocks | noruzzaman19@gmail.com | ✅ Jan 9, 2026 |
 
 ---
 
