@@ -239,7 +239,7 @@ Download free from WordPress.org!
 
 | Purpose | URL | Status |
 |---------|-----|--------|
-| **Domain** | gsliderblocks.com | ⏳ Pending (Cloudflare - $10.46/yr) |
+| **Domain** | gsliderblocks.com | ✅ Active (Cloudflare) |
 | **WordPress.org** | wordpress.org/plugins/gslider-blocks | ✅ Live |
 | **GitHub** | github.com/noruzzamans/gslider-blocks | ✅ Live |
 | **LinkedIn** | linkedin.com/company/gslider-blocks | ✅ Live |
@@ -270,7 +270,7 @@ Download free from WordPress.org!
 - [ ] Create Instagram (optional)
 
 ### Phase 4: Future
-- [ ] Buy gsliderblocks.com domain (Cloudflare - $10.46/yr ≈ ১,২৫০৳)
+- [x] Buy gsliderblocks.com domain (Cloudflare - $10.46/yr ≈ ১,২৫০৳) ✅ Done (Jan 12, 2026)
 - [ ] Create static landing page (Cloudflare Pages - FREE)
 - [x] LinkedIn company page ✅ (Jan 9, 2026)
 - [ ] Newsletter setup
