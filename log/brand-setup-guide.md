@@ -86,7 +86,7 @@ Requires: Domain purchase ($10-15/year)
 | **Profile Photo** | Use 400x400 logo |
 | **Header** | 1500x500 banner |
 
-**Status:** [ ] Created
+**Status:** [x] Created ✅ (Jan 2026)
 
 ---
 
@@ -130,7 +130,7 @@ Requires: Domain purchase ($10-15/year)
 | **Profile Photo** | 800x800 logo |
 | **Links** | WordPress.org, GitHub |
 
-**Status:** [ ] Created
+**Status:** [x] Created ✅ (Jan 2026)
 
 ---
 
@@ -152,7 +152,7 @@ Requires: Domain purchase ($10-15/year)
 | **Bio** | 🎠 Gutenberg Carousel Plugin\n✅ 10 Blocks\n✅ 100% Free\n✅ No jQuery\n⬇️ Download Free |
 | **Link** | wordpress.org/plugins/gslider-blocks |
 
-**Status:** [ ] Created
+**Status:** [x] Created ✅ (Jan 2026)
 
 ---
 
@@ -237,13 +237,13 @@ Download free from WordPress.org!
 
 ## 🔗 Important Links
 
-| Purpose | URL |
-|---------|-----|
-| **Domain** | gsliderblocks.com (To be purchased) |
-| **WordPress.org** | wordpress.org/plugins/gslider-blocks |
-| **GitHub** | github.com/noruzzamans/gslider-blocks |
-| **LinkedIn** | linkedin.com/company/gslider-blocks |
-| **Support** | wordpress.org/support/plugin/gslider-blocks |
+| Purpose | URL | Status |
+|---------|-----|--------|
+| **Domain** | gsliderblocks.com | ⏳ Pending (Cloudflare - $10.46/yr) |
+| **WordPress.org** | wordpress.org/plugins/gslider-blocks | ✅ Live |
+| **GitHub** | github.com/noruzzamans/gslider-blocks | ✅ Live |
+| **LinkedIn** | linkedin.com/company/gslider-blocks | ✅ Live |
+| **Support** | wordpress.org/support/plugin/gslider-blocks | ✅ Live |
 | **Reviews** | wordpress.org/support/plugin/gslider-blocks/reviews |
 
 ---
@@ -270,10 +270,11 @@ Download free from WordPress.org!
 - [ ] Create Instagram (optional)
 
 ### Phase 4: Future
-- [ ] Buy gsliderblocks.com domain
-- [ ] Create website
+- [ ] Buy gsliderblocks.com domain (Cloudflare - $10.46/yr ≈ ১,২৫০৳)
+- [ ] Create static landing page (Cloudflare Pages - FREE)
 - [x] LinkedIn company page ✅ (Jan 9, 2026)
 - [ ] Newsletter setup
+- [ ] Automation setup (Make.com - FREE tier)
 
 ---
 
@@ -284,10 +285,10 @@ Download free from WordPress.org!
 | Platform | Username | Email | Created |
 |----------|----------|-------|---------|
 | Gmail | gsliderblocks | gsliderblocks@gmail.com | ✅ Jan 9, 2026 |
-| Twitter | @gsliderblocks | gsliderblocks@gmail.com | [ ] |
+| Twitter | @gsliderblocks | gsliderblocks@gmail.com | ✅ Jan 2026 |
 | Facebook | /gsliderblocks | gsliderblocks@gmail.com | ✅ Jan 9, 2026 |
-| YouTube | @gsliderblocks | gsliderblocks@gmail.com | [ ] |
-| Instagram | @gsliderblocks | gsliderblocks@gmail.com | [ ] |
+| YouTube | @gsliderblocks | gsliderblocks@gmail.com | ✅ Jan 2026 |
+| Instagram | @gsliderblocks | gsliderblocks@gmail.com | ✅ Jan 2026 |
 | LinkedIn | /company/gsliderblocks | gsliderblocks@gmail.com | ✅ Jan 9, 2026 |
 
 ---
@@ -336,6 +337,19 @@ Download: wordpress.org/plugins/gslider-blocks
 
 ---
 
+## 🤖 Future Automation (Make.com)
+
+| Feature | Status |
+|---------|--------|
+| Auto social posting | 📅 Planned |
+| Email notifications | 📅 Planned |
+| Weekly reports | 📅 Planned |
+
+**Tool:** Make.com (FREE - 1,000 ops/month)
+
+---
+
 ## 📅 Last Updated
 - **Created:** January 9, 2026
-- **Next Review:** After accounts created
+- **Updated:** January 12, 2026
+- **Next Review:** After domain purchase
