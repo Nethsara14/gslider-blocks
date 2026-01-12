@@ -86,7 +86,7 @@ Requires: Domain purchase ($10-15/year)
 | **Profile Photo** | Use 400x400 logo |
 | **Header** | 1500x500 banner |
 
-**Status:** [x] Created ✅ (Jan 2026)
+**Status:** [x] Created ✅ (Jan 10, 2026)
 
 ---
 
@@ -285,11 +285,14 @@ Download free from WordPress.org!
 | Platform | Username | Email | Created |
 |----------|----------|-------|---------|
 | Gmail | gsliderblocks | gsliderblocks@gmail.com | ✅ Jan 9, 2026 |
-| Twitter | @gsliderblocks | gsliderblocks@gmail.com | ✅ Jan 2026 |
+| Twitter | @gsliderblocks | gsliderblocks@gmail.com | ✅ Jan 10, 2026 |
 | Facebook | /gsliderblocks | gsliderblocks@gmail.com | ✅ Jan 9, 2026 |
-| YouTube | @gsliderblocks | gsliderblocks@gmail.com | ✅ Jan 2026 |
-| Instagram | @gsliderblocks | gsliderblocks@gmail.com | ✅ Jan 2026 |
+| YouTube | @gsliderblocks | gsliderblocks@gmail.com | ✅ Jan 10, 2026 |
+| Instagram | @gsliderblocks | gsliderblocks@gmail.com | ✅ Jan 10, 2026 |
 | LinkedIn | /company/gsliderblocks | gsliderblocks@gmail.com | ✅ Jan 9, 2026 |
+| Pinterest | pinterest.com/gsliderblocks | gsliderblocks@gmail.com | ✅ Jan 10, 2026 |
+| Threads | @gsliderblocks | gsliderblocks@gmail.com | ⏳ Pending Review |
+| Reddit | u/gsliderblocks | gsliderblocks@gmail.com | ✅ Jan 10, 2026 |
 
 ---
 
