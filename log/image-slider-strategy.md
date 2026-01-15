@@ -13,7 +13,43 @@
 
 ---
 
+## 🆕 LATEST RESEARCH FINDINGS (Added Jan 15, 2026)
+*Features discovered from Depicter, Master Slider, Prime Slider, WP Carousel Free & **MetaSlider**.*
+
+### 🚀 High Potential "Winning" Features
+1.  **Hover Image Switch (Depicter Style)** ⭐
+    *   *Concept:* Show a different image when hovering over a slide.
+    *   *Implementation:* Simple `primaryImage` + `secondaryImage` logic.
+
+2.  **Server-Side Smart Crop (MetaSlider)** 🧠
+    *   *Concept:* Physically crop images on the server to exact slider dimensions.
+    *   *Why:* Better performance than CSS object-fit; ensures face/products aren't cut off if user sets focus.
+    *   *Implementation:* Use `WP_Image_Editor` class.
+
+3.  **Hero Mode (MetaSlider)** 🦸
+    *   *Concept:* The CENTER slide is larger (zoomed in) than the side slides.
+    *   *Why:* Creates a striking "Featured" look.
+    *   *Implementation:* Swiper `centeredSlides` + `scale` transform on active slide.
+
+4.  **Random Order / Shuffle (WP Carousel)** 🎲
+    *   *Concept:* Randomize slide order on every page load.
+    *   *Implementation:* Simple PHP `shuffle()`.
+
+5.  **Multilingual Support (WP Carousel)** 🌍
+    *   *Concept:* Auto-detect WPML/Polylang and switch Captions/Alt text.
+    *   *Implementation:* Filter hooks for string translation.
+
+6.  **Title Navigation (MetaSlider)**
+    *   *Concept:* Instead of dots, use Slide Titles (e.g. "Intro", "Features").
+    *   *Why:* Great for narrative sliders / tours.
+
+7.  **Smart Focal Point**
+    *   *Concept:* User sets a "Focus Point" (X, Y%) to keep visible on mobile.
+
+---
+
 ## ✅ VERIFIED FEATURES (From Code)
+*(These are the detailed features covering 95% of the market)*
 
 ### 1. Show/Hide Elements
 - ✅ Show Caption (responsive toggle)
@@ -205,13 +241,10 @@
 - ✅ Complete styling options
 - ✅ Toolbar actions (delete, duplicate, reorder)
 
-**Minor Gap (Optional to fix):**
-- ⚠️ Background image options for image container (Logo has this, Image doesn't)
-
 ### Recommendation:
-**Image Slider is READY for production!** 🚀
+**Image Slider is READY for production!** �
 
-The 5% gap (background image options) is not critical for image sliders since images themselves ARE the content. This is actually fine as-is.
+The minor gap (background image options) is not critical for image sliders.
 
 ---
 
@@ -223,7 +256,7 @@ The 5% gap (background image options) is not critical for image sliders since im
 
 ---
 
-## 💎 PRO VERSION - Premium Features
+## �💎 PRO VERSION - Premium Features (Updated Strategy)
 
 ### Category 1: Lightbox & Gallery 🖼️ (HIGH Priority!)
 
@@ -242,6 +275,8 @@ The 5% gap (background image options) is not critical for image sliders since im
 | Feature | Description |
 |---------|-------------|
 | **Ken Burns Effect** | Slow zoom/pan animation |
+| **Hero Mode** ⭐ | **NEW!** Center slide zoomed in (MetaSlider style) |
+| **Hover Switch Image** ⭐ | **NEW!** Hover করলে অন্য image শো করবে (Depicter Style) |
 | **Parallax Effect** | 3D depth while scrolling |
 | **Blur to Sharp** | Blurry → clear on hover |
 | **3D Tilt** | Mouse follow 3D rotation |
@@ -265,16 +300,16 @@ The 5% gap (background image options) is not critical for image sliders since im
 
 ---
 
-### Category 4: Content Features 🔗
+### Category 4: Content & Dynamic 🔗
 
 | Feature | Description |
 |---------|-------------|
-| **Image Categories** | Filter by category |
+| **Server-Side Smart Crop** | **NEW!** Perfect cropping (MetaSlider style) |
+| **Dynamic Gallery** | From Custom Post Type |
+| **Multilingual Support** | **NEW!** WPML/Polylang |
 | **Caption Overlay** | Animate caption on hover |
-| **Social Sharing** | Share buttons |
 | **Download Button** | Allow download |
 | **Watermark** | Auto watermark |
-| **EXIF Data** | Show photo metadata |
 
 ---
 
@@ -306,19 +341,24 @@ The 5% gap (background image options) is not critical for image sliders since im
 
 ### Phase 1 - PRO Launch (High Impact)
 1. ⭐ **Lightbox** - #1 most requested!
-2. 🖼️ **Thumbnails Navigation**
-3. 🎨 **5-10 Ready Templates**
+2. 🔄 **Hover Image Switch** (Depicter)
+3. 🦸 **Hero Mode** (MetaSlider)
+4. 🎲 **Random Order** (WP Carousel)
+5. 🖼️ **Thumbnails Navigation**
+6. 🎨 **5-10 Ready Templates**
 
 ### Phase 2 - Visual Enhancements
 1. Ken Burns Effect
-2. Image Masks/Shapes
-3. CSS Filters (brightness, contrast)
+2. Server-Side Smart Crop
+3. Image Masks/Shapes
+4. Filter by Category
+5. CSS Filters (brightness, contrast)
 
 ### Phase 3 - Advanced Features
-1. Grid Layout (alternative to slider)
+1. Grid/Masonry
 2. Dynamic Gallery (CPT)
-3. ACF Integration
-4. Masonry Layout
+3. Multilingual Support (WPML)
+4. ACF Integration
 
 ---
 
@@ -350,12 +390,14 @@ The 5% gap (background image options) is not critical for image sliders since im
 - Lazy Loading
 - Full responsive controls
 - Custom CSS
+- **Random Order**
+- **Multilingual Support**
 
 ### 💎 PRO ONLY:
 - Lightbox/Gallery
 - Thumbnails Navigation
 - Templates (10+)
-- Advanced effects (Ken Burns, Parallax)
+- Advanced effects (Ken Burns, Parallax, **Hero Mode**, **Hover Switch**)
 - Grid/Masonry layouts
 - Dynamic content (CPT, ACF)
 - Image masks/shapes
@@ -371,3 +413,4 @@ The 5% gap (background image options) is not critical for image sliders since im
 - Competitive differentiation
 
 **PRO Launch করুন Q2 2026 এ!** 🚀
+With **Lightbox**, **Hero Mode**, and **Hover Switch** as the main selling points.
