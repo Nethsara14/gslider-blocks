@@ -122,7 +122,7 @@
 
 ---
 
-### 4. Carousel Settings (Copy from Logo/Image Carousel)
+### 4. Carousel Settings (Copy from Logo/Image Slider)
 
 | Feature | Description |
 |---------|-------------|

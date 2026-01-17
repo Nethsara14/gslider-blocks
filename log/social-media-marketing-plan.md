@@ -123,7 +123,7 @@ Poll:
 | Day | Post Type | Example |
 |-----|-----------|---------|
 | Monday | Feature highlight | "Logo Carousel with grayscale hover effect..." |
-| Wednesday | Dev update | "Working on Image Carousel block..." |
+| Wednesday | Dev update | "Working on Image Slider block..." |
 | Friday | User engagement | "What slider features do you need?" |
 
 #### Tweet Templates:
@@ -132,7 +132,7 @@ Poll:
 ```
 ✨ New in GSlider Blocks:
 
-Image Carousel with 7 effects!
+Image Slider with 7 effects!
 • Slide, Fade, Cube
 • Coverflow, Flip, Cards
 • Creative

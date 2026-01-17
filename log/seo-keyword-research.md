@@ -34,7 +34,7 @@
 
 ---
 
-### "Image Carousel" Search Results
+### "Image Slider" Search Results
 
 | Plugin Name | Active Installations |
 |-------------|---------------------|
@@ -46,8 +46,8 @@
 | WP Carousel | 60,000+ |
 | Carousel Slider | 50,000+ |
 | Divi Carousel Free | 30,000+ |
-| WP Slick Slider and Image Carousel | 10,000+ |
-| Image Carousel Module for Divi | 9,000+ |
+| WP Slick Slider and Image Slider | 10,000+ |
+| Image Slider Module for Divi | 9,000+ |
 
 ---
 

@@ -41,7 +41,7 @@
 
 ---
 
-### 🖼️ Block 3: Image Carousel/Slider
+### 🖼️ Block 3: Image Slider
 
 **Why:** Core feature for any slider plugin
 
@@ -189,7 +189,7 @@ If any above doesn't fit:
 |----------|-------|--------|
 | ✅ | Logo Carousel | Done |
 | 🎯 1 | Testimonial Carousel | Priority |
-| 🖼️ 2 | Image Carousel | Priority |
+| 🖼️ 2 | Image Slider | Priority |
 | 📝 3 | Content Carousel | Priority |
 | 👥 | Team Carousel | Planned |
 | 🎥 | Video Carousel | Planned |
@@ -248,7 +248,7 @@ carousel block collection for Gutenberg!
 🎯 10 POWERFUL BLOCKS:
 ✅ Logo Carousel - Showcase client/partner logos
 ✅ Testimonial Carousel - Display customer reviews
-✅ Image Carousel - Beautiful image sliders
+✅ Image Slider - Beautiful image sliders
 ✅ Content Carousel - Custom content slides
 ✅ Team Carousel - Showcase your team
 ✅ Video Carousel - Embed videos beautifully
@@ -379,7 +379,7 @@ Advanced features, premium templates, priority support.
 ### Phase 1: FREE Version (3-4 months)
 - ✅ Logo Carousel (Done)
 - 🔨 Testimonial Carousel
-- 🔨 Image Carousel
+- 🔨 Image Slider
 - 🔨 Content Carousel
 - 🔨 Team Carousel
 - 🔨 Video Carousel
@@ -460,7 +460,7 @@ Advanced features, premium templates, priority support.
 
 ### Short Term (1-2 Months):
 - Build Testimonial Carousel
-- Build Image Carousel
+- Build Image Slider
 - Build Content Carousel
 - Create documentation
 

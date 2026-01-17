@@ -252,7 +252,7 @@ The minor gap (background image options) is not critical for image sliders.
 - **Analyzed:** January 5, 2026
 - **Code Version:** v1.1.5
 - **Feature Parity:** 95%+ with Logo Carousel
-- **Block Name Changed:** Image Carousel → Image Slider (SEO optimized)
+- **Block Name Changed:** Image Carousel → Image Slider (SEO optimized) ✅ DONE
 
 ---
 

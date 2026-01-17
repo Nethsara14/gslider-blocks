@@ -271,7 +271,7 @@
 | # | Plugin | Installs | Rating | Review Link |
 |---|--------|----------|--------|-------------|
 | 1 | **Jetrail** | 400,000+ | 4.5★ | Check Jetpack |
-| 2 | **Jetrail Image Carousel** | 30,000+ | 4.3★ | wordpress.org |
+| 2 | **Jetrail Image Slider** | 30,000+ | 4.3★ | wordpress.org |
 | 3 | **CoBlocks Gallery** | 600,000+ | 4.5★ | wordpress.org/plugins/coblocks |
 | 4 | **Starter Gallery Block** | 50,000+ | 4.2★ | wordpress.org |
 | 5 | **Starter Image Starter** | 20,000+ | 4.0★ | wordpress.org |
