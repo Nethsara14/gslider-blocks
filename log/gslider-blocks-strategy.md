@@ -8,7 +8,7 @@
 | **Type** | Gutenberg Blocks Collection |
 | **Target** | WordPress Block Editor (Gutenberg) Only |
 | **Free Blocks** | 10 blocks |
-| **Current Block** | Logo Carousel ✅ |
+| **Current Block** | Image Slider ✅ |
 
 ---
 
