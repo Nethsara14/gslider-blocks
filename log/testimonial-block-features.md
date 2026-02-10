@@ -22,9 +22,9 @@
 ### Free Layouts
 | Layout | Description |
 |--------|-------------|
-| **Slider** | Single testimonial sliding view |
-| **Carousel** | Multiple testimonials in carousel format |
-| **Grid** | Static grid layout with pagination |
+| **Slider** | ✅ Single testimonial sliding view |
+| **Carousel** | ✅ Multiple testimonials in carousel format |
+| **Grid** | [ ] Static grid layout with pagination |
 
 ### Pro Layouts
 | Layout | Description |
@@ -73,31 +73,31 @@
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| Testimonial Title | Toggle | Show | Show/Hide title/tagline |
-| Title HTML Tag | Select | h3 | h1-h6, p, span, div |
-| Testimonial Content | Toggle | Show | Show/Hide review content |
-| Content Display Type | Button Set | Full | Full / Limit (Pro) |
-| Content Length (Pro) | Spinner | 300 chars | Characters/Words limit |
-| Quote Symbol (Pro) | Toggle | Hide | Add quote before title |
-| Read More (Pro) | Toggle | Show | Show read more button |
-| Read More Action (Pro) | Button Set | Expand | Expand / Popup |
+| Testimonial Title | Toggle | ✅ Show | Show/Hide title/tagline (Renamed to Testimonial Text) |
+| Title HTML Tag | Select | ✅ p | h1-h6, p, span, div (Renamed to testimonialTextHtmlTag) |
+| Testimonial Content | Toggle | ✅ Show | Show/Hide review content (Testimonial Text) |
+| Content Display Type | Button Set | [ ] Full | Full / Limit (Pro) |
+| Content Length (Pro) | Spinner | [ ] 300 chars | Characters/Words limit |
+| Quote Symbol (Pro) | Toggle | [ ] Hide | Add quote before title |
+| Read More (Pro) | Toggle | [ ] Show | Show read more button |
+| Read More Action (Pro) | Button Set | [ ] Expand | Expand / Popup |
 
 ### Author Information
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| Full Name | Toggle | Show | Show/Hide author name |
-| Name HTML Tag | Select | h4 | h1-h6, p, span, div |
-| Designation | Toggle | Show | Show/Hide position/role |
-| Company Name (Pro) | Toggle | Hide | Show company |
-| Location (Pro) | Toggle | Hide | Show location |
+| Full Name | Toggle | ✅ Show | Show/Hide Reviewer Name (Free) |
+| Name HTML Tag | Select | ✅ h4 | h1-h6, p, span, div (Free) |
+| Designation | Toggle | ✅ Show | Show/Hide position/role (Free) |
+| Company Name (Pro) | Toggle | [ ] Hide | Show company (Pro) |
+| Location (Pro) | Toggle | [ ] Hide | Show location (Pro) |
 | Country Flag (Pro) | Toggle | Hide | Show flag icon |
 
 ### Star Rating
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| Star Rating | Toggle | Show | Show/Hide rating stars |
+| Star Rating | Toggle | [ ] Show | Show/Hide rating stars (Free) |
 | Rating Icon Style | Image Select | Star 1 | 2 free + 12 pro styles |
 | Rating Color | Color Group | #bbc2c7 / #ffb900 | Default/Rated colors |
 | Rating Icon Size | Spinner | 19px | Star icon size |
@@ -214,7 +214,7 @@ Each typography option includes:
 | Location | Open Sans Regular | 15px | #444444 |
 | Phone/Mobile | Open Sans Regular | 15px | #444444 |
 | Email Address | Open Sans Regular | 15px | #444444 |
-| Date | Open Sans Regular | 15px | #444444 |
+| Date | Open Sans Regular | 15px | [ ] #444444 (Pro) |
 
 ---
 

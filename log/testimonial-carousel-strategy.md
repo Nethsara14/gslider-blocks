@@ -32,15 +32,15 @@
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| **Author Name** | Text | ✅ Yes | Full name |
-| **Author Image** | Image | Optional | Avatar/Photo |
-| **Designation** | Text | Optional | Job title |
-| **Company Name** | Text | Optional | Organization |
-| **Company Logo** | Image | Optional | Brand logo |
-| **Testimonial Text** | Textarea | ✅ Yes | Review content |
-| **Rating** | Number | Optional | 1-5 stars |
-| **Date** | Date | Optional | Review date |
-| **Link** | URL | Optional | Website/Profile link |
+| **Reviewer Name** | Text | ✅ Yes | ✅ Full name |
+| **Reviewer Image** | Image | Optional | [ ] Avatar/Photo |
+| **Designation** | Text | Optional | ✅ Job title |
+| **Company Name** | Text | Optional | [ ] Organization |
+| **Company Logo** | Image | Optional | [ ] Brand logo |
+| **Testimonial Text** | Textarea | ✅ Yes | ✅ Review content |
+| **Rating** | Number | Optional | [ ] 1-5 stars |
+| **Date** | Date | Optional | [ ] Review date |
+| **Link** | URL | Optional | [ ] Website/Profile link |
 
 ---
 
