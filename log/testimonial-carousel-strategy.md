@@ -32,8 +32,8 @@
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| **Reviewer Name** | Text | ✅ Yes | Full name |
-| **Reviewer Image** | Image | Optional | Avatar/Photo |
+| **Author Name** | Text | ✅ Yes | Full name |
+| **Author Image** | Image | Optional | Avatar/Photo |
 | **Designation** | Text | Optional | Job title |
 | **Company Name** | Text | Optional | Organization |
 | **Company Logo** | Image | Optional | Brand logo |
@@ -53,7 +53,7 @@
 │                             │
 │  "Testimonial text here..." │
 │                             │
-│    👤  John Doe             │
+│    👤  John Doe (Author)    │
 │        CEO, Company         │
 └─────────────────────────────┘
 ```
@@ -109,8 +109,8 @@
 
 | Element | Toggle | Responsive |
 |---------|--------|------------|
-| Avatar/Image | ✅ | Desktop/Tablet/Mobile |
-| Name | ✅ | Desktop/Tablet/Mobile |
+| Author Image | ✅ | Desktop/Tablet/Mobile |
+| Author Name | ✅ | Desktop/Tablet/Mobile |
 | Designation | ✅ | Desktop/Tablet/Mobile |
 | Company Name | ✅ | Desktop/Tablet/Mobile |
 | Company Logo | ✅ | Desktop/Tablet/Mobile |
@@ -189,14 +189,14 @@
 - ✅ Padding (responsive, 4-sides)
 - ✅ Min Height (responsive)
 
-### 2. Avatar Styling
+### 2. Author Image Styling
 - ✅ Size (responsive with units)
 - ✅ Border (style, color, width)
 - ✅ Border Radius (0-50% for circle)
 - ✅ Box Shadow
 - ✅ Position/Margin
 
-### 3. Name Typography
+### 3. Author Name Typography
 - ✅ Font Family
 - ✅ Font Size (responsive)
 - ✅ Font Weight

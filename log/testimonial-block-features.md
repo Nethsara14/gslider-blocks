@@ -50,10 +50,10 @@
 ### Theme Customization
 | Option | Description | Default |
 |--------|-------------|---------|
-| Reviewer Image Alignment | Left / Center / Right | Center |
+| Author Image Alignment | Left / Center / Right | Center |
 | Border | Width, style, color, radius | 0px solid #e3e3e3 |
 | Background | Background color | Transparent |
-| Reviewer Image Position (Pro) | Top / Middle / Bottom | Top |
+| Author Image Position (Pro) | Top / Middle / Bottom | Top |
 
 ---
 
@@ -82,11 +82,11 @@
 | Read More (Pro) | Toggle | Show | Show read more button |
 | Read More Action (Pro) | Button Set | Expand | Expand / Popup |
 
-### Reviewer Information
+### Author Information
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| Full Name | Toggle | Show | Show/Hide reviewer name |
+| Full Name | Toggle | Show | Show/Hide author name |
 | Name HTML Tag | Select | h4 | h1-h6, p, span, div |
 | Designation | Toggle | Show | Show/Hide position/role |
 | Company Name (Pro) | Toggle | Hide | Show company |
@@ -104,11 +104,11 @@
 | Rating Gap | Spinner | 2px | Gap between stars |
 | Rating Position (Pro) | Select | Below Name | Multiple positions |
 
-### Reviewer Image
+### Author Image
 
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
-| Reviewer Image | Toggle | Show | Show/Hide image |
+| Author Image | Toggle | Show | Show/Hide image |
 | Dimensions | Select | Custom size | WordPress image sizes |
 | Image Shape | Image Select | Circle | Circle / Rounded (Pro) / Square (Pro) |
 | Image Background | Color | #ffffff | Background color |
@@ -209,7 +209,7 @@ Each typography option includes:
 | Section Title | Open Sans 600 | 22px | #444444 |
 | Testimonial Title | Open Sans 600 | 20px | #333333 |
 | Testimonial Content | Open Sans Regular | 16px | #333333 |
-| Reviewer Name | Open Sans 700 | 16px | #333333 |
+| Author Name | Open Sans 700 | 16px | #333333 |
 | Designation & Company | Open Sans Regular | 16px | #444444 |
 | Location | Open Sans Regular | 15px | #444444 |
 | Phone/Mobile | Open Sans Regular | 15px | #444444 |
@@ -315,7 +315,7 @@ Each typography option includes:
 1. Slider/Carousel layout with Swiper.js (already used in gslider)
 2. Grid layout with basic pagination
 3. 2 theme styles
-4. Basic display options (content, title, name, designation, image, rating)
+4. Basic display options (content, title, author name, designation, author image, rating)
 5. Star rating with 2 icon styles
 6. Full typography controls
 7. Navigation & pagination controls
