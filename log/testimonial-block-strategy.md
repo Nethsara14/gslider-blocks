@@ -39,11 +39,21 @@
 | Strong Testimonials | Basic | $49 | 4.5★ |
 | Jetrail Reviews | Limited | $49 | 4.0★ |
 | Easy Testimonials | OK | $39 | 4.2★ |
+| **Real Testimonials (Free)** | **Utility-rich** | **$49** | **4.8★** |
 | **GSlider (Planned)** | **Feature-rich** | **$49** | **Target: 5★** |
 
 ### Revenue Potential
 - **Prospective Income**: $2,500 - $5,000 additional revenue.
 - **Expected Conversions**: 5% PRO conversion from increased installs (+1,000-2,000 installs).
+
+### Audit Findings (Competitive Comparison)
+- **Strong Testimonials**: Offers Star Rating & Company fields in Free. Lacks advanced layouts in Free.
+- **Testimonial Slider & Showcase**: Very restrictive. Most layouts and basic settings (Autoplay/Pagination) are Pro-gated.
+- **Real Testimonials (Free)**: Offers Slider, Carousel, and Grid for free. **Gaps**: Star Rating display is Pro-only. **Strengths**: Offers Import/Export (JSON/CSV) and Custom CSS/JS for free.
+- **Strategy Update**: 
+  - We **MUST** offer Star Rating & Company fields in Free (beat Real Testimonials).
+  - We should consider adding **Import/Export** to our Free version roadmap to match Real Testimonials' utility.
+  - We can differentiate with better Gutenberg-native styling and more Free layouts (like List).
 
 ---
 
@@ -54,11 +64,11 @@
 |--------|---------|-------------|
 | **Slider** | ✅ Free | Single testimonial sliding view |
 | **Carousel** | ✅ Free | Multiple testimonials in carousel format |
-| **Grid** | [ ] Free | Static grid layout with pagination |
+| **Grid** | ✅ Free | Static grid layout (Columns) |
+| **List** | ✅ Free | Vertical list layout (Simple) |
 | **Thumbnails Slider** | Pro | Slider with thumbnail navigation |
 | **Multi-row** | Pro | Multiple rows carousel |
 | **Masonry** | Pro | Pinterest-style masonry layout |
-| **List** | Pro | Vertical list layout |
 | **Isotope** | Pro | Filterable layout |
 
 ### Theme Options
@@ -78,12 +88,12 @@
 | **Author Name** | Text | ✅ Yes | ✅ Done | Full name of the author |
 | **Testimonial Text** | Textarea | ✅ Yes | ✅ Done | Actual review content |
 | **Designation** | Text | Optional | ✅ Done | Job title or role |
-| **Author Image** | Image | Optional | [ ] Pending | Avatar/Photo URL & ID |
-| **Company Name** | Text | Optional | [ ] Pending | Organization name |
-| **Company Logo** | Image | Optional | [ ] Pending | Brand logo URL & ID |
-| **Rating** | Number | Optional | [ ] Pending | Star rating (1-5) |
-| **Review Date** | Date/Text | Optional | [ ] Pending | Date of the review |
-| **Review Link** | URL | Optional | [ ] Pending | Website/Profile link |
+| **Author Image** | Image | Optional | ✅ Planned | Avatar/Photo URL & ID (Free in Strong) |
+| **Company Name** | Text | Optional | ✅ Planned | Organization name (Free in Strong) |
+| **Company Logo** | Image | Optional | ✅ Planned | Brand logo URL & ID |
+| **Rating** | Number | Optional | ✅ Planned | Star rating (1-5) (Free in Strong) |
+| **Review Date** | Date/Text | Optional | ✅ Planned | Date of the review |
+| **Review Link** | URL | Optional | ✅ Planned | Website/Profile link (Free in Strong) |
 
 ### 2. Display & Show/Hide Settings (Responsive)
 | Element | Toggle | Responsive | Default |
@@ -113,8 +123,8 @@
 ### Form Fields
 | Version | Fields |
 |---------|--------|
-| **Free** | Full Name, Email, Designation, Testimonial Title, Content, Photo, Submit Button |
-| **Pro** | Company, Groups, Location, Phone, Website, Video Upload, Star Rating, Social Profiles, reCAPTCHA |
+| **Free** | Full Name, Email, Designation, Testimonial Title, Content, Photo, Star Rating, Company Name, Company Website, Submit Button |
+| **Pro** | Unlimited Forms, Custom Fields, Groups, Location, Phone, Video Upload, Social Profiles, reCAPTCHA, Schema Markup |
 
 ### Form Settings
 - **Labels & Messages**: Required notice label, Success/Error messages, Redirect URL.
@@ -133,7 +143,9 @@
 
 ### Navigation & Pagination
 - **Navigation (Arrows)**: 9 positions (Vertical Outer, Center, etc.), Hide on Mobile, Custom Icons, Navigation Colors & Borders.
-- **Pagination**: Bullets, Dynamic, Strokes (Pro), Scrollbar (Pro), Fraction (Pro), Numbers (Pro). Position Inside/Outside.
+- **Pagination**: Bullets, Dynamic, Fraction, Numbers (Standard - Free). Position Inside/Outside.
+- **Pro Pagination**: Infinite Scroll, Load More Button (Ajax), Strokes, Scrollbar.
+
 
 ---
 
@@ -152,7 +164,7 @@ Each element includes: Font Family, Weight, Size, Line Height, Align, Transform,
 
 ### Styling Panels
 - **Container/Card**: Background (Color/Gradient/Image), Overlay, Border, Radius, Shadow (Normal/Hover), Padding, Min Height.
-- **Author Image**: Shape (Circle/Square/Rounded), Background, Padding, Border, Shadow, Lightbox (Pro).
+- **Author Image**: Shape (Circle/Square/Rounded), Background, Padding, Border, Shadow, Lightbox (Pro), Initials Avatars (Free Fallback).
 
 ---
 
@@ -165,10 +177,15 @@ Each element includes: Font Family, Weight, Size, Line Height, Align, Transform,
 - Custom ID & CSS Editor.
 
 ### Pro Exclusive Features
-- **Video Testimonials**: YouTube/Vimeo support with Lightbox popup.
-- **Dynamic Content**: Import from Google, Facebook, Yelp, or WooCommerce.
+- **Video Testimonials**: YouTube/Vimeo support with Lightbox/Popup.
+- **Multiple Forms / Submission**: Create unlimited collection forms + Front-end user submission.
+- **Importers**: Import from Google, Facebook, Yelp, TripAdvisor, WooCommerce.
+- **Schema Markup**: Rich Snippets for SEO (Review, AggregateRating).
+- **Spam Control**: reCAPTCHA, Honeypot.
+- **Dynamic Content**: Import from other post types.
 - **Filters**: Ajax live filters by rating or category.
-- **Layouts**: Stacked avatars, before/after stories, timeline.
+- **Layouts**: Stacked avatars, before/after stories, timeline, Masonry.
+- **Extensions**: Role Manager, Mailchimp Integration, Country Selector, Assignment (to Products/Pages).
 
 ---
 
