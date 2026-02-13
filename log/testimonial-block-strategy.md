@@ -89,11 +89,11 @@
 | **Testimonial Text** | Textarea | ✅ Yes | ✅ Done | Actual review content |
 | **Designation** | Text | Optional | ✅ Done | Job title or role |
 | **Author Image** | Image | Optional | ✅ Planned | Avatar/Photo URL & ID (Free in Strong) |
-| **Company Name** | Text | Optional | ✅ Planned | Organization name (Free in Strong) |
-| **Company Logo** | Image | Optional | ✅ Planned | Brand logo URL & ID |
-| **Rating** | Number | Optional | ✅ Planned | Star rating (1-5) (Free in Strong) |
-| **Review Date** | Date/Text | Optional | ✅ Planned | Date of the review |
-| **Review Link** | URL | Optional | ✅ Planned | Website/Profile link (Free in Strong) |
+| **Company Name** | Text | Optional | ✅ Done | Organization name (Free in Strong) |
+| **Company Logo** | Image | Optional | ✅ Done | Brand logo URL & ID |
+| **Rating** | Number | Optional | ✅ Done | Star rating (1-5) (Free in Strong) |
+| **Review Date** | Date/Text | Optional | ⏳ Future | Date of the review |
+| **Review Link** | URL | Optional | ⏳ Future | Website/Profile link (Free in Strong) |
 
 ### 2. Display & Show/Hide Settings (Responsive)
 | Element | Toggle | Responsive | Default |
