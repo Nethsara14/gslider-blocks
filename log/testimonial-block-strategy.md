@@ -55,6 +55,15 @@
   - We should consider adding **Import/Export** to our Free version roadmap to match Real Testimonials' utility.
   - We can differentiate with better Gutenberg-native styling and more Free layouts (like List).
 
+### Pro Version Strategy (Revenue Generation)
+To make the PRO version attractive while keeping FREE functional, we will focus on:
+1. **Automation**: Google, Facebook, Yelp, and Trustpilot review import.
+2. **Video Support**: Self-hosted or YouTube/Vimeo video testimonials with Lightbox.
+3. **Form Builder**: Frontend submission form with moderation and reCAPTCHA.
+4. **SEO Mastery**: Automatic Schema-LD (AggregateRating) for rich snippets.
+5. **Dynamic Filters**: Ajax filtering by categories or ratings.
+6. **Advanced Design**: Masonry, Isotope, and 12+ premium themes.
+
 ---
 
 ## 🎨 Layout & Theme Options
@@ -196,9 +205,12 @@ Each element includes: Font Family, Weight, Size, Line Height, Align, Transform,
 ### Phase 1: Core FREE (Ongoing)
 - ✅ Attributes & Basic Structure
 - ✅ Field Rename (`testimonialText`, `authorName`)
-- [ ] Implement remaining 9 Free fields (Rating, Author Image, Company, etc.)
+- [/] Implement remaining Free fields (Rating, Author Image, Company, etc.)
+  - ✅ Data Attributes defined
+  - [/] Controls in Inspector (Styling panels missing)
+  - [/] Controls in Sortable Item (`testimonialTitle` missing)
 - [ ] Build 5 layout templates for the card designs.
-- [ ] Finalize Styling Panels.
+- [ ] Finalize Styling Panels (Rating, Image, Logo).
 - [ ] Implement Testimonial Form (Free version).
 - [ ] Release v1.3.0.
 
