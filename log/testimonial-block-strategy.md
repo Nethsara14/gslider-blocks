@@ -85,6 +85,7 @@
 ### 1. Testimonial Content Fields (The "Slide" Data)
 | Field | Type | Required | Status | Description |
 |-------|------|----------|--------|-------------|
+| **Testimonial Title** | Text | Optional | ✅ Done | Short headline for the testimonial |
 | **Author Name** | Text | ✅ Yes | ✅ Done | Full name of the author |
 | **Testimonial Text** | Textarea | ✅ Yes | ✅ Done | Actual review content |
 | **Designation** | Text | Optional | ✅ Done | Job title or role |
@@ -156,6 +157,7 @@ Each element includes: Font Family, Weight, Size, Line Height, Align, Transform,
 
 | Element | Default Font | Default Size | Default Color |
 |---------|-------------|--------------|---------------|
+| Testimonial Title | Open Sans 700 | 20px | #333333 |
 | Testimonial Text | Open Sans Regular | 16px | #333333 |
 | Author Name | Open Sans 700 | 16px | #333333 |
 | Designation | Open Sans Regular | 16px | #444444 |
