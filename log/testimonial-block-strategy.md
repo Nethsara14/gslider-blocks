@@ -108,7 +108,6 @@ To make the PRO version attractive while keeping FREE functional, we will focus 
 ### 2. Display & Show/Hide Settings (Responsive)
 | Element | Toggle | Responsive | Default |
 |---------|--------|------------|---------|
-| Section Title | ✅ | No | Hide |
 | Schema Markup | ✅ | No | Disabled |
 | Preloader | ✅ | No | Disabled |
 | Average Rating | ✅ | No | Hide (Pro) |
