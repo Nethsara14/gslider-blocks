@@ -1,5 +1,30 @@
 # GSlider Blocks Pro — License Management System (Freemius)
 
+## ✅ Setup Progress (Updated: 2026-02-17)
+
+### Completed
+- [x] Created Freemius account (noruzzaman19@gmail.com — Verified)
+- [x] PayPal payout method configured (USD)
+- [x] Created Store: **GSlider** (gsliderblocks.com)
+- [x] Created Product: **GSlider Blocks Pro** (slug: `gslider-blocks-pro`)
+  - Type: WordPress Plugin
+  - Monetization: Paid plan(s)
+  - Free plan: Yes (toggle ON)
+  - Analytics: Enabled
+  - Sell through Freemius: Enabled
+- [x] Created **Personal** plan (Annual: $29, Lifetime: $79, 1 site)
+- [/] Creating **Business** plan (Annual: $49, Lifetime: $129, 5 sites) ⭐ Popular
+
+### Pending
+- [ ] Create **Agency** plan (Annual: $99, Lifetime: $199, Unlimited sites)
+- [ ] Set star on Business plan (Popular badge)
+- [ ] Release plans to users
+- [ ] Set up refund policy
+- [ ] SDK Integration (download SDK, add to pro plugin)
+- [ ] Upload first plugin version to Freemius
+
+---
+
 ## 📌 1. Why Freemius
 
 | Feature | Details |
@@ -174,29 +199,63 @@ if ( gslider_is_plan('agency') ) {
 
 ---
 
-## 📌 5. Pricing Plans
+## 📌 5. Competitor Analysis & Pricing Strategy
 
-Set these up in the Freemius dashboard:
+### GutSlider (gutslider.com) — Direct Competitor
 
-```
-┌──────────────────────────────────────────────────┐
-│           GSlider Blocks Pro Pricing             │
-├──────────────┬───────────────┬───────────────────┤
-│   Personal   │   Business    │     Agency        │
-│   $39/year   │   $79/year    │    $149/year      │
-├──────────────┼───────────────┼───────────────────┤
-│ 1 site       │ 5 sites       │ Unlimited sites   │
-│ All pro      │ All pro       │ All pro blocks    │
-│ blocks       │ blocks        │ White labeling    │
-│ 1 year       │ 1 year        │ Priority support  │
-│ updates      │ updates       │ 1 year updates    │
-│ Email        │ Priority      │                   │
-│ support      │ support       │                   │
-└──────────────┴───────────────┴───────────────────┘
-```
+**Yearly Pricing:**
+
+| Plan | Original | Discounted | Sites |
+|------|----------|------------|-------|
+| Personal | ~~$49~~ | **$29**/year | 1 site |
+| Popular | ~~$99~~ | **$49**/year | 10 sites |
+| Agency | ~~$199~~ | **$99**/year | 1000 sites |
+
+**Lifetime Pricing:**
+
+| Plan | Original | Discounted | Sites |
+|------|----------|------------|-------|
+| Personal | ~~$199~~ | **$99** | 1 site |
+| Popular | ~~$299~~ | **$149** | 10 sites |
+| Agency | ~~$399~~ | **$199** | 1000 sites |
+
+**GutSlider Pro Features:**
+- 10+ Pro Slider & Carousel
+- 3D Slider & 3D Carousel
+- 25+ Content Animations
+- Dynamic Slider & Carousel
+- 1 Year Support & Update (Yearly) / Lifetime Support & Update (Lifetime)
+
+---
+
+### Our Pricing (GSlider Blocks Pro)
+
+**Yearly Pricing:**
+
+| Plan | Original | Discounted | Sites |
+|------|----------|------------|-------|
+| Personal | ~~$49~~ | **$29**/year | 1 site |
+| Business | ~~$79~~ | **$49**/year | 5 sites |
+| Agency | ~~$149~~ | **$99**/year | Unlimited |
+
+**Lifetime Pricing:**
+
+| Plan | Original | Discounted | Sites |
+|------|----------|------------|-------|
+| Personal | ~~$149~~ | **$79** | 1 site |
+| Business | ~~$199~~ | **$129** | 5 sites |
+| Agency | ~~$299~~ | **$199** | Unlimited |
+
+**Our Competitive Advantages vs GutSlider:**
+- ✅ **Unlimited sites** on Agency (GutSlider gives 1000)
+- ✅ Lower lifetime pricing
+- ✅ Launch discount (40% off first year)
 
 > [!TIP]
-> Freemius handles the checkout page, payment processing, and subscription renewal automatically. You don't need WooCommerce or your own website to sell!
+> **Launch Strategy:**
+> - Offer lifetime deals early to get initial users and reviews
+> - Run a 40% launch discount for first 3 months
+> - Focus on unique features GutSlider doesn't have
 
 ---
 
