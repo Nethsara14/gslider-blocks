@@ -295,50 +295,134 @@ swiper[effect=flip] > slide
 
 ### Block: `testimonial` (EXISTING — Add Presets)
 
-**New Presets:**
+> **Status:** Core block built. Slider + Carousel working. 9 remaining free features pending.
+> **Architecture:** `contentOrder` + `renderMap` pattern — preset-ready, NO breaking changes needed.
+> **Deep Research:** See `log/testimonial-deep-research.md` for full analysis.
 
-#### Preset 1: Classic Card (Free) — Current
+**Current DOM Structure:**
 ```
-slide > .testimonial-card
-  ├── .author-image
-  ├── .quote-text
-  ├── .author-name
-  └── .author-designation
-```
-
-#### Preset 2: Bubble Chat (Pro)
-```
-slide > .testimonial-bubble
-  ├── .chat-bubble
-  │     ├── .quote-text
-  │     └── .bubble-tail
-  └── .author-info
-        ├── .author-image
-        ├── .author-name
-        └── .author-designation
+.gslider-testimonial-wrapper.{blockId}
+  └── .swiper > .swiper-wrapper > .swiper-slide
+        └── .gslider-content-wrapper.{itemId}
+              └── .gslider-content-inner-wrapper
+                    ├── .gslider-author-image-wrapper > img
+                    ├── .gslider-testimonial-title-wrapper > h3
+                    ├── .gslider-testimonial-text-wrapper > p
+                    ├── .gslider-rating-wrapper > stars/icons
+                    ├── .gslider-author-name-wrapper > h4
+                    └── .gslider-author-designation-wrapper > span
 ```
 
-#### Preset 3: Video Testimonial (Pro)
+**Preset Implementation:** CSS class on wrapper (`presetStyle` attribute) — most presets are pure CSS, no new DOM.
+
+**Total Presets: 12 (5 Free + 7 Pro)**
+
+#### Preset 1: Classic Centered (Free) — Current Default `preset-classic`
 ```
-slide > .video-testimonial
-  ├── .video-wrapper > <video/> or <iframe/>
-  ├── .author-overlay
-  │     ├── .author-image
-  │     └── .author-name
-  └── .quote-highlight
+.gslider-content-inner-wrapper (text-align: center)
+  ├── image (top, centered, circular)
+  ├── title → text → rating → name → designation
 ```
 
-#### Preset 4: Social Media Style (Pro)
+#### Preset 2: Card with Quote (Free) — `preset-card-quote`
 ```
-slide > .social-testimonial
-  ├── .social-header
-  │     ├── .platform-icon (twitter/google/facebook)
-  │     ├── .author-image
-  │     └── .author-handle
-  ├── .review-stars
-  ├── .review-text
-  └── .review-date
+.gslider-content-inner-wrapper
+  ├── quoteIcon (top-left, decorative)       ← NEW renderMap key
+  ├── text → rating
+  ├── image (small) + name + designation     ← CSS flex row
 ```
+> Needs: Quote Icon system
+
+#### Preset 3: Minimal Text (Free) — `preset-minimal`
+```
+.gslider-content-inner-wrapper (large typography)
+  ├── quoteIcon (subtle)
+  ├── text (large, italic) → divider (CSS ::after) → name → designation
+```
+> Needs: Quote Icon system
+
+#### Preset 4: Side-by-Side (Free) — `preset-side-by-side`
+```
+.gslider-content-inner-wrapper (CSS Grid: 2 columns)
+  ├── image (col 1, large)
+  └── rating → text → name → designation (col 2)
+```
+> Needs: Nothing new — pure CSS Grid
+
+#### Preset 5: Stacked Compact (Free) — `preset-compact`
+```
+.gslider-content-inner-wrapper (compact, left-aligned)
+  ├── rating → text (truncated)
+  ├── image (tiny) + name + designation + companyName   ← CSS flex row
+  └── reviewDate (muted)                                 ← NEW renderMap key
+```
+> Needs: Review Date field, Company Name render
+
+#### Preset 6: Bubble Chat (Pro) — `preset-bubble`
+```
+.gslider-content-inner-wrapper
+  ├── .gslider-bubble-wrapper (CSS bubble + ::after tail)  ← ONLY preset needing new wrapper div
+  │     ├── text → rating
+  └── image + name + designation (below bubble)
+```
+
+#### Preset 7: Social Media Style (Pro) — `preset-social`
+```
+.gslider-content-inner-wrapper
+  ├── image + name + designation + platformIcon (header row)
+  ├── text → rating
+  └── reviewDate (bottom)
+```
+> Needs: Platform Icon attribute (google/twitter/facebook)
+
+#### Preset 8: Full Background (Pro) — `preset-fullbg`
+```
+.gslider-content-wrapper (background-image from per-slide bg — already exists!)
+  └── .gslider-content-inner-wrapper (dark overlay)
+        ├── quoteIcon (large, transparent) → text (white) → rating → name → designation
+```
+
+#### Preset 9: Logo + Company Focus (Pro) — `preset-company`
+```
+.gslider-content-inner-wrapper
+  ├── companyLogo (large, top)               ← NEW renderMap key
+  ├── rating → text
+  ├── image + name + designation + companyName
+  └── reviewLink ("View on Google")           ← NEW renderMap key
+```
+> Needs: Company Logo render, Review Link field
+
+#### Preset 10: Timeline Style (Pro) — `preset-timeline`
+```
+.gslider-content-inner-wrapper (left-aligned)
+  ├── reviewDate (large badge)
+  ├── .timeline-dot (CSS ::before pseudo)
+  ├── text → rating → name → designation
+```
+> Needs: Review Date field
+
+#### Preset 11: Video Testimonial (Pro) — `preset-video`
+```
+.gslider-content-inner-wrapper
+  ├── .gslider-video-wrapper > iframe/video     ← NEW: major feature
+  ├── image + name + designation
+  └── quoteHighlight (CSS pull-quote)
+```
+> Needs: Video URL attribute + embed render (Large effort)
+
+#### Preset 12: Masonry Grid (Pro) — `preset-masonry`
+```
+.gslider-masonry-grid (CSS Grid, non-Swiper layout)
+  └── .gslider-content-wrapper (varying heights, same inner structure)
+```
+> Needs: Grid/List layout system
+
+**Build Order:**
+1. Quote Icon system → unlocks Presets 2, 3, 8
+2. Company Name/Logo render → unlocks Presets 5, 9
+3. Review Date field → unlocks Presets 5, 10
+4. `presetStyle` attribute + CSS → all free presets ship
+5. Pro presets (Phase 2-3)
 
 ---
 
