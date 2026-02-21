@@ -65,7 +65,7 @@ The testimonial block is **architecturally solid** and designed for extensibilit
 | `designation` | Designation | ✅ Yes | ✅ |
 | `companyName` | Company Name | ❌ Not rendered | ✅ Data in `sortableItem` |
 | `companyLogo` | Company Logo | ❌ Not rendered | ✅ Data in attributes |
-| `quoteIcon` | Quote Icon | ❌ Not rendered | ❌ No data |
+| `quoteIcon` | Quote Icon | ✅ Rendered | ✅ Data exists |
 | `reviewDate` | Review Date | ❌ Not rendered | ❌ No data |
 | `reviewLink` | Review Link | ❌ Not rendered | ❌ No data |
 
@@ -143,7 +143,7 @@ presetStyle: {
   └── (title hidden by default OR above text)
 ```
 - **DOM change:** ✅ Needs `quoteIcon` element added to `renderMap`
-- **New feature required:** ✅ Quote Icon system (from remaining-free-features #4)
+- [x] New feature required: ✅ Quote Icon system (Completed)
 - **CSS:** `.preset-card-quote` styles — flex-direction manipulation, author info group via CSS
 - **Note:** The "author info group" is achieved via **CSS only** using existing DOM + `contentOrder` reorder
 
@@ -160,7 +160,7 @@ presetStyle: {
   └── designation (small, muted)
 ```
 - **DOM change:** ❌ None (divider is CSS `::after` pseudo-element)
-- **New feature required:** ✅ Quote Icon
+- [x] New feature required: ✅ Quote Icon (Completed)
 - **CSS:** Large text sizing, divider pseudo-element, muted colors
 - **Hidden by default:** image, title, rating, companyName
 
@@ -378,7 +378,7 @@ These pending features from `remaining-free-features.md` must be completed first
 | # | Feature | Needed By Presets | Priority |
 |---|---------|-------------------|----------|
 | 1 | Company Logo render | Preset 9 (Company) | P2 |
-| 2 | Quote Icon system | Presets 2, 3, 8 | **P1** |
+| 2 | Quote Icon system | Presets 2, 3, 8 | ✅ **Done** |
 | 3 | Company Name render in content | Presets 5, 9 | P2 |
 | 4 | Review Date field | Presets 5, 7, 10 | P2 |
 | 5 | Review Link field | Preset 9 | P3 |
@@ -388,7 +388,7 @@ These pending features from `remaining-free-features.md` must be completed first
 
 ```
 Phase 0 (Prerequisites):
-  1. Quote Icon system ← needed by 3 free presets
+  1. Quote Icon system ✅ Completed
   2. Company Name render (data exists, just add to renderMap)
   3. Company Logo render (data exists, just add to renderMap + save.js)
 
@@ -443,7 +443,7 @@ Phase 2 (Pro Presets):
 
 4. **Render unrendered data first.** `companyName`, `companyLogo` data already exists in attributes but isn't rendered. Simply adding them to `renderMap` unlocks 3 presets.
 
-5. **Quote Icon is the #1 blocker.** 3 out of 5 free presets need the Quote Icon system. Build this first.
+5. **Quote Icon is completed.** This unlocks 3 out of 5 free presets.
 
 6. **Pro upsell is straightforward.** Free presets cover 80% of use cases. Pro adds visual differentiation (Bubble, Social, Video) and data features (Timeline, Company, Masonry).
 

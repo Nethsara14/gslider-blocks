@@ -295,7 +295,7 @@ swiper[effect=flip] > slide
 
 ### Block: `testimonial` (EXISTING — Add Presets)
 
-> **Status:** Core block built. Slider + Carousel working. 9 remaining free features pending.
+> **Status:** Core block built. Slider + Carousel working. Quote Icon ✅ Completed.
 > **Architecture:** `contentOrder` + `renderMap` pattern — preset-ready, NO breaking changes needed.
 > **Deep Research:** See `log/testimonial-deep-research.md` for full analysis.
 
@@ -331,7 +331,7 @@ swiper[effect=flip] > slide
   ├── text → rating
   ├── image (small) + name + designation     ← CSS flex row
 ```
-> Needs: Quote Icon system
+> Needs: ✅ Quote Icon system (Completed)
 
 #### Preset 3: Minimal Text (Free) — `preset-minimal`
 ```
@@ -339,7 +339,7 @@ swiper[effect=flip] > slide
   ├── quoteIcon (subtle)
   ├── text (large, italic) → divider (CSS ::after) → name → designation
 ```
-> Needs: Quote Icon system
+> Needs: ✅ Quote Icon system (Completed)
 
 #### Preset 4: Side-by-Side (Free) — `preset-side-by-side`
 ```
@@ -418,7 +418,7 @@ swiper[effect=flip] > slide
 > Needs: Grid/List layout system
 
 **Build Order:**
-1. Quote Icon system → unlocks Presets 2, 3, 8
+1. Quote Icon system ✅ Completed
 2. Company Name/Logo render → unlocks Presets 5, 9
 3. Review Date field → unlocks Presets 5, 10
 4. `presetStyle` attribute + CSS → all free presets ship
