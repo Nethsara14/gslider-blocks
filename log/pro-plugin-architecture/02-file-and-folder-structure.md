@@ -247,3 +247,88 @@ src/extensions/base-slider-pro/
 | Hook prefix | `gslider_` | `gslider_pro_` |
 | CSS prefix | `.gslider-` | `.gslider-pro-` |
 | JS filter prefix | `gslider.` | `gsliderPro.` |
+
+---
+
+## ⚠️ Critical: Webpack Config for Component Sharing (Spectra-Style)
+
+GSlider free plugin has **23 custom components** (`ColorControl`, `ResponsiveRangeControl`, `ResponsiveSpacingControl`, `ResponsiveTypographyControl`, etc.) that pro blocks also need.
+
+### How Spectra Solves This
+
+Spectra Pro uses **build-time webpack aliases** to import free plugin's components during compilation. The components get bundled into Pro's own `dist/blocks.js`. At runtime, there's NO cross-plugin dependency — everything is self-contained.
+
+**Evidence:** Spectra Pro's `dist/blocks.js` = **2.5MB** because it re-bundles free plugin's components (BoxShadow: 152 occurrences, Reset: 54, Separator: 51).
+
+### Pro Plugin `webpack.config.js`
+
+```javascript
+const defaultConfig = require('@wordpress/scripts/config/webpack.config');
+const path = require('path');
+
+// Path to free plugin — CRITICAL: adjust based on your directory structure
+const FREE_PLUGIN_DIR = path.resolve(__dirname, '../gslider-blocks');
+
+module.exports = {
+    ...defaultConfig,
+    entry: {
+        'blocks': './src/index.js',
+    },
+    output: {
+        path: path.resolve(__dirname, 'build'),
+        filename: '[name].js',
+    },
+    resolve: {
+        alias: {
+            ...defaultConfig.resolve.alias,
+            // These aliases point to FREE plugin's source directories
+            // At build time, webpack bundles these into the Pro JS
+            '@Components': path.resolve(FREE_PLUGIN_DIR, 'src/components/'),
+            '@Utils': path.resolve(FREE_PLUGIN_DIR, 'src/utils/'),
+            '@Constants': path.resolve(FREE_PLUGIN_DIR, 'src/constants/'),
+            '@Blocks': path.resolve(FREE_PLUGIN_DIR, 'src/blocks/'),
+            '@Store': path.resolve(FREE_PLUGIN_DIR, 'src/store/'),
+            '@Controls': path.resolve(FREE_PLUGIN_DIR, 'blocks-config/gslider-controls/'),
+            '@Attributes': path.resolve(FREE_PLUGIN_DIR, 'blocks-config/blocks-attributes/'),
+        },
+    },
+};
+```
+
+### How Pro Blocks Use Free Components
+
+```javascript
+// Pro block: src/blocks/before-after-slider/inspector.js
+// Same import syntax as free blocks! No difference!
+import ColorControl from '@Components/color-control';
+import ResponsiveRangeControl from '@Components/responsive-range-control';
+import ResponsiveSpacingControl from '@Components/responsive-spacing-control';
+import InspectorControl from '@Components/inspector-controls';
+```
+
+### Asset Enqueue with Free Plugin Dependency
+
+```php
+// Pro plugin: ProAssets.php
+wp_enqueue_script(
+    'gslider-blocks-pro-editor',
+    GSLIDER_PRO_PLUGIN_URL . 'build/blocks.js',
+    array_merge(
+        $asset_file['dependencies'],
+        ['gslider-blocks-editor-js']  // ← Free plugin's editor script handle
+    ),
+    $asset_file['version'],
+    true
+);
+```
+
+> [!IMPORTANT]
+> **Build-time vs Runtime:** Components are imported at BUILD time via webpack aliases, NOT at runtime via `window` globals. The Pro plugin's `build/blocks.js` is self-contained — it works as long as the free plugin is active (for PHP/block registration). The `gslider-blocks-editor-js` dependency ensures the free plugin's editor loads first.
+
+### Trade-offs
+
+| Aspect | Benefit | Cost |
+|--------|---------|------|
+| **No runtime sharing** | Simple, no `window` globals | Component code duplicated in Pro bundle |
+| **Same imports** | Pro devs use same `@Components` syntax | Pro JS file larger (~1-2MB) |
+| **Independent builds** | Free and Pro build separately | Must keep alias paths in sync |

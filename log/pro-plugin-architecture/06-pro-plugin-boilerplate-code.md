@@ -401,6 +401,139 @@ class ProBlockExtensions {
     },
     "devDependencies": {
         "@wordpress/scripts": "^29.0.0"
+    },
+    "dependencies": {
+        "react-select": "^5.8.0"
+    }
+}
+```
+
+> [!NOTE]
+> `react-select` is included because the free plugin's `ResponsiveTypographyControl` uses it for the font family selector.
+
+---
+
+## `webpack.config.js` ⭐ CRITICAL
+
+This is the **most important file** — it enables pro blocks to import free plugin's custom components at build time.
+
+```javascript
+const defaultConfig = require('@wordpress/scripts/config/webpack.config');
+const path = require('path');
+
+// Path to free plugin source — ADJUST this based on your directory layout
+// During local development: both plugins sit side-by-side in wp-content/plugins/
+const FREE_PLUGIN_DIR = path.resolve(__dirname, '../gslider-blocks');
+
+module.exports = {
+    ...defaultConfig,
+    entry: {
+        'blocks': './src/index.js',
+    },
+    output: {
+        path: path.resolve(__dirname, 'build'),
+        filename: '[name].js',
+    },
+    resolve: {
+        alias: {
+            ...defaultConfig.resolve.alias,
+            // ═══════════════════════════════════════════════════
+            // Build-time aliases to FREE plugin's source code.
+            // Webpack resolves these at compile time and bundles
+            // the components into Pro's own dist/blocks.js.
+            // This is the SAME approach Spectra Pro uses.
+            // ═══════════════════════════════════════════════════
+            '@Components': path.resolve(FREE_PLUGIN_DIR, 'src/components/'),
+            '@Utils': path.resolve(FREE_PLUGIN_DIR, 'src/utils/'),
+            '@Constants': path.resolve(FREE_PLUGIN_DIR, 'src/constants/'),
+            '@Blocks': path.resolve(FREE_PLUGIN_DIR, 'src/blocks/'),
+            '@Store': path.resolve(FREE_PLUGIN_DIR, 'src/store/'),
+            '@Controls': path.resolve(FREE_PLUGIN_DIR, 'blocks-config/gslider-controls/'),
+            '@Attributes': path.resolve(FREE_PLUGIN_DIR, 'blocks-config/blocks-attributes/'),
+        },
+    },
+};
+```
+
+### Why This Works
+
+1. **Build time:** When you run `npm run build`, webpack reads `@Components/color-control` → resolves to `../gslider-blocks/src/components/color-control/index.js` → bundles that code into `build/blocks.js`
+2. **Runtime:** Pro plugin's `build/blocks.js` is self-contained. No cross-plugin JS dependency needed
+3. **Same API:** Pro blocks use the exact same import syntax as free blocks
+
+---
+
+## Updated `includes/Classes/ProAssets.php`
+
+```php
+<?php
+namespace GSliderPro\Classes;
+
+if (!defined('ABSPATH')) {
+    exit;
+}
+
+class ProAssets {
+
+    use \GSliderPro\Traits\SingletonTrait;
+
+    public function register() {
+        add_action('enqueue_block_editor_assets', [$this, 'enqueue_editor_assets']);
+        add_action('enqueue_block_assets', [$this, 'enqueue_block_assets']);
+    }
+
+    /**
+     * Enqueue pro editor scripts.
+     * The free plugin's editor script is declared as a dependency
+     * to ensure it loads first (Spectra-style).
+     */
+    public function enqueue_editor_assets() {
+        $asset_path = GSLIDER_PRO_DIR_PATH . 'build/blocks.asset.php';
+        $asset_file = file_exists($asset_path)
+            ? include $asset_path
+            : ['dependencies' => [], 'version' => GSLIDER_PRO_VERSION];
+
+        // Add free plugin editor script as dependency
+        $dependencies = array_merge(
+            $asset_file['dependencies'],
+            ['gslider-blocks-editor-js']  // ← Free plugin's editor handle
+        );
+
+        wp_enqueue_script(
+            'gslider-blocks-pro-editor',
+            GSLIDER_PRO_PLUGIN_URL . 'build/blocks.js',
+            $dependencies,
+            $asset_file['version'],
+            true
+        );
+
+        wp_enqueue_style(
+            'gslider-blocks-pro-editor-css',
+            GSLIDER_PRO_PLUGIN_URL . 'build/blocks.css',
+            [],
+            GSLIDER_PRO_VERSION
+        );
+
+        // Pass pro data to JS
+        wp_localize_script('gslider-blocks-pro-editor', 'gsliderProData', [
+            'isActive'  => true,
+            'version'   => GSLIDER_PRO_VERSION,
+            'pluginUrl' => GSLIDER_PRO_PLUGIN_URL,
+        ]);
+    }
+
+    /**
+     * Enqueue pro frontend styles.
+     */
+    public function enqueue_block_assets() {
+        if (file_exists(GSLIDER_PRO_DIR_PATH . 'build/style-blocks.css')) {
+            wp_enqueue_style(
+                'gslider-blocks-pro-frontend',
+                GSLIDER_PRO_PLUGIN_URL . 'build/style-blocks.css',
+                [],
+                GSLIDER_PRO_VERSION
+            );
+        }
     }
 }
 ```
@@ -408,4 +541,8 @@ class ProBlockExtensions {
 ---
 
 > [!TIP]
-> This boilerplate gives you a **working skeleton**. When you're ready to start development, you can copy this code and begin building out the pro blocks and extensions one at a time.
+> This boilerplate gives you a **working skeleton** with Spectra-style component sharing. When you're ready to start development:
+> 1. Copy the boilerplate files to `wp-content/plugins/gslider-blocks-pro/`
+> 2. Run `composer install` → `npm install` → `npm run build`
+> 3. Activate the pro plugin in WordPress
+> 4. Start building pro blocks using the same `@Components` imports as free blocks!
