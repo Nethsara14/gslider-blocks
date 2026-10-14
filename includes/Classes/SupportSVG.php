@@ -120,17 +120,8 @@ if ( ! class_exists( 'SupportSVG' ) ) {
             libxml_use_internal_errors( true );
             $doc = new \DOMDocument();
 
-            // Disable entity loader for PHP < 8.0 to prevent XXE.
-            $disableEntityLoader = PHP_VERSION_ID < 80000 && function_exists( 'libxml_disable_entity_loader' );
-            if ( $disableEntityLoader ) {
-                $oldEntityLoader = libxml_disable_entity_loader( true );
-            }
-
-            $loadResult = $doc->loadXML( $content, LIBXML_NOERROR | LIBXML_NOWARNING );
-
-            if ( $disableEntityLoader ) {
-                libxml_disable_entity_loader( $oldEntityLoader );
-            }
+            // Prevent XXE by disabling external entities via LIBXML_NONET.
+            $loadResult = $doc->loadXML( $content, LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING );
 
             if ( ! $loadResult ) {
                 $file['error'] = __( 'Invalid SVG XML structure.', 'gslider-blocks' );
@@ -190,7 +181,7 @@ if ( ! class_exists( 'SupportSVG' ) ) {
          *
          * @return void
          */
-        public function enableSvgSupport(): void {
+        public function enableSvgSupport() {
             add_filter( 'wp_check_filetype_and_ext', function ( $data, $file, $filename, $mimes ) {
                 $filetype = wp_check_filetype( $filename, $mimes );
                 return [
@@ -284,21 +275,12 @@ if ( ! class_exists( 'SupportSVG' ) ) {
          * @param string $content The raw SVG XML content.
          * @return string The sanitized SVG XML content.
          */
-        private function sanitizeSvgContent( string $content ): string {
+        private function sanitizeSvgContent( $content ) {
             libxml_use_internal_errors( true );
             $doc = new \DOMDocument();
 
-            // Disable entity loader for PHP < 8.0 to prevent XXE.
-            $disableEntityLoader = PHP_VERSION_ID < 80000 && function_exists( 'libxml_disable_entity_loader' );
-            if ( $disableEntityLoader ) {
-                $oldEntityLoader = libxml_disable_entity_loader( true );
-            }
-
-            $loadResult = $doc->loadXML( $content );
-
-            if ( $disableEntityLoader ) {
-                libxml_disable_entity_loader( $oldEntityLoader );
-            }
+            // Prevent XXE by disabling external entities via LIBXML_NONET.
+            $loadResult = $doc->loadXML( $content, LIBXML_NONET | LIBXML_NOERROR | LIBXML_NOWARNING );
 
             if ( ! $loadResult ) {
                 libxml_clear_errors();
