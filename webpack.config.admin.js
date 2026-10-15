@@ -6,11 +6,10 @@ const DependencyExtractionWebpackPlugin = require('@wordpress/dependency-extract
 module.exports = {
 	mode: 'development',
 	entry: {
-		admin: path.resolve(__dirname, 'admin/scss/admin.scss'),
 		'block-controls': path.resolve(__dirname, 'admin/scss/block-controls.scss'),
 		dashboard: [
 			path.resolve(__dirname, 'admin/src/index.js'),
-			path.resolve(__dirname, 'admin/scss/dashboard/dashboard.scss'),
+			path.resolve(__dirname, 'admin/scss/dashboard.scss'),
 		],
 	},
 	output: {
@@ -60,7 +59,6 @@ module.exports = {
 			apply: (compiler) => {
 				compiler.hooks.afterEmit.tap('CleanupDummyAssetsPlugin', () => {
 					const dummyFiles = [
-						path.resolve(__dirname, 'assets/admin/js/admin.asset.php'),
 						path.resolve(__dirname, 'assets/admin/js/block-controls.asset.php'),
 					];
 					dummyFiles.forEach((file) => {

@@ -168,6 +168,21 @@ Every dashboard SCSS file must import the design tokens from the dashboard varia
 }
 ```
 
+### SCSS Directory Structure & Aggregators:
+```
+admin/scss/
+├── block-controls/
+│   ├── _variables.scss
+│   ├── _index.scss
+│   └── (modular block control components)
+├── dashboard/
+│   ├── _variables.scss
+│   ├── _index.scss
+│   └── (modular dashboard components)
+├── block-controls.scss   # @use "block-controls/index";
+└── dashboard.scss        # @use "dashboard/index";
+```
+
 ### Rules:
 1. **Single Source of Truth**: Update typography and palette once in `admin/scss/dashboard/_variables.scss`, and the entire admin dashboard updates consistently across all tabs and components.
 2. **Modular Encapsulation**: Similar to `admin/scss/block-controls/_variables.scss`, dashboard tokens stay encapsulated in `admin/scss/dashboard/_variables.scss` with zero loose variables files in `admin/scss/`.

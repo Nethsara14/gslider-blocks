@@ -45,8 +45,6 @@ const zip = async () => {
 
                     // Exclude empty/dummy admin JS and asset side-effect files from SCSS compilation
                     const dummyAdminFiles = [
-                        'admin.js',
-                        'admin.asset.php',
                         'block-controls.js',
                         'block-controls.asset.php',
                     ];
