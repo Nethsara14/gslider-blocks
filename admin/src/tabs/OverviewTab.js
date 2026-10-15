@@ -8,53 +8,31 @@
  * @since   1.2.0
  */
 
-import { useState, useEffect } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
-import apiFetch from '@wordpress/api-fetch';
 import MetricCard from '../components/MetricCard';
 
 /**
  * OverviewTab Component.
  *
- * @param {Object}   props              Component props.
- * @param {Function} props.setActiveTab Callback to switch active tabs.
+ * @param {Object}   props                  Component props.
+ * @param {Function} props.setActiveTab     Callback to switch active tabs.
+ * @param {Object}   [props.dashboardData]  REST API dashboard data.
+ * @param {boolean}  [props.isLoading=false] Whether data is loading.
+ * @param {boolean}  [props.hasError=false]  Whether data fetch resulted in an error.
  * @return {JSX.Element} The rendered overview tab view.
  */
-const OverviewTab = ( { setActiveTab } ) => {
-	const [ dashboardData, setDashboardData ] = useState( null );
-	const [ isLoading, setIsLoading ] = useState( true );
-
+const OverviewTab = ( {
+	setActiveTab,
+	dashboardData = null,
+	isLoading = false,
+	hasError = false,
+} ) => {
 	const adminUrl = window.GSliderDashboardData?.adminUrl || 'post-new.php?post_type=page';
 	const createPageUrl = adminUrl.endsWith( '/' )
 		? `${ adminUrl }post-new.php?post_type=page`
 		: `${ adminUrl }/post-new.php?post_type=page`;
 
-	useEffect( () => {
-		let isMounted = true;
-
-		const fetchMetrics = async () => {
-			try {
-				const data = await apiFetch( { path: '/gslider/v1/dashboard' } );
-				if ( isMounted && data && data.status === 'success' ) {
-					setDashboardData( data );
-				}
-			} catch ( err ) {
-				// Graceful error fallback: keep dashboardData null, finish loading.
-			} finally {
-				if ( isMounted ) {
-					setIsLoading( false );
-				}
-			}
-		};
-
-		fetchMetrics();
-
-		return () => {
-			isMounted = false;
-		};
-	}, [] );
-
-	const slidersCount = dashboardData?.sliders_count ?? 0;
+	const slidersCount = dashboardData?.sliders_count;
 	const blocksList = dashboardData?.blocks || [];
 	const totalBlocks = blocksList.length || 5;
 	const activeBlocksCount = blocksList.length > 0
@@ -110,14 +88,25 @@ const OverviewTab = ( { setActiveTab } ) => {
 				className="gslider-dashboard-grid gslider-dashboard-metrics-grid"
 				aria-label={ __( 'Key Metrics', 'gslider-blocks' ) }
 			>
-				{ /* Card 1: Total Sliders on Site */ }
+				{ /* Card 1: Pages with a Slider */ }
 				<MetricCard
-					title={ __( 'Total Sliders on Site', 'gslider-blocks' ) }
-					value={ slidersCount > 0 ? slidersCount : null }
-					subtitle={ __( 'Published across posts and pages', 'gslider-blocks' ) }
+					title={ __( 'Pages with a Slider', 'gslider-blocks' ) }
+					value={
+						hasError
+							? '—'
+							: typeof slidersCount === 'number' && slidersCount > 0
+							? slidersCount
+							: null
+					}
+					subtitle={ hasError ? null : __( 'Published across posts and pages', 'gslider-blocks' ) }
 					isLoading={ isLoading }
 					emptyMessage={
-						slidersCount === 0
+						hasError
+							? __(
+								'Unable to load live metrics. Refresh page to try again.',
+								'gslider-blocks'
+							)
+							: slidersCount === 0
 							? __(
 								'No sliders created yet. Insert your first GSlider block in any page or post to see live metrics here.',
 								'gslider-blocks'
@@ -137,8 +126,16 @@ const OverviewTab = ( { setActiveTab } ) => {
 				{ /* Card 2: Active Core Blocks */ }
 				<MetricCard
 					title={ __( 'Active Core Blocks', 'gslider-blocks' ) }
-					value={ sprintf( __( '%1$d of %2$d Active', 'gslider-blocks' ), activeBlocksCount, totalBlocks ) }
-					subtitle={ __( 'Core Gutenberg slider modules', 'gslider-blocks' ) }
+					value={
+						hasError
+							? '—'
+							: sprintf( __( '%1$d of %2$d Active', 'gslider-blocks' ), activeBlocksCount, totalBlocks )
+					}
+					subtitle={
+						hasError
+							? __( 'Unable to load block status', 'gslider-blocks' )
+							: __( 'Core Gutenberg slider modules', 'gslider-blocks' )
+					}
 					isLoading={ isLoading }
 					action={
 						<button
@@ -160,7 +157,7 @@ const OverviewTab = ( { setActiveTab } ) => {
 							<rect x="11" y="11" width="6" height="6" rx="1" stroke="currentColor" strokeWidth="1.5" />
 						</svg>
 					}
-					badge={ __( '5 Core Modules', 'gslider-blocks' ) }
+					badge={ hasError ? null : __( '5 Core Modules', 'gslider-blocks' ) }
 				/>
 
 				{ /* Card 3: Modern Architecture Highlight */ }
