@@ -33,6 +33,18 @@ if ( ! function_exists( 'add_action' ) ) {
 	}
 }
 
+if ( ! function_exists( 'apply_filters' ) ) {
+	function apply_filters( $tag, $value ) {
+		return $value;
+	}
+}
+
+if ( ! function_exists( 'trailingslashit' ) ) {
+	function trailingslashit( $string ) {
+		return rtrim( $string, '/\\' ) . '/';
+	}
+}
+
 if ( ! function_exists( 'register_block_pattern_category' ) ) {
 	function register_block_pattern_category( $category_name, $category_properties ) {
 		global $wp_pattern_categories;
@@ -212,4 +224,20 @@ foreach ( $expected_patterns as $pattern_name => $expected ) {
 	echo "OK: Pattern '$pattern_name' verified (title, categories, keywords, and valid Gutenberg markup)\n";
 }
 
+// Test 6: Verify File-Based Directory Architecture
+$patterns_dir = $patterns->get_patterns_dir();
+if ( ! is_dir( $patterns_dir ) ) {
+	fwrite( STDERR, "FAIL: Patterns directory '$patterns_dir' does not exist\n" );
+	exit( 1 );
+}
+echo "OK: Patterns directory exists at $patterns_dir\n";
+
+$pattern_files = glob( $patterns_dir . '/*.php' );
+if ( count( $pattern_files ) < 5 ) {
+	fwrite( STDERR, "FAIL: Expected at least 5 pattern files in '$patterns_dir', found " . count( $pattern_files ) . "\n" );
+	exit( 1 );
+}
+echo "OK: Modular pattern files discovered (" . count( $pattern_files ) . " pattern files in patterns/)\n";
+
 echo "\nAll GSlider Block Patterns Registration tests passed successfully!\n";
+

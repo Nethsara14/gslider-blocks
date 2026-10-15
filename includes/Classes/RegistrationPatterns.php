@@ -2,8 +2,8 @@
 /**
  * Native Gutenberg block pattern registration for GSlider Blocks.
  *
- * Registers curated block pattern templates sourced directly from
- * packages/mcp-server/src/resources/templates.ts into the Gutenberg block editor.
+ * Dynamically registers curated block pattern templates from the patterns/
+ * directory into the Gutenberg block editor.
  *
  * @package GSlider\Classes
  * @since   1.2.0
@@ -21,7 +21,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 if ( ! class_exists( RegistrationPatterns::class, false ) ) {
 
 	/**
-	 * Registers native Gutenberg block patterns and categories.
+	 * Registers native Gutenberg block patterns and categories from files.
+	 *
+	 * Supports modular, file-based patterns stored in the patterns/ directory.
+	 * New patterns can be added as standalone PHP files with standard WordPress
+	 * pattern headers without modifying this class.
 	 *
 	 * @since 1.2.0
 	 */
@@ -39,6 +43,15 @@ if ( ! class_exists( RegistrationPatterns::class, false ) ) {
 		public const CATEGORY_SLUG = 'gslider-blocks';
 
 		/**
+		 * In-memory cache for parsed patterns.
+		 *
+		 * @since 1.2.0
+		 *
+		 * @var array<string, array<string, mixed>>|null
+		 */
+		private ?array $patterns_cache = null;
+
+		/**
 		 * Attaches WordPress hooks for block pattern registration.
 		 *
 		 * @since 1.2.0
@@ -47,6 +60,30 @@ if ( ! class_exists( RegistrationPatterns::class, false ) ) {
 		 */
 		public function register(): void {
 			add_action( 'init', [ $this, 'register_patterns' ] );
+		}
+
+		/**
+		 * Gets the directory containing block pattern files.
+		 *
+		 * @since 1.2.0
+		 *
+		 * @return string Absolute path to patterns directory.
+		 */
+		public function get_patterns_dir(): string {
+			$default_dir = defined( 'GSLIDER_DIR_PATH' )
+				? ( function_exists( 'trailingslashit' ) ? trailingslashit( GSLIDER_DIR_PATH ) : rtrim( GSLIDER_DIR_PATH, '/\\' ) . '/' ) . 'patterns'
+				: dirname( __DIR__, 2 ) . '/patterns';
+
+			/**
+			 * Filters the directory path where GSlider block patterns are stored.
+			 *
+			 * @since 1.2.0
+			 *
+			 * @param string $default_dir Default patterns directory path.
+			 */
+			return function_exists( 'apply_filters' )
+				? (string) apply_filters( 'gslider_blocks_patterns_dir', $default_dir )
+				: $default_dir;
 		}
 
 		/**
@@ -61,11 +98,22 @@ if ( ! class_exists( RegistrationPatterns::class, false ) ) {
 				return;
 			}
 
+			/**
+			 * Filters whether GSlider block patterns registration is enabled.
+			 *
+			 * @since 1.2.0
+			 *
+			 * @param bool $enabled True to register patterns, false otherwise.
+			 */
+			if ( function_exists( 'apply_filters' ) && ! apply_filters( 'gslider_blocks_enable_patterns', true ) ) {
+				return;
+			}
+
 			if ( function_exists( 'register_block_pattern_category' ) ) {
 				register_block_pattern_category(
 					self::CATEGORY_SLUG,
 					[
-						'label' => esc_html__( 'GSlider Blocks', 'gslider-blocks' ),
+						'label' => function_exists( 'esc_html__' ) ? esc_html__( 'GSlider Blocks', 'gslider-blocks' ) : 'GSlider Blocks',
 					]
 				);
 			}
@@ -76,60 +124,181 @@ if ( ! class_exists( RegistrationPatterns::class, false ) ) {
 		}
 
 		/**
-		 * Retrieves all curated block patterns with metadata and verified markup.
+		 * Scans the patterns directory and retrieves all parsed patterns.
+		 *
+		 * Results are cached in-memory so files are scanned and parsed only once per request.
+		 * Supports flat patterns directory or nested category subdirectories.
 		 *
 		 * @since 1.2.0
 		 *
 		 * @return array<string, array<string, mixed>> Registered patterns array.
 		 */
 		public function get_patterns(): array {
-			return [
-				'gslider-blocks/full-width-hero-slider' => [
-					'title'       => __( 'Full-Width Hero Slider', 'gslider-blocks' ),
-					'description' => __( 'High-impact full-width slider with responsive layout, auto-play, navigation arrows, and bullet pagination.', 'gslider-blocks' ),
-					'categories'  => [ 'gslider-blocks', 'header', 'featured' ],
-					'keywords'    => [ __( 'slider', 'gslider-blocks' ), __( 'hero', 'gslider-blocks' ), __( 'carousel', 'gslider-blocks' ), __( 'banner', 'gslider-blocks' ), __( 'image', 'gslider-blocks' ) ],
-					'content'     => '<!-- wp:gslider-blocks/image-slider {"images":[{"id":1,"url":"https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=1600\\u0026auto=format\\u0026fit=crop\\u0026q=80","alt":"Digital Transformation Banner","caption":"Build Modern Digital Experiences","link":"#get-started"},{"id":2,"url":"https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1600\\u0026auto=format\\u0026fit=crop\\u0026q=80","alt":"Creative Architecture","caption":"Design Without Limitations","link":"#explore"}],"autoplay":true,"autoplayDelay":{"Desktop":4000,"Tablet":4000,"Mobile":4000}} -->
-<div class="wp-block-gslider-blocks-image-slider gslider-image-slider-wrapper  inside center has-pagination" data-swiper-settings="{&quot;effect&quot;:&quot;slide&quot;,&quot;breakpoints&quot;:{&quot;0&quot;:{&quot;slidesPerView&quot;:1,&quot;spaceBetween&quot;:0,&quot;speed&quot;:800,&quot;autoplay&quot;:{&quot;delay&quot;:4000},&quot;navigation&quot;:{&quot;enabled&quot;:true},&quot;pagination&quot;:{&quot;enabled&quot;:true}},&quot;768&quot;:{&quot;slidesPerView&quot;:1,&quot;spaceBetween&quot;:0,&quot;speed&quot;:800,&quot;autoplay&quot;:{&quot;delay&quot;:4000},&quot;navigation&quot;:{&quot;enabled&quot;:true},&quot;pagination&quot;:{&quot;enabled&quot;:true}},&quot;1025&quot;:{&quot;slidesPerView&quot;:1,&quot;spaceBetween&quot;:0,&quot;speed&quot;:800,&quot;autoplay&quot;:{&quot;delay&quot;:4000},&quot;navigation&quot;:{&quot;enabled&quot;:true},&quot;pagination&quot;:{&quot;enabled&quot;:true}}},&quot;loop&quot;:true,&quot;autoplay&quot;:{&quot;pauseOnMouseEnter&quot;:false,&quot;disableOnInteraction&quot;:false,&quot;stopOnLastSlide&quot;:false,&quot;reverseDirection&quot;:false},&quot;allowTouchMove&quot;:true,&quot;mousewheel&quot;:false,&quot;keyboard&quot;:false,&quot;navigation&quot;:{&quot;enabled&quot;:true,&quot;nextEl&quot;:&quot;.swiper-button-next&quot;,&quot;prevEl&quot;:&quot;.swiper-button-prev&quot;},&quot;pagination&quot;:{&quot;enabled&quot;:true,&quot;el&quot;:&quot;. .swiper-pagination-image-slider&quot;,&quot;type&quot;:&quot;bullets&quot;,&quot;dynamicBullets&quot;:false,&quot;clickable&quot;:true}}"><div class="swiper" role="region" aria-label="Image Slider"><div class="swiper-wrapper"><div class="swiper-slide"><div class="gslider-image-slider-content-wrapper "><div class="gslider-image-item" data-hover-effect="none"><img src="https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=1600&amp;auto=format&amp;fit=crop&amp;q=80" alt="Digital Transformation Banner"/></div></div></div><div class="swiper-slide"><div class="gslider-image-slider-content-wrapper "><div class="gslider-image-item" data-hover-effect="none"><img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=1600&amp;auto=format&amp;fit=crop&amp;q=80" alt="Creative Architecture"/></div></div></div></div><div class="gslider-navigation-default-icon-wrapper inside center"><div class="swiper-button-prev" role="button" tabindex="0" aria-label="Previous slide"></div><div class="swiper-button-next" role="button" tabindex="0" aria-label="Next slide"></div></div></div><div class="swiper-pagination swiper-pagination-image-slider swiper-pagination-" aria-label="Carousel pagination"></div></div>
-<!-- /wp:gslider-blocks/image-slider -->',
-				],
-				'gslider-blocks/product-showcase-carousel' => [
-					'title'       => __( 'E-commerce Product Showcase Carousel', 'gslider-blocks' ),
-					'description' => __( 'Responsive 3-column card carousel with space between items and navigation controls.', 'gslider-blocks' ),
-					'categories'  => [ 'gslider-blocks', 'gallery' ],
-					'keywords'    => [ __( 'product', 'gslider-blocks' ), __( 'ecommerce', 'gslider-blocks' ), __( 'shop', 'gslider-blocks' ), __( 'carousel', 'gslider-blocks' ), __( 'slider', 'gslider-blocks' ) ],
-					'content'     => '<!-- wp:gslider-blocks/image-slider {"images":[{"id":11,"url":"https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800\\u0026auto=format\\u0026fit=crop\\u0026q=80","alt":"Wireless Headphones","caption":"Studio Headphones","link":"#shop"},{"id":12,"url":"https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800\\u0026auto=format\\u0026fit=crop\\u0026q=80","alt":"Minimalist Watch","caption":"Chronograph Classic","link":"#shop"},{"id":13,"url":"https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=800\\u0026auto=format\\u0026fit=crop\\u0026q=80","alt":"Smart Watch","caption":"Smart Band Series","link":"#shop"}],"carouselPerColumn":{"Desktop":3,"Tablet":2,"Mobile":1},"carouselPerColumnGap":{"Desktop":20,"Tablet":15,"Mobile":10},"speed":{"Desktop":700,"Tablet":700,"Mobile":700},"showPagination":{"Desktop":true,"Tablet":true,"Mobile":false}} -->
-<div class="wp-block-gslider-blocks-image-slider gslider-image-slider-wrapper  inside center has-pagination" data-swiper-settings="{&quot;effect&quot;:&quot;slide&quot;,&quot;breakpoints&quot;:{&quot;0&quot;:{&quot;slidesPerView&quot;:1,&quot;spaceBetween&quot;:10,&quot;speed&quot;:700,&quot;autoplay&quot;:false,&quot;navigation&quot;:{&quot;enabled&quot;:true},&quot;pagination&quot;:{&quot;enabled&quot;:false}},&quot;768&quot;:{&quot;slidesPerView&quot;:2,&quot;spaceBetween&quot;:15,&quot;speed&quot;:700,&quot;autoplay&quot;:false,&quot;navigation&quot;:{&quot;enabled&quot;:true},&quot;pagination&quot;:{&quot;enabled&quot;:true}},&quot;1025&quot;:{&quot;slidesPerView&quot;:3,&quot;spaceBetween&quot;:20,&quot;speed&quot;:700,&quot;autoplay&quot;:false,&quot;navigation&quot;:{&quot;enabled&quot;:true},&quot;pagination&quot;:{&quot;enabled&quot;:true}}},&quot;loop&quot;:true,&quot;autoplay&quot;:false,&quot;allowTouchMove&quot;:true,&quot;mousewheel&quot;:false,&quot;keyboard&quot;:false,&quot;navigation&quot;:{&quot;enabled&quot;:true,&quot;nextEl&quot;:&quot;.swiper-button-next&quot;,&quot;prevEl&quot;:&quot;.swiper-button-prev&quot;},&quot;pagination&quot;:{&quot;enabled&quot;:true,&quot;el&quot;:&quot;. .swiper-pagination-image-slider&quot;,&quot;type&quot;:&quot;bullets&quot;,&quot;dynamicBullets&quot;:false,&quot;clickable&quot;:true}}"><div class="swiper" role="region" aria-label="Image Slider"><div class="swiper-wrapper"><div class="swiper-slide"><div class="gslider-image-slider-content-wrapper "><div class="gslider-image-item" data-hover-effect="none"><img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=800&amp;auto=format&amp;fit=crop&amp;q=80" alt="Wireless Headphones"/></div></div></div><div class="swiper-slide"><div class="gslider-image-slider-content-wrapper "><div class="gslider-image-item" data-hover-effect="none"><img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=800&amp;auto=format&amp;fit=crop&amp;q=80" alt="Minimalist Watch"/></div></div></div><div class="swiper-slide"><div class="gslider-image-slider-content-wrapper "><div class="gslider-image-item" data-hover-effect="none"><img src="https://images.unsplash.com/photo-1546868871-7041f2a55e12?w=800&amp;auto=format&amp;fit=crop&amp;q=80" alt="Smart Watch"/></div></div></div></div><div class="gslider-navigation-default-icon-wrapper inside center"><div class="swiper-button-prev" role="button" tabindex="0" aria-label="Previous slide"></div><div class="swiper-button-next" role="button" tabindex="0" aria-label="Next slide"></div></div></div><div class="swiper-pagination swiper-pagination-image-slider swiper-pagination-" aria-label="Carousel pagination"></div></div>
-<!-- /wp:gslider-blocks/image-slider -->',
-				],
-				'gslider-blocks/social-proof-testimonial-cards' => [
-					'title'       => __( 'Social Proof Testimonial Cards', 'gslider-blocks' ),
-					'description' => __( 'Two-column client review cards with 5-star ratings and reviewer details.', 'gslider-blocks' ),
-					'categories'  => [ 'gslider-blocks', 'testimonials' ],
-					'keywords'    => [ __( 'testimonial', 'gslider-blocks' ), __( 'reviews', 'gslider-blocks' ), __( 'social proof', 'gslider-blocks' ), __( 'quotes', 'gslider-blocks' ), __( 'rating', 'gslider-blocks' ) ],
-					'content'     => '<!-- wp:gslider-blocks/testimonial {"sliderItems":[{"id":"item-1","testimonialTitle":"Game changer for our agency","testimonialText":"We migrated 40 client sites to GSlider. The responsive controls and dynamic styling save us hours every sprint.","authorName":"Marcus Vance","authorDesignation":"CTO, Vertex Media","authorImage":{"url":"https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200\\u0026auto=format\\u0026fit=crop\\u0026q=80","id":"","alt":"Marcus Vance"},"ratingIconAlign":"icon","ratingNumber":5,"ratingImage":{"url":"","id":"","alt":""},"normalItemBackgroundType":"classic","normalItemClassicColor":"#EDEDED","normalItemGradientColor":null,"normalItemCustomGradientSwitcher":false,"normalItemCustomGradientInputValue":"","normalBackgroundImageUrl":{"Desktop":"","Tablet":"","Mobile":""},"normalBackgroundImageAlt":{"Desktop":"","Tablet":"","Mobile":""},"normalBackgroundImageID":{"Desktop":"","Tablet":"","Mobile":""},"normalBackgroundImagePosition":{"Desktop":{"x":0.5,"y":0.5},"Tablet":{"x":0.5,"y":0.5},"Mobile":{"x":0.5,"y":0.5}},"normalBackgroundImageAttachment":{"Desktop":"scroll","Tablet":"scroll","Mobile":"scroll"},"normalBackgroundImageRepeat":{"Desktop":"no-repeat","Tablet":"no-repeat","Mobile":"no-repeat"},"normalBackgroundImageSize":{"Desktop":"cover","Tablet":"cover","Mobile":"cover"},"itemBackgroundOverlaySwitcher":false,"itemBackgroundOverlayType":"classic","itemBackgroundOverlayClassicColor":"#000","itemBackgroundOverlayGradientColor":null,"itemBackgroundOverlayCustomGradientSwitcher":false,"itemBackgroundOverlayCustomGradientInputValue":"","itemBackgroundOverlayOpacity":0.5},{"id":"item-2","testimonialTitle":"Flawless headless integration","testimonialText":"Our Next.js frontend fetches the pre-parsed Swiper settings directly. Zero runtime CSS calculation needed!","authorName":"Elena Rostova","authorDesignation":"Lead Frontend Architect","authorImage":{"url":"https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200\\u0026auto=format\\u0026fit=crop\\u0026q=80","id":"","alt":"Elena Rostova"},"ratingIconAlign":"icon","ratingNumber":5,"ratingImage":{"url":"","id":"","alt":""},"normalItemBackgroundType":"classic","normalItemClassicColor":"#EDEDED","normalItemGradientColor":null,"normalItemCustomGradientSwitcher":false,"normalItemCustomGradientInputValue":"","normalBackgroundImageUrl":{"Desktop":"","Tablet":"","Mobile":""},"normalBackgroundImageAlt":{"Desktop":"","Tablet":"","Mobile":""},"normalBackgroundImageID":{"Desktop":"","Tablet":"","Mobile":""},"normalBackgroundImagePosition":{"Desktop":{"x":0.5,"y":0.5},"Tablet":{"x":0.5,"y":0.5},"Mobile":{"x":0.5,"y":0.5}},"normalBackgroundImageAttachment":{"Desktop":"scroll","Tablet":"scroll","Mobile":"scroll"},"normalBackgroundImageRepeat":{"Desktop":"no-repeat","Tablet":"no-repeat","Mobile":"no-repeat"},"normalBackgroundImageSize":{"Desktop":"cover","Tablet":"cover","Mobile":"cover"},"itemBackgroundOverlaySwitcher":false,"itemBackgroundOverlayType":"classic","itemBackgroundOverlayClassicColor":"#000","itemBackgroundOverlayGradientColor":null,"itemBackgroundOverlayCustomGradientSwitcher":false,"itemBackgroundOverlayCustomGradientInputValue":"","itemBackgroundOverlayOpacity":0.5}],"sliderType":"carousel"} -->
-<div class="wp-block-gslider-blocks-testimonial gslider-testimonial-wrapper  outside center has-pagination" data-swiper-settings="{&quot;effect&quot;:&quot;slide&quot;,&quot;breakpoints&quot;:{&quot;0&quot;:{&quot;slidesPerView&quot;:1,&quot;spaceBetween&quot;:0,&quot;speed&quot;:800,&quot;autoplay&quot;:false,&quot;navigation&quot;:{&quot;enabled&quot;:true},&quot;pagination&quot;:{&quot;enabled&quot;:true}},&quot;768&quot;:{&quot;slidesPerView&quot;:2,&quot;spaceBetween&quot;:20,&quot;speed&quot;:800,&quot;autoplay&quot;:false,&quot;navigation&quot;:{&quot;enabled&quot;:true},&quot;pagination&quot;:{&quot;enabled&quot;:true}},&quot;1025&quot;:{&quot;slidesPerView&quot;:2,&quot;spaceBetween&quot;:20,&quot;speed&quot;:800,&quot;autoplay&quot;:false,&quot;navigation&quot;:{&quot;enabled&quot;:true},&quot;pagination&quot;:{&quot;enabled&quot;:true}}},&quot;loop&quot;:true,&quot;autoplay&quot;:false,&quot;allowTouchMove&quot;:true,&quot;mousewheel&quot;:false,&quot;keyboard&quot;:false,&quot;navigation&quot;:{&quot;enabled&quot;:true,&quot;nextEl&quot;:&quot;.swiper-button-next&quot;,&quot;prevEl&quot;:&quot;.swiper-button-prev&quot;},&quot;pagination&quot;:{&quot;enabled&quot;:true,&quot;el&quot;:&quot;. .swiper-pagination-testimonial-slider&quot;,&quot;type&quot;:&quot;bullets&quot;,&quot;dynamicBullets&quot;:false,&quot;clickable&quot;:true}}"><div class="swiper"><div class="swiper-wrapper"><div class="swiper-slide "><div class="gslider-content-wrapper item-1 "><div class="gslider-content-inner-wrapper"><div class="gslider-testimonial-content-group"><div class="gslider-testimonial-title-wrapper"><h3 class="gslider-testimonial-title">Game changer for our agency</h3></div><div class="gslider-testimonial-text-wrapper"><p class="gslider-testimonial-text">We migrated 40 client sites to GSlider. The responsive controls and dynamic styling save us hours every sprint.</p></div></div><div class="gslider-testimonial-rating-wrapper"><div class="gslider-testimonial-rating-inner"><div class="gslider-testimonial-rating-wrap"><div class="gslider-testimonial-rating-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49.23 48.44" class="gslider-testimonial-rating-star-svg"><path d="M49.05,21.06a1.9,1.9,0,0,0,.46-2A1.93,1.93,0,0,0,48,17.8L33.3,15.63,26.74,1.88a1.93,1.93,0,0,0-3.48,0l-6.5,13.71L2,17.8A1.93,1.93,0,0,0,.49,19.1a1.9,1.9,0,0,0,.46,2L11.5,31.66v.86L9.1,47a1.9,1.9,0,0,0,.79,1.88,1.89,1.89,0,0,0,1.11.36,2,2,0,0,0,.92-.23l13-7.14L38.08,49a1.93,1.93,0,0,0,2.82-2l-2.39-14.2V31.69Z" transform="translate(-0.39 -0.78)"></path></svg></div><div class="gslider-testimonial-rating-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49.23 48.44" class="gslider-testimonial-rating-star-svg"><path d="M49.05,21.06a1.9,1.9,0,0,0,.46-2A1.93,1.93,0,0,0,48,17.8L33.3,15.63,26.74,1.88a1.93,1.93,0,0,0-3.48,0l-6.5,13.71L2,17.8A1.93,1.93,0,0,0,.49,19.1a1.9,1.9,0,0,0,.46,2L11.5,31.66v.86L9.1,47a1.9,1.9,0,0,0,.79,1.88,1.89,1.89,0,0,0,1.11.36,2,2,0,0,0,.92-.23l13-7.14L38.08,49a1.93,1.93,0,0,0,2.82-2l-2.39-14.2V31.69Z" transform="translate(-0.39 -0.78)"></path></svg></div><div class="gslider-testimonial-rating-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49.23 48.44" class="gslider-testimonial-rating-star-svg"><path d="M49.05,21.06a1.9,1.9,0,0,0,.46-2A1.93,1.93,0,0,0,48,17.8L33.3,15.63,26.74,1.88a1.93,1.93,0,0,0-3.48,0l-6.5,13.71L2,17.8A1.93,1.93,0,0,0,.49,19.1a1.9,1.9,0,0,0,.46,2L11.5,31.66v.86L9.1,47a1.9,1.9,0,0,0,.79,1.88,1.89,1.89,0,0,0,1.11.36,2,2,0,0,0,.92-.23l13-7.14L38.08,49a1.93,1.93,0,0,0,2.82-2l-2.39-14.2V31.69Z" transform="translate(-0.39 -0.78)"></path></svg></div><div class="gslider-testimonial-rating-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49.23 48.44" class="gslider-testimonial-rating-star-svg"><path d="M49.05,21.06a1.9,1.9,0,0,0,.46-2A1.93,1.93,0,0,0,48,17.8L33.3,15.63,26.74,1.88a1.93,1.93,0,0,0-3.48,0l-6.5,13.71L2,17.8A1.93,1.93,0,0,0,.49,19.1a1.9,1.9,0,0,0,.46,2L11.5,31.66v.86L9.1,47a1.9,1.9,0,0,0,.79,1.88,1.89,1.89,0,0,0,1.11.36,2,2,0,0,0,.92-.23l13-7.14L38.08,49a1.93,1.93,0,0,0,2.82-2l-2.39-14.2V31.69Z" transform="translate(-0.39 -0.78)"></path></svg></div><div class="gslider-testimonial-rating-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49.23 48.44" class="gslider-testimonial-rating-star-svg"><path d="M49.05,21.06a1.9,1.9,0,0,0,.46-2A1.93,1.93,0,0,0,48,17.8L33.3,15.63,26.74,1.88a1.93,1.93,0,0,0-3.48,0l-6.5,13.71L2,17.8A1.93,1.93,0,0,0,.49,19.1a1.9,1.9,0,0,0,.46,2L11.5,31.66v.86L9.1,47a1.9,1.9,0,0,0,.79,1.88,1.89,1.89,0,0,0,1.11.36,2,2,0,0,0,.92-.23l13-7.14L38.08,49a1.93,1.93,0,0,0,2.82-2l-2.39-14.2V31.69Z" transform="translate(-0.39 -0.78)"></path></svg></div></div></div></div><div class="gslider-author-info-group"><div class="gslider-testimonial-author-image-wrapper"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&amp;auto=format&amp;fit=crop&amp;q=80" alt="Marcus Vance" class="gslider-testimonial-author-image"/></div><div class="gslider-author-meta"><div class="gslider-testimonial-author-name-wrapper"><h4 class="gslider-testimonial-author-name">Marcus Vance</h4></div><div class="gslider-testimonial-author-designation-wrapper"><h5 class="gslider-testimonial-author-designation">CTO, Vertex Media</h5></div></div></div></div></div></div><div class="swiper-slide "><div class="gslider-content-wrapper item-2 "><div class="gslider-content-inner-wrapper"><div class="gslider-testimonial-content-group"><div class="gslider-testimonial-title-wrapper"><h3 class="gslider-testimonial-title">Flawless headless integration</h3></div><div class="gslider-testimonial-text-wrapper"><p class="gslider-testimonial-text">Our Next.js frontend fetches the pre-parsed Swiper settings directly. Zero runtime CSS calculation needed!</p></div></div><div class="gslider-testimonial-rating-wrapper"><div class="gslider-testimonial-rating-inner"><div class="gslider-testimonial-rating-wrap"><div class="gslider-testimonial-rating-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49.23 48.44" class="gslider-testimonial-rating-star-svg"><path d="M49.05,21.06a1.9,1.9,0,0,0,.46-2A1.93,1.93,0,0,0,48,17.8L33.3,15.63,26.74,1.88a1.93,1.93,0,0,0-3.48,0l-6.5,13.71L2,17.8A1.93,1.93,0,0,0,.49,19.1a1.9,1.9,0,0,0,.46,2L11.5,31.66v.86L9.1,47a1.9,1.9,0,0,0,.79,1.88,1.89,1.89,0,0,0,1.11.36,2,2,0,0,0,.92-.23l13-7.14L38.08,49a1.93,1.93,0,0,0,2.82-2l-2.39-14.2V31.69Z" transform="translate(-0.39 -0.78)"></path></svg></div><div class="gslider-testimonial-rating-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49.23 48.44" class="gslider-testimonial-rating-star-svg"><path d="M49.05,21.06a1.9,1.9,0,0,0,.46-2A1.93,1.93,0,0,0,48,17.8L33.3,15.63,26.74,1.88a1.93,1.93,0,0,0-3.48,0l-6.5,13.71L2,17.8A1.93,1.93,0,0,0,.49,19.1a1.9,1.9,0,0,0,.46,2L11.5,31.66v.86L9.1,47a1.9,1.9,0,0,0,.79,1.88,1.89,1.89,0,0,0,1.11.36,2,2,0,0,0,.92-.23l13-7.14L38.08,49a1.93,1.93,0,0,0,2.82-2l-2.39-14.2V31.69Z" transform="translate(-0.39 -0.78)"></path></svg></div><div class="gslider-testimonial-rating-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49.23 48.44" class="gslider-testimonial-rating-star-svg"><path d="M49.05,21.06a1.9,1.9,0,0,0,.46-2A1.93,1.93,0,0,0,48,17.8L33.3,15.63,26.74,1.88a1.93,1.93,0,0,0-3.48,0l-6.5,13.71L2,17.8A1.93,1.93,0,0,0,.49,19.1a1.9,1.9,0,0,0,.46,2L11.5,31.66v.86L9.1,47a1.9,1.9,0,0,0,.79,1.88,1.89,1.89,0,0,0,1.11.36,2,2,0,0,0,.92-.23l13-7.14L38.08,49a1.93,1.93,0,0,0,2.82-2l-2.39-14.2V31.69Z" transform="translate(-0.39 -0.78)"></path></svg></div><div class="gslider-testimonial-rating-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49.23 48.44" class="gslider-testimonial-rating-star-svg"><path d="M49.05,21.06a1.9,1.9,0,0,0,.46-2A1.93,1.93,0,0,0,48,17.8L33.3,15.63,26.74,1.88a1.93,1.93,0,0,0-3.48,0l-6.5,13.71L2,17.8A1.93,1.93,0,0,0,.49,19.1a1.9,1.9,0,0,0,.46,2L11.5,31.66v.86L9.1,47a1.9,1.9,0,0,0,.79,1.88,1.89,1.89,0,0,0,1.11.36,2,2,0,0,0,.92-.23l13-7.14L38.08,49a1.93,1.93,0,0,0,2.82-2l-2.39-14.2V31.69Z" transform="translate(-0.39 -0.78)"></path></svg></div><div class="gslider-testimonial-rating-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 49.23 48.44" class="gslider-testimonial-rating-star-svg"><path d="M49.05,21.06a1.9,1.9,0,0,0,.46-2A1.93,1.93,0,0,0,48,17.8L33.3,15.63,26.74,1.88a1.93,1.93,0,0,0-3.48,0l-6.5,13.71L2,17.8A1.93,1.93,0,0,0,.49,19.1a1.9,1.9,0,0,0,.46,2L11.5,31.66v.86L9.1,47a1.9,1.9,0,0,0,.79,1.88,1.89,1.89,0,0,0,1.11.36,2,2,0,0,0,.92-.23l13-7.14L38.08,49a1.93,1.93,0,0,0,2.82-2l-2.39-14.2V31.69Z" transform="translate(-0.39 -0.78)"></path></svg></div></div></div></div><div class="gslider-author-info-group"><div class="gslider-testimonial-author-image-wrapper"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&amp;auto=format&amp;fit=crop&amp;q=80" alt="Elena Rostova" class="gslider-testimonial-author-image"/></div><div class="gslider-author-meta"><div class="gslider-testimonial-author-name-wrapper"><h4 class="gslider-testimonial-author-name">Elena Rostova</h4></div><div class="gslider-testimonial-author-designation-wrapper"><h5 class="gslider-testimonial-author-designation">Lead Frontend Architect</h5></div></div></div></div></div></div></div></div><div class="gslider-navigation-default-icon-wrapper outside center"><button type="button" class="swiper-button-prev" aria-label="Previous slide"></button><button type="button" class="swiper-button-next" aria-label="Next slide"></button></div><div class="swiper-pagination swiper-pagination-testimonial-slider swiper-pagination-" aria-label="Carousel pagination"></div></div>
-<!-- /wp:gslider-blocks/testimonial -->',
-				],
-				'gslider-blocks/partner-brand-logo-carousel' => [
-					'title'       => __( 'Partner Brand Logo Carousel', 'gslider-blocks' ),
-					'description' => __( 'Two-column logo carousel for trusted brands and client showcases, with autoplay off.', 'gslider-blocks' ),
-					'categories'  => [ 'gslider-blocks', 'clients' ],
-					'keywords'    => [ __( 'logo', 'gslider-blocks' ), __( 'carousel', 'gslider-blocks' ), __( 'brand', 'gslider-blocks' ), __( 'partners', 'gslider-blocks' ), __( 'clients', 'gslider-blocks' ) ],
-					'content'     => '<!-- wp:gslider-blocks/logo-carousel {"logos":[{"id":101,"url":"https://dummyimage.com/200x80/222/fff.png\\u0026text=Google","alt":"Google","link":"#"},{"id":102,"url":"https://dummyimage.com/200x80/222/fff.png\\u0026text=Stripe","alt":"Stripe","link":"#"},{"id":103,"url":"https://dummyimage.com/200x80/222/fff.png\\u0026text=Vercel","alt":"Vercel","link":"#"},{"id":104,"url":"https://dummyimage.com/200x80/222/fff.png\\u0026text=Automattic","alt":"Automattic","link":"#"}],"showPagination":{"Desktop":false,"Tablet":false,"Mobile":false}} -->
-<div class="wp-block-gslider-blocks-logo-carousel gslider-logo-carousel-wrapper  inside center" data-swiper-settings="{&quot;effect&quot;:&quot;slide&quot;,&quot;breakpoints&quot;:{&quot;0&quot;:{&quot;slidesPerView&quot;:1,&quot;spaceBetween&quot;:10,&quot;speed&quot;:800,&quot;autoplay&quot;:false,&quot;navigation&quot;:{&quot;enabled&quot;:true},&quot;pagination&quot;:{&quot;enabled&quot;:false}},&quot;768&quot;:{&quot;slidesPerView&quot;:2,&quot;spaceBetween&quot;:10,&quot;speed&quot;:800,&quot;autoplay&quot;:false,&quot;navigation&quot;:{&quot;enabled&quot;:true},&quot;pagination&quot;:{&quot;enabled&quot;:false}},&quot;1025&quot;:{&quot;slidesPerView&quot;:2,&quot;spaceBetween&quot;:10,&quot;speed&quot;:800,&quot;autoplay&quot;:false,&quot;navigation&quot;:{&quot;enabled&quot;:true},&quot;pagination&quot;:{&quot;enabled&quot;:false}}},&quot;loop&quot;:true,&quot;autoplay&quot;:false,&quot;allowTouchMove&quot;:true,&quot;mousewheel&quot;:false,&quot;keyboard&quot;:false,&quot;navigation&quot;:{&quot;enabled&quot;:true,&quot;nextEl&quot;:&quot;.swiper-button-next&quot;,&quot;prevEl&quot;:&quot;.swiper-button-prev&quot;},&quot;pagination&quot;:{&quot;enabled&quot;:false,&quot;el&quot;:&quot;. .swiper-pagination-logo-carousel&quot;,&quot;type&quot;:&quot;bullets&quot;,&quot;dynamicBullets&quot;:false,&quot;clickable&quot;:true}}"><div class="swiper" role="region" aria-label="Logo Carousel"><div class="swiper-wrapper"><div class="swiper-slide"><div class="gslider-logo-carousel-content-wrapper "><div class="gslider-logo-item" data-hover-effect="none"><img src="https://dummyimage.com/200x80/222/fff.png&amp;text=Google" alt="Google"/></div></div></div><div class="swiper-slide"><div class="gslider-logo-carousel-content-wrapper "><div class="gslider-logo-item" data-hover-effect="none"><img src="https://dummyimage.com/200x80/222/fff.png&amp;text=Stripe" alt="Stripe"/></div></div></div><div class="swiper-slide"><div class="gslider-logo-carousel-content-wrapper "><div class="gslider-logo-item" data-hover-effect="none"><img src="https://dummyimage.com/200x80/222/fff.png&amp;text=Vercel" alt="Vercel"/></div></div></div><div class="swiper-slide"><div class="gslider-logo-carousel-content-wrapper "><div class="gslider-logo-item" data-hover-effect="none"><img src="https://dummyimage.com/200x80/222/fff.png&amp;text=Automattic" alt="Automattic"/></div></div></div></div><div class="gslider-navigation-default-icon-wrapper inside center"><div class="swiper-button-prev" role="button" tabindex="0" aria-label="Previous slide"></div><div class="swiper-button-next" role="button" tabindex="0" aria-label="Next slide"></div></div></div></div>
-<!-- /wp:gslider-blocks/logo-carousel -->',
-				],
-				'gslider-blocks/content-hero-slider' => [
-					'title'       => __( 'Content Hero Slider', 'gslider-blocks' ),
-					'description' => __( 'Single-column content slider with titles, descriptions, and call-to-action buttons, using a fade transition and autoplay.', 'gslider-blocks' ),
-					'categories'  => [ 'gslider-blocks', 'header', 'call-to-action' ],
-					'keywords'    => [ __( 'content', 'gslider-blocks' ), __( 'hero', 'gslider-blocks' ), __( 'slider', 'gslider-blocks' ), __( 'cta', 'gslider-blocks' ), __( 'banner', 'gslider-blocks' ) ],
-					'content'     => '<!-- wp:gslider-blocks/base {"sliderItems":[{"id":"item-1","subTitle":"New Release","title":"Launch Faster With GSlider","description":"Build responsive sliders in the block editor without writing code.","primaryButtonText":"Get Started","primaryButtonLink":"#get-started","primaryButtonTargetLink":true,"primaryButtonNofollow":false,"primaryButtonSponsored":false,"secondaryButtonSwitcher":false,"secondaryButtonText":"Get Started","secondaryButtonLink":"#","secondaryButtonTargetLink":true,"secondaryButtonNofollow":false,"secondaryButtonSponsored":false,"normalItemBackgroundType":"classic","normalItemClassicColor":"#EDEDED","normalItemGradientColor":null,"normalItemCustomGradientSwitcher":false,"normalItemCustomGradientInputValue":"","normalBackgroundImageUrl":{"Desktop":"","Tablet":"","Mobile":""},"normalBackgroundImageAlt":{"Desktop":"","Tablet":"","Mobile":""},"normalBackgroundImageID":{"Desktop":"","Tablet":"","Mobile":""},"normalBackgroundImagePosition":{"Desktop":{"x":0.5,"y":0.5},"Tablet":{"x":0.5,"y":0.5},"Mobile":{"x":0.5,"y":0.5}},"normalBackgroundImageAttachment":{"Desktop":"scroll","Tablet":"scroll","Mobile":"scroll"},"normalBackgroundImageRepeat":{"Desktop":"no-repeat","Tablet":"no-repeat","Mobile":"no-repeat"},"normalBackgroundImageSize":{"Desktop":"cover","Tablet":"cover","Mobile":"cover"},"itemBackgroundOverlaySwitcher":false,"itemBackgroundOverlayType":"classic","itemBackgroundOverlayClassicColor":"#000","itemBackgroundOverlayGradientColor":null,"itemBackgroundOverlayCustomGradientSwitcher":false,"itemBackgroundOverlayCustomGradientInputValue":"","itemBackgroundOverlayOpacity":0.5},{"id":"item-2","subTitle":"Headless Ready","title":"Ship To Any Frontend","description":"Read pre-parsed Swiper settings and styles from the REST API.","primaryButtonText":"Read The Docs","primaryButtonLink":"#docs","primaryButtonTargetLink":true,"primaryButtonNofollow":false,"primaryButtonSponsored":false,"secondaryButtonSwitcher":false,"secondaryButtonText":"Get Started","secondaryButtonLink":"#","secondaryButtonTargetLink":true,"secondaryButtonNofollow":false,"secondaryButtonSponsored":false,"normalItemBackgroundType":"classic","normalItemClassicColor":"#EDEDED","normalItemGradientColor":null,"normalItemCustomGradientSwitcher":false,"normalItemCustomGradientInputValue":"","normalBackgroundImageUrl":{"Desktop":"","Tablet":"","Mobile":""},"normalBackgroundImageAlt":{"Desktop":"","Tablet":"","Mobile":""},"normalBackgroundImageID":{"Desktop":"","Tablet":"","Mobile":""},"normalBackgroundImagePosition":{"Desktop":{"x":0.5,"y":0.5},"Tablet":{"x":0.5,"y":0.5},"Mobile":{"x":0.5,"y":0.5}},"normalBackgroundImageAttachment":{"Desktop":"scroll","Tablet":"scroll","Mobile":"scroll"},"normalBackgroundImageRepeat":{"Desktop":"no-repeat","Tablet":"no-repeat","Mobile":"no-repeat"},"normalBackgroundImageSize":{"Desktop":"cover","Tablet":"cover","Mobile":"cover"},"itemBackgroundOverlaySwitcher":false,"itemBackgroundOverlayType":"classic","itemBackgroundOverlayClassicColor":"#000","itemBackgroundOverlayGradientColor":null,"itemBackgroundOverlayCustomGradientSwitcher":false,"itemBackgroundOverlayCustomGradientInputValue":"","itemBackgroundOverlayOpacity":0.5}],"autoplay":true,"autoplayDelay":{"Desktop":5000,"Tablet":5000,"Mobile":5000},"slideEffect":"fade","showNavigation":{"Desktop":true,"Tablet":true,"Mobile":false}} -->
-<div class="wp-block-gslider-blocks-base gslider-base-wrapper  inside center has-pagination" data-swiper-settings="{&quot;effect&quot;:&quot;fade&quot;,&quot;breakpoints&quot;:{&quot;0&quot;:{&quot;speed&quot;:800,&quot;autoplay&quot;:{&quot;delay&quot;:5000},&quot;navigation&quot;:{&quot;enabled&quot;:false},&quot;pagination&quot;:{&quot;enabled&quot;:true}},&quot;768&quot;:{&quot;speed&quot;:800,&quot;autoplay&quot;:{&quot;delay&quot;:5000},&quot;navigation&quot;:{&quot;enabled&quot;:true},&quot;pagination&quot;:{&quot;enabled&quot;:true}},&quot;1025&quot;:{&quot;speed&quot;:800,&quot;autoplay&quot;:{&quot;delay&quot;:5000},&quot;navigation&quot;:{&quot;enabled&quot;:true},&quot;pagination&quot;:{&quot;enabled&quot;:true}}},&quot;loop&quot;:true,&quot;autoplay&quot;:{&quot;pauseOnMouseEnter&quot;:false,&quot;disableOnInteraction&quot;:false,&quot;stopOnLastSlide&quot;:false,&quot;reverseDirection&quot;:false},&quot;allowTouchMove&quot;:true,&quot;mousewheel&quot;:false,&quot;keyboard&quot;:false,&quot;navigation&quot;:{&quot;enabled&quot;:true,&quot;nextEl&quot;:&quot;.swiper-button-next&quot;,&quot;prevEl&quot;:&quot;.swiper-button-prev&quot;},&quot;pagination&quot;:{&quot;enabled&quot;:true,&quot;el&quot;:&quot;. .swiper-pagination-base-slider&quot;,&quot;type&quot;:&quot;bullets&quot;,&quot;dynamicBullets&quot;:false,&quot;clickable&quot;:true}}"><div class="swiper"><div class="swiper-wrapper"><div class="swiper-slide slide-mode"><div class="gslider-content-wrapper item-1 "><div class="gslider-content-inner-wrapper"><div class="gslider-list-item"><div class="gslider-list-content"><div class="gslider-subtitle-wrapper"><h3 class="gslider-subtitle">New Release</h3></div><div class="gslider-title-wrapper"><h2 class="gslider-title">Launch Faster With GSlider</h2></div><div class="gslider-description-wrapper"><p class="gslider-description">Build responsive sliders in the block editor without writing code.</p></div><div class="gslider-btn-wrapper"><div class="gslider-btn-inner-wrapper"><a class="gslider-btn primary-btn" href="#get-started" target="_blank" rel="noopener noreferrer">Get Started</a></div></div></div></div></div></div></div><div class="swiper-slide slide-mode"><div class="gslider-content-wrapper item-2 "><div class="gslider-content-inner-wrapper"><div class="gslider-list-item"><div class="gslider-list-content"><div class="gslider-subtitle-wrapper"><h3 class="gslider-subtitle">Headless Ready</h3></div><div class="gslider-title-wrapper"><h2 class="gslider-title">Ship To Any Frontend</h2></div><div class="gslider-description-wrapper"><p class="gslider-description">Read pre-parsed Swiper settings and styles from the REST API.</p></div><div class="gslider-btn-wrapper"><div class="gslider-btn-inner-wrapper"><a class="gslider-btn primary-btn" href="#docs" target="_blank" rel="noopener noreferrer">Read The Docs</a></div></div></div></div></div></div></div></div><div class="gslider-navigation-default-icon-wrapper inside center"><div class="swiper-button-prev" role="button" tabindex="0" aria-label="Previous slide"></div><div class="swiper-button-next" role="button" tabindex="0" aria-label="Next slide"></div></div><div class="swiper-pagination swiper-pagination-base-slider" aria-label="Carousel pagination"></div></div></div>
-<!-- /wp:gslider-blocks/base -->',
-				],
+			if ( null !== $this->patterns_cache ) {
+				return $this->patterns_cache;
+			}
+
+			$this->patterns_cache = [];
+			$patterns_dir         = $this->get_patterns_dir();
+
+			if ( ! is_dir( $patterns_dir ) ) {
+				return $this->patterns_cache;
+			}
+
+			$pattern_files = $this->scan_pattern_files( $patterns_dir );
+			sort( $pattern_files );
+
+			foreach ( $pattern_files as $file ) {
+				$parsed = $this->parse_pattern_file( $file );
+				if ( ! empty( $parsed['slug'] ) ) {
+					$slug = $parsed['slug'];
+					unset( $parsed['slug'] );
+					$this->patterns_cache[ $slug ] = $parsed;
+				}
+			}
+
+			/**
+			 * Filters the collected GSlider block patterns before registration.
+			 *
+			 * Allows themes or add-ons to add, remove, or modify registered patterns.
+			 *
+			 * @since 1.2.0
+			 *
+			 * @param array<string, array<string, mixed>> $patterns Array of patterns indexed by slug.
+			 */
+			if ( function_exists( 'apply_filters' ) ) {
+				$this->patterns_cache = (array) apply_filters( 'gslider_blocks_patterns', $this->patterns_cache );
+			}
+
+			return $this->patterns_cache;
+		}
+
+		/**
+		 * Scans a directory recursively for pattern PHP files.
+		 *
+		 * @since 1.2.0
+		 *
+		 * @param string $dir Root directory to scan.
+		 * @return array<int, string> List of absolute file paths.
+		 */
+		private function scan_pattern_files( string $dir ): array {
+			$files = [];
+
+			if ( ! is_dir( $dir ) || ! is_readable( $dir ) ) {
+				return $files;
+			}
+
+			try {
+				$iterator = new \RecursiveIteratorIterator(
+					new \RecursiveDirectoryIterator( $dir, \FilesystemIterator::SKIP_DOTS ),
+					\RecursiveIteratorIterator::SELF_FIRST
+				);
+
+				foreach ( $iterator as $item ) {
+					if ( $item->isFile() && 'php' === strtolower( $item->getExtension() ) ) {
+						$files[] = $item->getPathname();
+					}
+				}
+			} catch ( \Exception $e ) {
+				// Fallback to simple non-recursive glob if iterator fails
+				$glob_files = glob( $dir . '/*.php' );
+				if ( is_array( $glob_files ) ) {
+					$files = $glob_files;
+				}
+			}
+
+			return $files;
+		}
+
+		/**
+		 * Parses a single block pattern PHP file.
+		 *
+		 * Extracts header metadata (Title, Slug, Categories, Keywords, Description)
+		 * and captures the Gutenberg block content via output buffering.
+		 *
+		 * @since 1.2.0
+		 *
+		 * @param string $file Absolute path to pattern file.
+		 * @return array<string, mixed>|null Pattern data array or null on failure.
+		 */
+		public function parse_pattern_file( string $file ): ?array {
+			if ( ! is_file( $file ) || ! is_readable( $file ) ) {
+				return null;
+			}
+
+			$file_content = file_get_contents( $file );
+			if ( false === $file_content ) {
+				return null;
+			}
+
+			$headers = [
+				'title'       => 'Title',
+				'slug'        => 'Slug',
+				'categories'  => 'Categories',
+				'keywords'    => 'Keywords',
+				'description' => 'Description',
+				'inserter'    => 'Inserter',
 			];
+
+			$meta = [];
+			if ( function_exists( 'get_file_data' ) ) {
+				$meta = get_file_data( $file, $headers );
+			} else {
+				foreach ( $headers as $field => $regex ) {
+					if ( preg_match( '/^[ \t\/*#@]*' . preg_quote( $regex, '/' ) . ':(.*)$/mi', $file_content, $match ) ) {
+						$meta[ $field ] = trim( $match[1] );
+					} else {
+						$meta[ $field ] = '';
+					}
+				}
+			}
+
+			if ( empty( $meta['title'] ) ) {
+				return null;
+			}
+
+			$slug = ! empty( $meta['slug'] )
+				? trim( $meta['slug'] )
+				: self::CATEGORY_SLUG . '/' . basename( $file, '.php' );
+
+			$categories = array_filter( array_map( 'trim', explode( ',', $meta['categories'] ?? '' ) ) );
+			if ( ! in_array( self::CATEGORY_SLUG, $categories, true ) ) {
+				array_unshift( $categories, self::CATEGORY_SLUG );
+			}
+
+			$raw_keywords = array_filter( array_map( 'trim', explode( ',', $meta['keywords'] ?? '' ) ) );
+			$keywords     = [];
+			foreach ( $raw_keywords as $keyword ) {
+				$keywords[] = function_exists( '__' ) ? __( $keyword, 'gslider-blocks' ) : $keyword;
+			}
+
+			// Capture the markup output
+			ob_start();
+			include $file;
+			$content = trim( (string) ob_get_clean() );
+
+			$title       = function_exists( '__' ) ? __( $meta['title'], 'gslider-blocks' ) : $meta['title'];
+			$description = ! empty( $meta['description'] )
+				? ( function_exists( '__' ) ? __( $meta['description'], 'gslider-blocks' ) : $meta['description'] )
+				: '';
+
+			$pattern = [
+				'slug'        => $slug,
+				'title'       => $title,
+				'description' => $description,
+				'categories'  => array_values( $categories ),
+				'keywords'    => array_values( $keywords ),
+				'content'     => $content,
+			];
+
+			if ( isset( $meta['inserter'] ) && '' !== $meta['inserter'] ) {
+				$inserter_val = strtolower( trim( $meta['inserter'] ) );
+				if ( in_array( $inserter_val, [ 'no', 'false', '0' ], true ) ) {
+					$pattern['inserter'] = false;
+				}
+			}
+
+			return $pattern;
 		}
 
 	}
