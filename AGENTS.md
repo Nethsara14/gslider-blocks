@@ -86,5 +86,5 @@ When developing or modifying code in this repository, reference the dedicated wo
    - PR diffs must remain atomic and surgical: change only the exact lines requested by the issue with zero unprompted methods or speculative boilerplate.
 10. **Admin Dashboard Centralized Design Tokens**:
     - Never hardcode font families or color palette directly in admin dashboard SCSS.
-    - All design tokens MUST be imported from the single root variables file `admin/scss/_variables.scss` (`@use '../variables' as *;`) to ensure all colors, fonts, and theme tokens are manageable from one single file across the entire admin.
+    - All dashboard design tokens MUST be imported from `admin/scss/dashboard/_variables.scss` (`@use 'variables' as *;`) keeping each module (`block-controls` and `dashboard`) clean and self-contained with its own scoped variables.
 

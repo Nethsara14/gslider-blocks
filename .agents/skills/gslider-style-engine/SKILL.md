@@ -127,10 +127,10 @@ export default generateBlockStyle;
 
 For the React SPA Admin Dashboard (`admin.php?page=gslider-blocks`), hardcoding font-family, colors, typography, or spacing directly in stylesheets is **strictly forbidden**.
 
-All admin dashboard styles must be managed centrally via the single root variables file `admin/scss/_variables.scss`:
+All admin dashboard styles must be managed centrally via `admin/scss/dashboard/_variables.scss`:
 
 ```scss
-// admin/scss/_variables.scss
+// admin/scss/dashboard/_variables.scss
 $font-family-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
 $font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
@@ -148,9 +148,9 @@ $shadow-card: 0 4px 16px -2px rgba(15, 23, 42, 0.05);
 ```
 
 ### Usage in Dashboard SCSS Modules:
-Every dashboard SCSS file must import the design tokens from the root variables file:
+Every dashboard SCSS file must import the design tokens from the dashboard variables file:
 ```scss
-@use '../variables' as *;
+@use 'variables' as *;
 
 .gslider-dashboard-card {
     background: $color-surface;
@@ -169,6 +169,7 @@ Every dashboard SCSS file must import the design tokens from the root variables 
 ```
 
 ### Rules:
-1. **Single Source of Truth**: Update typography and palette once in `admin/scss/_variables.scss`, and the entire admin dashboard updates consistently across all tabs and components.
-2. **Single-Dash Class Names**: Use flat single-dash class naming (e.g., `.gslider-dashboard-card`), never BEM double-underscores (`__`) or double-dashes (`--`).
+1. **Single Source of Truth**: Update typography and palette once in `admin/scss/dashboard/_variables.scss`, and the entire admin dashboard updates consistently across all tabs and components.
+2. **Modular Encapsulation**: Similar to `admin/scss/block-controls/_variables.scss`, dashboard tokens stay encapsulated in `admin/scss/dashboard/_variables.scss` with zero loose variables files in `admin/scss/`.
+3. **Single-Dash Class Names**: Use flat single-dash class naming (e.g., `.gslider-dashboard-card`), never BEM double-underscores (`__`) or double-dashes (`--`).
 
