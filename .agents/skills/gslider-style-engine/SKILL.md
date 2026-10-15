@@ -143,25 +143,20 @@ $color-text-secondary: #475569; // Slate 600
 $color-text-muted: #94a3b8;     // Slate 400
 $color-brand-primary: #2563eb;  // Accent Blue
 
-// Spacing Tokens
-$space-1: 4px;   $space-2: 8px;   $space-3: 12px;  $space-4: 16px;
-$space-5: 20px;  $space-6: 24px;  $space-8: 32px;  $space-10: 40px;
-
-// Radii & Elevation
-$radius-md: 6px; $radius-lg: 8px; $radius-xl: 12px;
+// Elevation & Shadows
 $shadow-card: 0 4px 16px -2px rgba(15, 23, 42, 0.05);
 ```
 
 ### Usage in Dashboard SCSS Modules:
-Every dashboard SCSS file must import the design tokens at the top. Typography details (font-size, font-weight, line-height) are declared directly per component:
+Every dashboard SCSS file must import the design tokens at the top. Typography and layout details (font-size, font-weight, padding, border-radius) are declared directly per component:
 ```scss
 @use 'variables' as *;
 
 .gslider-dashboard-card {
     background: $color-surface;
     border: 1px solid $color-border;
-    border-radius: $radius-xl;
-    padding: $space-8;
+    border-radius: 12px;
+    padding: 32px;
     font-family: $font-family-sans;
 
     h1 {
