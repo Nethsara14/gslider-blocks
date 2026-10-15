@@ -254,14 +254,19 @@ if ( ! class_exists( DashboardController::class, false ) ) {
 
 			$all_blocks = [
 				[
+					'slug'    => 'base',
+					'name'    => __( 'Base', 'gslider-blocks' ),
+					'enabled' => $this->is_block_enabled( 'base', $disabled_blocks ),
+				],
+				[
+					'slug'    => 'flexi-content',
+					'name'    => __( 'Flexi Content', 'gslider-blocks' ),
+					'enabled' => $this->is_block_enabled( 'flexi-content', $disabled_blocks ),
+				],
+				[
 					'slug'    => 'image-slider',
 					'name'    => __( 'Image Slider', 'gslider-blocks' ),
 					'enabled' => $this->is_block_enabled( 'image-slider', $disabled_blocks ),
-				],
-				[
-					'slug'    => 'testimonial',
-					'name'    => __( 'Testimonial Slider', 'gslider-blocks' ),
-					'enabled' => $this->is_block_enabled( 'testimonial', $disabled_blocks ),
 				],
 				[
 					'slug'    => 'logo-carousel',
@@ -269,14 +274,9 @@ if ( ! class_exists( DashboardController::class, false ) ) {
 					'enabled' => $this->is_block_enabled( 'logo-carousel', $disabled_blocks ),
 				],
 				[
-					'slug'    => 'flexi-content',
-					'name'    => __( 'Flexi Content Slider', 'gslider-blocks' ),
-					'enabled' => $this->is_block_enabled( 'flexi-content', $disabled_blocks ),
-				],
-				[
-					'slug'    => 'base',
-					'name'    => __( 'Base Slider', 'gslider-blocks' ),
-					'enabled' => $this->is_block_enabled( 'base', $disabled_blocks ),
+					'slug'    => 'testimonial',
+					'name'    => __( 'Testimonial', 'gslider-blocks' ),
+					'enabled' => $this->is_block_enabled( 'testimonial', $disabled_blocks ),
 				],
 			];
 

@@ -325,11 +325,9 @@ assert_true( 1 === $refreshed_count, 'Refreshed fetch retrieves updated value af
 // --------------------------------------------------------------------------
 $wp_options = [];
 $blocks = $controller->get_blocks_status();
-assert_true( 5 === count( $blocks ), 'get_blocks_status returns exactly 5 core blocks' );
-
-$expected_slugs = [ 'image-slider', 'testimonial', 'logo-carousel', 'flexi-content', 'base' ];
+$expected_slugs = [ 'base', 'flexi-content', 'image-slider', 'logo-carousel', 'testimonial' ];
 $actual_slugs   = array_column( $blocks, 'slug' );
-assert_true( $expected_slugs === $actual_slugs, 'Block slugs match core specification in exact order' );
+assert_true( $expected_slugs === $actual_slugs, 'Block slugs match core specification in alphabetical order' );
 
 foreach ( $blocks as $block ) {
 	assert_true( true === $block['enabled'], "Block {$block['slug']} is enabled by default" );
