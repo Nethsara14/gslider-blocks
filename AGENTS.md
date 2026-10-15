@@ -84,3 +84,7 @@ When developing or modifying code in this repository, reference the dedicated wo
 9. **Codebase-First & Surgical Diffs**:
    - Always inspect existing traits, interfaces, and classes before making changes to prevent duplicating patterns already provided (e.g. `SingletonTrait`).
    - PR diffs must remain atomic and surgical: change only the exact lines requested by the issue with zero unprompted methods or speculative boilerplate.
+10. **Admin Dashboard Centralized Design Tokens**:
+    - Never hardcode font families, colors, spacing, or typography directly in admin dashboard SCSS.
+    - All design tokens MUST be imported from `admin/scss/dashboard/_variables.scss` (`@use 'variables' as *;`) to ensure all colors, fonts, and spacing are manageable from one single file.
+

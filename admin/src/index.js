@@ -11,14 +11,14 @@ import { createRoot, render } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
- * Smoke test component for validating React SPA mount lifecycle.
+ * Initial placeholder component for validating React SPA mount lifecycle.
  *
- * @return {JSX.Element} Smoke test view.
+ * @return {JSX.Element} Initial dashboard view.
  */
-const SmokeDashboard = () => {
+const InitialDashboard = () => {
 	return (
-		<div className="gslider-dashboard-smoke">
-			<div className="gslider-dashboard-smoke-card">
+		<div className="gslider-dashboard-container">
+			<div className="gslider-dashboard-card">
 				<h1>{__('GSlider Studio Ready', 'gslider-blocks')}</h1>
 				<p>
 					{__(
@@ -41,9 +41,9 @@ const initDashboard = () => {
 	}
 
 	if (createRoot) {
-		createRoot(container).render(<SmokeDashboard />);
+		createRoot(container).render(<InitialDashboard />);
 	} else if (render) {
-		render(<SmokeDashboard />, container);
+		render(<InitialDashboard />, container);
 	}
 };
 
