@@ -250,76 +250,80 @@ const BlocksTab = ( { dashboardData = null, setDashboardData } ) => {
 	const totalCount = blocks.length;
 
 	return (
-		<div className="gslider-dashboard-card gslider-dashboard-blocks-card">
-			{ /* Header */ }
-			<div className="gslider-dashboard-blocks-header">
-				<div className="gslider-dashboard-blocks-header-left">
-					<h2 className="gslider-dashboard-blocks-title">
-						{ __( 'Core Slider Blocks', 'gslider-blocks' ) }
-					</h2>
-					<p className="gslider-dashboard-blocks-desc">
-						{ __(
-							'Enable or disable individual slider blocks in the Gutenberg inserter. Disabled blocks will not appear in the inserter, but existing published sliders on your site remain fully functional.',
-							'gslider-blocks'
-						) }
-					</p>
-				</div>
-				<div className="gslider-dashboard-blocks-header-right">
-					<span className="gslider-dashboard-blocks-badge">
-						<svg width="12" height="12" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-							<circle cx="8" cy="8" r="6" fill="currentColor" fillOpacity="0.2" />
-							<circle cx="8" cy="8" r="3" fill="currentColor" />
-						</svg>
-						<span>
-							{ sprintf(
-								__( '%1$d of %2$d Enabled', 'gslider-blocks' ),
-								activeCount,
-								totalCount
+		<div className="gslider-dashboard-blocks-container">
+			{ /* Header Card */ }
+			<div className="gslider-dashboard-card gslider-dashboard-blocks-header-card">
+				<div className="gslider-dashboard-blocks-header">
+					<div className="gslider-dashboard-blocks-header-left">
+						<h2 className="gslider-dashboard-blocks-title">
+							{ __( 'Core Slider Blocks', 'gslider-blocks' ) }
+						</h2>
+						<p className="gslider-dashboard-blocks-desc">
+							{ __(
+								'Enable or disable individual slider blocks in the Gutenberg inserter. Disabled blocks will not appear in the inserter, but existing published sliders on your site remain fully functional.',
+								'gslider-blocks'
 							) }
+						</p>
+					</div>
+					<div className="gslider-dashboard-blocks-header-right">
+						<span className="gslider-dashboard-blocks-badge">
+							<svg width="12" height="12" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+								<circle cx="8" cy="8" r="6" fill="currentColor" fillOpacity="0.2" />
+								<circle cx="8" cy="8" r="3" fill="currentColor" />
+							</svg>
+							<span>
+								{ sprintf(
+									__( '%1$d of %2$d Enabled', 'gslider-blocks' ),
+									activeCount,
+									totalCount
+								) }
+							</span>
 						</span>
-					</span>
+					</div>
 				</div>
 			</div>
 
-			{ /* Blocks List */ }
-			<div className="gslider-dashboard-blocks-list" role="list">
+			{ /* 3-Column / 2-Column Responsive Card Grid */ }
+			<div className="gslider-dashboard-blocks-grid" role="list">
 				{ blocks.map( ( block ) => (
 					<div
 						key={ block.slug }
 						role="listitem"
-						className={ `gslider-dashboard-block-row ${ isToggling[ block.slug ] ? 'is-toggling' : '' }` }
+						className={ `gslider-dashboard-card gslider-dashboard-block-card ${
+							block.enabled ? 'is-enabled' : 'is-disabled'
+						} ${ isToggling[ block.slug ] ? 'is-toggling' : '' }` }
 					>
-						<div className="gslider-dashboard-block-main">
+						<div className="gslider-dashboard-block-card-top">
 							<div className="gslider-dashboard-block-icon">{ block.icon }</div>
-							<div className="gslider-dashboard-block-details">
-								<div className="gslider-dashboard-block-heading">
-									<h3 className="gslider-dashboard-block-name">{ block.name }</h3>
-									<span
-										className={ `gslider-dashboard-block-status-tag ${
-											block.enabled ? 'is-enabled' : 'is-disabled'
-										}` }
-									>
-										{ block.enabled
-											? __( 'Active', 'gslider-blocks' )
-											: __( 'Disabled', 'gslider-blocks' ) }
-									</span>
-								</div>
-								<p className="gslider-dashboard-block-description">{ block.description }</p>
+							<div className="gslider-dashboard-block-control">
+								<ToggleSwitch
+									id={ `gslider-toggle-${ block.slug }` }
+									checked={ block.enabled }
+									disabled={ Boolean( isToggling[ block.slug ] ) }
+									onChange={ ( nextVal ) => handleToggle( block.slug, nextVal ) }
+									ariaLabel={ sprintf(
+										/* translators: %s: Block name */
+										__( 'Toggle %s status', 'gslider-blocks' ),
+										block.name
+									) }
+								/>
 							</div>
 						</div>
 
-						<div className="gslider-dashboard-block-control">
-							<ToggleSwitch
-								id={ `gslider-toggle-${ block.slug }` }
-								checked={ block.enabled }
-								disabled={ Boolean( isToggling[ block.slug ] ) }
-								onChange={ ( nextVal ) => handleToggle( block.slug, nextVal ) }
-								ariaLabel={ sprintf(
-									/* translators: %s: Block name */
-									__( 'Toggle %s status', 'gslider-blocks' ),
-									block.name
-								) }
-							/>
+						<div className="gslider-dashboard-block-card-body">
+							<div className="gslider-dashboard-block-heading">
+								<h3 className="gslider-dashboard-block-name">{ block.name }</h3>
+								<span
+									className={ `gslider-dashboard-block-status-tag ${
+										block.enabled ? 'is-enabled' : 'is-disabled'
+									}` }
+								>
+									{ block.enabled
+										? __( 'Active', 'gslider-blocks' )
+										: __( 'Disabled', 'gslider-blocks' ) }
+								</span>
+							</div>
+							<p className="gslider-dashboard-block-description">{ block.description }</p>
 						</div>
 					</div>
 				) ) }

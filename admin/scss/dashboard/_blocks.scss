@@ -1,18 +1,25 @@
 // --------------------------------------------------------------------------
-// Blocks Manager Tab Styles
+// Blocks Manager Tab Styles (Modern 3-Column Card Grid)
 // --------------------------------------------------------------------------
 @use 'variables' as *;
+
+.gslider-dashboard-blocks-container {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.gslider-dashboard-blocks-header-card {
+	padding: 24px 28px;
+}
 
 .gslider-dashboard-blocks-header {
 	display: flex;
 	align-items: flex-start;
 	justify-content: space-between;
 	gap: 16px;
-	margin-bottom: 24px;
-	padding-bottom: 20px;
-	border-bottom: 1px solid $color-border;
 
-	@media (max-width: 600px) {
+	@media (max-width: 640px) {
 		flex-direction: column;
 		align-items: flex-start;
 	}
@@ -37,6 +44,7 @@
 	color: $color-text-muted;
 	margin: 0;
 	line-height: 1.5;
+	max-width: 720px;
 }
 
 .gslider-dashboard-blocks-badge {
@@ -53,41 +61,62 @@
 	white-space: nowrap;
 }
 
-.gslider-dashboard-blocks-list {
-	display: flex;
-	flex-direction: column;
-	gap: 0;
-}
-
-.gslider-dashboard-block-row {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
+// --------------------------------------------------------------------------
+// 3-Column / 2-Column Responsive Card Grid
+// --------------------------------------------------------------------------
+.gslider-dashboard-blocks-grid {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
 	gap: 20px;
-	padding: 18px 16px;
-	border-radius: 10px;
-	transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
-	border-bottom: 1px solid #f1f5f9;
 
-	&:last-child {
-		border-bottom: none;
+	@media (max-width: 1100px) {
+		grid-template-columns: repeat(2, 1fr);
 	}
 
+	@media (max-width: 680px) {
+		grid-template-columns: 1fr;
+	}
+}
+
+.gslider-dashboard-block-card {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding: 22px 20px;
+	border-radius: 14px;
+	transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+	min-height: 175px;
+
 	&:hover {
-		background-color: #f8fafc;
+		box-shadow: 0 10px 20px -4px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.03);
+		transform: translateY(-2px);
+	}
+
+	&.is-disabled {
+		background-color: #fafbfc;
+		opacity: 0.88;
+
+		.gslider-dashboard-block-icon {
+			background-color: #f1f5f9;
+			color: #94a3b8;
+		}
+
+		.gslider-dashboard-block-name {
+			color: #475569;
+		}
 	}
 
 	&.is-toggling {
-		opacity: 0.7;
+		opacity: 0.6;
+		pointer-events: none;
 	}
 }
 
-.gslider-dashboard-block-main {
+.gslider-dashboard-block-card-top {
 	display: flex;
 	align-items: center;
-	gap: 16px;
-	flex: 1;
-	min-width: 0;
+	justify-content: space-between;
+	margin-bottom: 18px;
 }
 
 .gslider-dashboard-block-icon {
@@ -107,20 +136,22 @@
 	}
 }
 
-.gslider-dashboard-block-row:hover .gslider-dashboard-block-icon {
-	background-color: rgba(0, 124, 186, 0.12);
+.gslider-dashboard-block-card:hover .gslider-dashboard-block-icon {
+	background-color: rgba(0, 124, 186, 0.14);
 }
 
-.gslider-dashboard-block-details {
+.gslider-dashboard-block-card-body {
+	display: flex;
+	flex-direction: column;
 	flex: 1;
-	min-width: 0;
 }
 
 .gslider-dashboard-block-heading {
 	display: flex;
 	align-items: center;
+	justify-content: space-between;
 	gap: 8px;
-	margin-bottom: 4px;
+	margin-bottom: 8px;
 }
 
 .gslider-dashboard-block-name {
@@ -136,7 +167,7 @@
 	font-family: $font-family-sans;
 	font-size: 11px;
 	font-weight: 600;
-	padding: 2px 7px;
+	padding: 2px 8px;
 	border-radius: 9999px;
 	line-height: 1.2;
 
@@ -162,7 +193,6 @@
 .gslider-dashboard-block-control {
 	display: flex;
 	align-items: center;
-	gap: 12px;
 	flex-shrink: 0;
 }
 
