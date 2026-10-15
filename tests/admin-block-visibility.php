@@ -265,6 +265,25 @@ if ( in_array( 'gslider-blocks/logo-carousel', $wp_options['gslider_disabled_blo
 }
 echo "OK: Enabling logo-carousel clears it from disabled list\n";
 
+// Test 6b: Bulk deactivate all blocks with slug: 'all'.
+$request  = new WP_REST_Request( [ 'slug' => 'all', 'enabled' => false ] );
+$response = $controller->toggle_block( $request );
+$data     = $response->get_data();
+if ( count( $wp_options['gslider_disabled_blocks'] ) !== 6 ) {
+	fwrite( STDERR, "FAIL: Deactivating all blocks did not add all 6 blocks to disabled list\n" );
+	exit( 1 );
+}
+echo "OK: Bulk deactivating all blocks disables all 6 blocks\n";
+
+// Test 6c: Bulk activate all blocks with slug: 'all'.
+$request  = new WP_REST_Request( [ 'slug' => 'all', 'enabled' => true ] );
+$response = $controller->toggle_block( $request );
+if ( ! empty( $wp_options['gslider_disabled_blocks'] ) ) {
+	fwrite( STDERR, "FAIL: Activating all blocks did not empty disabled list\n" );
+	exit( 1 );
+}
+echo "OK: Bulk activating all blocks enables all blocks\n";
+
 // Test 7: Dashboard hooks allowed_block_types_all.
 $dashboard = Dashboard::getInstance();
 $dashboard->register();

@@ -101,7 +101,6 @@ const BLOCKS_METADATA = [
  * @return {JSX.Element} Rendered blocks management view.
  */
 const BlocksTab = ( { dashboardData = null, setDashboardData } ) => {
-	// Initialize blocks list from dashboardData if available, else default all to enabled.
 	const getInitialBlocks = () => {
 		const serverBlocks = dashboardData?.blocks || [];
 		return BLOCKS_METADATA.map( ( meta ) => {
@@ -115,12 +114,12 @@ const BlocksTab = ( { dashboardData = null, setDashboardData } ) => {
 
 	const [ blocks, setBlocks ] = useState( getInitialBlocks );
 	const [ isToggling, setIsToggling ] = useState( {} );
+	const [ isBulkUpdating, setIsBulkUpdating ] = useState( false );
 	const [ toast, setToast ] = useState( null );
 	const toastTimeoutRef = useRef( null );
 
-	// Sync local state when server data updates (if not currently toggling).
 	useEffect( () => {
-		if ( dashboardData?.blocks && Object.values( isToggling ).every( ( v ) => ! v ) ) {
+		if ( dashboardData?.blocks && Object.values( isToggling ).every( ( v ) => ! v ) && ! isBulkUpdating ) {
 			setBlocks( ( currentBlocks ) =>
 				currentBlocks.map( ( block ) => {
 					const found = dashboardData.blocks.find( ( b ) => b.slug === block.slug );
@@ -128,9 +127,8 @@ const BlocksTab = ( { dashboardData = null, setDashboardData } ) => {
 				} )
 			);
 		}
-	}, [ dashboardData, isToggling ] );
+	}, [ dashboardData, isToggling, isBulkUpdating ] );
 
-	// Cleanup toast timer on unmount.
 	useEffect( () => {
 		return () => {
 			if ( toastTimeoutRef.current ) {
@@ -139,12 +137,6 @@ const BlocksTab = ( { dashboardData = null, setDashboardData } ) => {
 		};
 	}, [] );
 
-	/**
-	 * Displays a transient feedback notification.
-	 *
-	 * @param {'success'|'error'} type    Notification type.
-	 * @param {string}            message Notification text.
-	 */
 	const showToast = ( type, message ) => {
 		if ( toastTimeoutRef.current ) {
 			clearTimeout( toastTimeoutRef.current );
@@ -155,24 +147,16 @@ const BlocksTab = ( { dashboardData = null, setDashboardData } ) => {
 		}, 3000 );
 	};
 
-	/**
-	 * Handles optimistic toggling of a slider block with server synchronization.
-	 *
-	 * @param {string}  slug        The block slug.
-	 * @param {boolean} nextEnabled Intended state.
-	 */
 	const handleToggle = async ( slug, nextEnabled ) => {
-		if ( isToggling[ slug ] ) {
+		if ( isToggling[ slug ] || isBulkUpdating ) {
 			return;
 		}
 
-		// Snapshot previous state for rollback.
 		const prevBlocks = [ ...blocks ];
 		const updatedBlocks = blocks.map( ( b ) =>
 			b.slug === slug ? { ...b, enabled: nextEnabled } : b
 		);
 
-		// Optimistic UI update.
 		setBlocks( updatedBlocks );
 		setIsToggling( ( prev ) => ( { ...prev, [ slug ]: true } ) );
 
@@ -221,7 +205,6 @@ const BlocksTab = ( { dashboardData = null, setDashboardData } ) => {
 				throw new Error( 'Toggle rejected by server' );
 			}
 		} catch ( err ) {
-			// Rollback to previous state on network failure.
 			setBlocks( prevBlocks );
 			if ( typeof setDashboardData === 'function' ) {
 				setDashboardData( ( prev ) =>
@@ -246,6 +229,83 @@ const BlocksTab = ( { dashboardData = null, setDashboardData } ) => {
 		}
 	};
 
+	const handleToggleAll = async ( nextEnabled ) => {
+		if ( isBulkUpdating ) {
+			return;
+		}
+
+		const prevBlocks = [ ...blocks ];
+		const updatedBlocks = blocks.map( ( b ) => ( { ...b, enabled: nextEnabled } ) );
+
+		setBlocks( updatedBlocks );
+		setIsBulkUpdating( true );
+
+		if ( typeof setDashboardData === 'function' ) {
+			setDashboardData( ( prev ) =>
+				prev
+					? {
+						...prev,
+						blocks: updatedBlocks.map( ( b ) => ( {
+							slug: b.slug,
+							name: b.name,
+							enabled: b.enabled,
+						} ) ),
+					}
+					: prev
+			);
+		}
+
+		try {
+			const response = await apiFetch( {
+				path: '/gslider/v1/dashboard/toggle-block',
+				method: 'POST',
+				data: {
+					slug: 'all',
+					enabled: nextEnabled,
+				},
+			} );
+
+			if ( response && response.status === 'success' ) {
+				showToast(
+					'success',
+					nextEnabled
+						? __( 'All slider blocks activated successfully', 'gslider-blocks' )
+						: __( 'All slider blocks deactivated successfully', 'gslider-blocks' )
+				);
+
+				if ( response.blocks && typeof setDashboardData === 'function' ) {
+					setDashboardData( ( prev ) =>
+						prev ? { ...prev, blocks: response.blocks } : prev
+					);
+				}
+			} else {
+				throw new Error( 'Bulk toggle rejected by server' );
+			}
+		} catch ( err ) {
+			setBlocks( prevBlocks );
+			if ( typeof setDashboardData === 'function' ) {
+				setDashboardData( ( prev ) =>
+					prev
+						? {
+							...prev,
+							blocks: prevBlocks.map( ( b ) => ( {
+								slug: b.slug,
+								name: b.name,
+								enabled: b.enabled,
+							} ) ),
+						}
+						: prev
+				);
+			}
+			showToast(
+				'error',
+				__( 'Failed to update all blocks. Please try again.', 'gslider-blocks' )
+			);
+		} finally {
+			setIsBulkUpdating( false );
+		}
+	};
+
 	const activeCount = blocks.filter( ( b ) => b.enabled ).length;
 	const totalCount = blocks.length;
 
@@ -266,6 +326,24 @@ const BlocksTab = ( { dashboardData = null, setDashboardData } ) => {
 						</p>
 					</div>
 					<div className="gslider-dashboard-blocks-header-right">
+						<div className="gslider-dashboard-blocks-actions">
+							<button
+								type="button"
+								className="gslider-dashboard-btn-sm"
+								disabled={ activeCount === totalCount || isBulkUpdating }
+								onClick={ () => handleToggleAll( true ) }
+							>
+								{ __( 'Activate All', 'gslider-blocks' ) }
+							</button>
+							<button
+								type="button"
+								className="gslider-dashboard-btn-sm"
+								disabled={ activeCount === 0 || isBulkUpdating }
+								onClick={ () => handleToggleAll( false ) }
+							>
+								{ __( 'Deactivate All', 'gslider-blocks' ) }
+							</button>
+						</div>
 						<span className="gslider-dashboard-blocks-badge">
 							<svg width="12" height="12" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
 								<circle cx="8" cy="8" r="6" fill="currentColor" fillOpacity="0.2" />
@@ -273,7 +351,7 @@ const BlocksTab = ( { dashboardData = null, setDashboardData } ) => {
 							</svg>
 							<span>
 								{ sprintf(
-									__( '%1$d of %2$d Enabled', 'gslider-blocks' ),
+									__( '%1$d of %2$d Active', 'gslider-blocks' ),
 									activeCount,
 									totalCount
 								) }
@@ -294,12 +372,26 @@ const BlocksTab = ( { dashboardData = null, setDashboardData } ) => {
 						} ${ isToggling[ block.slug ] ? 'is-toggling' : '' }` }
 					>
 						<div className="gslider-dashboard-block-card-top">
-							<div className="gslider-dashboard-block-icon">{ block.icon }</div>
+							<div className="gslider-dashboard-block-identity">
+								<div className="gslider-dashboard-block-icon">{ block.icon }</div>
+								<div className="gslider-dashboard-block-meta">
+									<h3 className="gslider-dashboard-block-name">{ block.name }</h3>
+									<span
+										className={ `gslider-dashboard-block-status-tag ${
+											block.enabled ? 'is-enabled' : 'is-disabled'
+										}` }
+									>
+										{ block.enabled
+											? __( 'Active', 'gslider-blocks' )
+											: __( 'Disabled', 'gslider-blocks' ) }
+									</span>
+								</div>
+							</div>
 							<div className="gslider-dashboard-block-control">
 								<ToggleSwitch
 									id={ `gslider-toggle-${ block.slug }` }
 									checked={ block.enabled }
-									disabled={ Boolean( isToggling[ block.slug ] ) }
+									disabled={ Boolean( isToggling[ block.slug ] || isBulkUpdating ) }
 									onChange={ ( nextVal ) => handleToggle( block.slug, nextVal ) }
 									ariaLabel={ sprintf(
 										/* translators: %s: Block name */
@@ -311,18 +403,6 @@ const BlocksTab = ( { dashboardData = null, setDashboardData } ) => {
 						</div>
 
 						<div className="gslider-dashboard-block-card-body">
-							<div className="gslider-dashboard-block-heading">
-								<h3 className="gslider-dashboard-block-name">{ block.name }</h3>
-								<span
-									className={ `gslider-dashboard-block-status-tag ${
-										block.enabled ? 'is-enabled' : 'is-disabled'
-									}` }
-								>
-									{ block.enabled
-										? __( 'Active', 'gslider-blocks' )
-										: __( 'Disabled', 'gslider-blocks' ) }
-								</span>
-							</div>
 							<p className="gslider-dashboard-block-description">{ block.description }</p>
 						</div>
 					</div>

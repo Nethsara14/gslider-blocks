@@ -189,13 +189,37 @@ if ( ! class_exists( DashboardController::class, false ) ) {
 			$raw_slug = (string) $request->get_param( 'slug' );
 			$enabled  = (bool) $request->get_param( 'enabled' );
 
-			$short_slug = str_replace( 'gslider-blocks/', '', $raw_slug );
-			$full_slug  = 'gslider-blocks/' . $short_slug;
-
 			$disabled_blocks = get_option( 'gslider_disabled_blocks', [] );
 			if ( ! is_array( $disabled_blocks ) ) {
 				$disabled_blocks = [];
 			}
+
+			if ( 'all' === $raw_slug ) {
+				if ( $enabled ) {
+					$disabled_blocks = [];
+				} else {
+					$disabled_blocks = [
+						'gslider-blocks/base',
+						'gslider-blocks/flexi-content',
+						'gslider-blocks/flexi-content-item',
+						'gslider-blocks/image-slider',
+						'gslider-blocks/logo-carousel',
+						'gslider-blocks/testimonial',
+					];
+				}
+				update_option( 'gslider_disabled_blocks', $disabled_blocks );
+
+				return rest_ensure_response( [
+					'status'          => 'success',
+					'slug'            => 'all',
+					'enabled'         => $enabled,
+					'blocks'          => $this->get_blocks_status(),
+					'disabled_blocks' => $disabled_blocks,
+				] );
+			}
+
+			$short_slug = str_replace( 'gslider-blocks/', '', $raw_slug );
+			$full_slug  = 'gslider-blocks/' . $short_slug;
 
 			if ( $enabled ) {
 				$to_remove = [ $short_slug, $full_slug ];
