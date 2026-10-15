@@ -125,9 +125,9 @@ export default generateBlockStyle;
 
 ## 🎨 Admin Dashboard Global Design Tokens Architecture
 
-For the React SPA Admin Dashboard (`admin.php?page=gslider-blocks`), hardcoding font-family, colors, typography, or spacing directly in stylesheets is **strictly forbidden**.
+For the React SPA Admin Dashboard (`admin.php?page=gslider-blocks`), font families and color palettes must always be imported from the centralized design tokens (`admin/scss/dashboard/_variables.scss`). Component-specific sizing, spacing (padding/margin), and radii are declared directly per component.
 
-All admin dashboard styles must be managed centrally via `admin/scss/dashboard/_variables.scss`:
+All dashboard color and typography tokens must be managed centrally via `admin/scss/dashboard/_variables.scss`:
 
 ```scss
 // admin/scss/dashboard/_variables.scss
@@ -140,7 +140,7 @@ $color-surface: #ffffff;
 $color-border: #e2e8f0;
 $color-text-primary: #0f172a;   // Slate 900
 $color-text-secondary: #475569; // Slate 600
-$color-text-muted: #94a3b8;     // Slate 400
+$color-text-muted: #64748b;     // Slate 500 (WCAG AA Compliant on #ffffff)
 $color-brand-primary: #2563eb;  // Accent Blue
 
 // Elevation & Shadows
