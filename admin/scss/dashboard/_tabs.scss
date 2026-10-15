@@ -26,9 +26,9 @@ body.toplevel_page_gslider-blocks {
 			gap: 4px;
 			background-color: $color-surface;
 			border: 1px solid $color-border;
-			border-radius: $radius-full;
+			border-radius: 9999px;
 			padding: 4px;
-			box-shadow: $shadow-subtle;
+			box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 			max-width: 100%;
 		}
 
@@ -43,11 +43,11 @@ body.toplevel_page_gslider-blocks {
 			color: $color-text-secondary;
 			background-color: transparent;
 			border: none;
-			border-radius: $radius-full;
+			border-radius: 9999px;
 			cursor: pointer;
 			white-space: nowrap;
 			outline: none;
-			transition: color $transition-fast, background-color $transition-fast, box-shadow $transition-fast;
+			transition: color 150ms cubic-bezier(0.4, 0, 0.2, 1), background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), box-shadow 150ms cubic-bezier(0.4, 0, 0.2, 1);
 
 			&:hover {
 				color: $color-text-primary;
@@ -63,7 +63,7 @@ body.toplevel_page_gslider-blocks {
 				background-color: $color-brand-primary;
 				color: $color-text-inverse;
 				font-weight: 600;
-				box-shadow: $shadow-xs;
+				box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
 
 				&:hover {
 					background-color: $color-brand-hover;
@@ -103,12 +103,12 @@ body.toplevel_page_gslider-blocks {
 			font-size: 11px;
 			font-weight: 600;
 			line-height: 1;
-			border-radius: $radius-full;
+			border-radius: 9999px;
 			background-color: $color-surface-hover;
 			color: $color-text-secondary;
 			border: 1px solid $color-border;
 			font-family: $font-family-mono;
-			transition: background-color $transition-fast, color $transition-fast, border-color $transition-fast;
+			transition: background-color 150ms cubic-bezier(0.4, 0, 0.2, 1), color 150ms cubic-bezier(0.4, 0, 0.2, 1), border-color 150ms cubic-bezier(0.4, 0, 0.2, 1);
 		}
 
 		.gslider-dashboard-tabpanel {
