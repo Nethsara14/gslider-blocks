@@ -1,0 +1,118 @@
+// ==========================================================================
+// GSlider Blocks - Dashboard Floating Pill Navigation Styles
+// ==========================================================================
+
+@use "variables" as *;
+
+body.toplevel_page_gslider-blocks {
+	.gslider-admin-wrap {
+		.gslider-dashboard-nav {
+			display: flex;
+			align-items: center;
+			margin-bottom: 28px;
+			overflow-x: auto;
+			padding: 2px 0;
+			scrollbar-width: none;
+			-webkit-overflow-scrolling: touch;
+
+			&::-webkit-scrollbar {
+				display: none;
+			}
+		}
+
+		.gslider-dashboard-tabs {
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+			background-color: $color-surface;
+			border: 1px solid $color-border;
+			border-radius: $radius-full;
+			padding: 4px;
+			box-shadow: $shadow-subtle;
+			max-width: 100%;
+		}
+
+		.gslider-dashboard-tab {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			padding: 7px 16px;
+			font-size: 13px;
+			font-weight: 500;
+			line-height: 1;
+			color: $color-text-secondary;
+			background-color: transparent;
+			border: none;
+			border-radius: $radius-full;
+			cursor: pointer;
+			white-space: nowrap;
+			outline: none;
+			transition: color $transition-fast, background-color $transition-fast, box-shadow $transition-fast;
+
+			&:hover {
+				color: $color-text-primary;
+				background-color: $color-surface-hover;
+			}
+
+			&:focus-visible {
+				outline: 2px solid $color-brand-primary;
+				outline-offset: 2px;
+			}
+
+			&.is-active {
+				background-color: $color-brand-primary;
+				color: $color-text-inverse;
+				font-weight: 600;
+				box-shadow: $shadow-xs;
+
+				&:hover {
+					background-color: $color-brand-hover;
+					color: $color-text-inverse;
+				}
+
+				.gslider-dashboard-tab-badge {
+					background-color: rgba(255, 255, 255, 0.22);
+					color: $color-text-inverse;
+					border-color: rgba(255, 255, 255, 0.3);
+				}
+			}
+		}
+
+		.gslider-dashboard-tab-icon {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-shrink: 0;
+
+			svg {
+				display: block;
+			}
+		}
+
+		.gslider-dashboard-tab-label {
+			line-height: 1;
+		}
+
+		.gslider-dashboard-tab-badge {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			min-width: 18px;
+			height: 18px;
+			padding: 0 5px;
+			font-size: 11px;
+			font-weight: 600;
+			line-height: 1;
+			border-radius: $radius-full;
+			background-color: $color-surface-hover;
+			color: $color-text-secondary;
+			border: 1px solid $color-border;
+			font-family: $font-family-mono;
+			transition: background-color $transition-fast, color $transition-fast, border-color $transition-fast;
+		}
+
+		.gslider-dashboard-tabpanel {
+			outline: none;
+		}
+	}
+}
