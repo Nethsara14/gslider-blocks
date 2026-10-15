@@ -88,9 +88,9 @@ const OverviewTab = ( {
 				className="gslider-dashboard-grid gslider-dashboard-metrics-grid"
 				aria-label={ __( 'Key Metrics', 'gslider-blocks' ) }
 			>
-				{ /* Card 1: Pages with a Slider */ }
+				{ /* Card 1: Sliders */ }
 				<MetricCard
-					title={ __( 'Pages with a Slider', 'gslider-blocks' ) }
+					title={ __( 'Sliders', 'gslider-blocks' ) }
 					value={
 						hasError
 							? '—'
@@ -98,7 +98,7 @@ const OverviewTab = ( {
 							? slidersCount
 							: null
 					}
-					subtitle={ hasError ? null : __( 'Published across posts and pages', 'gslider-blocks' ) }
+					subtitle={ hasError ? null : __( 'On published posts and pages', 'gslider-blocks' ) }
 					isLoading={ isLoading }
 					emptyMessage={
 						hasError

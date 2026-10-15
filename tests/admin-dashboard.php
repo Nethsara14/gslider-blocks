@@ -484,7 +484,8 @@ foreach ( $required_card_classes as $class_name ) {
 $required_overview_strings = [
 	'/gslider/v1/dashboard',
 	'post-new.php?post_type=page',
-	'Pages with a Slider',
+	'Sliders',
+	'On published posts and pages',
 	'Active Core Blocks',
 	'Modern Architecture',
 	'Create Your First Slider in 3 Simple Steps',
