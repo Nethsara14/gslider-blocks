@@ -134,10 +134,6 @@ All admin dashboard styles must be managed centrally via `admin/scss/dashboard/_
 $font-family-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
 $font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-// Font Weights & Line Heights
-$font-weight-regular: 400; $font-weight-medium: 500; $font-weight-semibold: 600; $font-weight-bold: 700;
-$line-height-tight: 1.2;   $line-height-normal: 1.5;
-
 // Apple & Linear Minimalist Palette Tokens
 $color-canvas: #f8fafc;
 $color-surface: #ffffff;
@@ -157,7 +153,7 @@ $shadow-card: 0 4px 16px -2px rgba(15, 23, 42, 0.05);
 ```
 
 ### Usage in Dashboard SCSS Modules:
-Every dashboard SCSS file must import the design tokens at the top. Font sizes are declared directly per component:
+Every dashboard SCSS file must import the design tokens at the top. Typography details (font-size, font-weight, line-height) are declared directly per component:
 ```scss
 @use 'variables' as *;
 
@@ -170,8 +166,9 @@ Every dashboard SCSS file must import the design tokens at the top. Font sizes a
 
     h1 {
         font-size: 24px;
-        font-weight: $font-weight-bold;
+        font-weight: 700;
         color: $color-text-primary;
+        line-height: 1.2;
     }
 }
 ```

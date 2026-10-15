@@ -17,16 +17,16 @@
 		h1 {
 			margin: 0 0 $space-3;
 			font-size: 24px;
-			font-weight: $font-weight-bold;
+			font-weight: 700;
 			color: $color-text-primary;
-			line-height: $line-height-tight;
+			line-height: 1.2;
 		}
 
 		p {
 			margin: 0;
 			font-size: 14px;
 			color: $color-text-secondary;
-			line-height: $line-height-normal;
+			line-height: 1.5;
 		}
 	}
 }
