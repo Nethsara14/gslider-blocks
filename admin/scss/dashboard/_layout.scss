@@ -9,6 +9,8 @@
 
 body.toplevel_page_gslider-blocks {
 	.gslider-admin-wrap {
+		background-color: $color-canvas;
+		min-height: calc(100vh - 32px);
 		margin: 0;
 		padding: 0;
 		box-sizing: border-box;
