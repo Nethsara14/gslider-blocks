@@ -11,6 +11,7 @@ import { useState, useEffect, useCallback } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 import Header from './components/Header';
 import Navigation from './components/Navigation';
+import OverviewTab from './tabs/OverviewTab';
 
 /**
  * Valid tab identifiers.
@@ -78,17 +79,7 @@ const App = () => {
 					className="gslider-dashboard-tabpanel"
 					tabIndex={0}
 				>
-					{activeTab === 'overview' && (
-						<div className="gslider-dashboard-card">
-							<h2>{__('Welcome to GSlider Studio', 'gslider-blocks')}</h2>
-							<p>
-								{__(
-									'High-performance, modern responsive slider and carousel blocks engineered for Gutenberg and Full Site Editing.',
-									'gslider-blocks'
-								)}
-							</p>
-						</div>
-					)}
+					{activeTab === 'overview' && <OverviewTab setActiveTab={setActiveTab} />}
 
 					{activeTab === 'blocks' && (
 						<div className="gslider-dashboard-card">
