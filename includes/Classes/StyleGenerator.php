@@ -96,8 +96,14 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
          */
         public function register(): void {
             add_filter( 'render_block', [ $this, 'collect_dynamic_styles' ], 10, 2 );
-            add_action( 'wp_footer', [ $this, 'generate_css_file' ], 10 );
-            add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_dynamic_styles' ] );
+
+            if ( 'inline' === self::get_css_delivery_mode() ) {
+                add_action( 'wp_head', [ $this, 'print_inline_styles' ], 100 );
+                add_action( 'wp_footer', [ $this, 'print_inline_styles' ], 100 );
+            } else {
+                add_action( 'wp_footer', [ $this, 'generate_css_file' ], 10 );
+                add_action( 'wp_enqueue_scripts', [ $this, 'enqueue_dynamic_styles' ] );
+            }
         }
 
         /**
@@ -169,6 +175,10 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
          * @return void
          */
         public function generate_css_file() {
+            if ( 'inline' === self::get_css_delivery_mode() ) {
+                return;
+            }
+
             if ( empty( self::$styles ) ) {
                 return;
             }
@@ -233,6 +243,10 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
          * @return void
          */
         public function enqueue_dynamic_styles() {
+            if ( 'inline' === self::get_css_delivery_mode() ) {
+                return;
+            }
+
             clearstatcache();
             $page_id       = get_queried_object_id();
             $css_filename  = 'gslider-blocks-dynamic-styles-' . $page_id . '.min.css';
@@ -251,6 +265,152 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
                     filemtime( $css_file_path )
                 );
             }
+        }
+
+        /**
+         * Retrieves the current dynamic CSS delivery mode ('file' or 'inline').
+         *
+         * @since 1.2.0
+         *
+         * @return string Delivery mode: 'file' or 'inline'.
+         */
+        public static function get_css_delivery_mode(): string {
+            $settings = get_option( 'gslider_settings', [] );
+            $mode     = is_array( $settings ) && isset( $settings['css_delivery'] ) && in_array( $settings['css_delivery'], [ 'file', 'inline' ], true )
+                ? (string) $settings['css_delivery']
+                : 'file';
+
+            /**
+             * Filters the dynamic CSS delivery mode.
+             *
+             * @since 1.2.0
+             *
+             * @param string $mode Delivery mode ('file' or 'inline').
+             */
+            return (string) apply_filters( 'gslider_css_delivery_mode', $mode );
+        }
+
+        /**
+         * Outputs dynamic styles directly into the HTML head or footer in inline mode.
+         *
+         * @since 1.2.0
+         *
+         * @return void
+         */
+        public function print_inline_styles(): void {
+            if ( 'inline' !== self::get_css_delivery_mode() ) {
+                return;
+            }
+
+            // In wp_head, attempt to extract styles from the queried post before the body renders.
+            if ( function_exists( 'doing_action' ) && doing_action( 'wp_head' ) ) {
+                $this->collect_styles_from_queried_post();
+            }
+
+            if ( empty( self::$styles ) ) {
+                return;
+            }
+
+            $css_content = '';
+            foreach ( self::$styles as $block_id => $style ) {
+                $css_content .= $style;
+            }
+
+            $minified = $this->minify_css( $css_content );
+            if ( '' !== $minified ) {
+                printf(
+                    "<style id=\"gslider-blocks-dynamic-styles-inline\">\n%s\n</style>\n",
+                    $minified
+                );
+            }
+
+            // Clear styles so footer doesn't duplicate them.
+            self::$styles = [];
+        }
+
+        /**
+         * Extracts block styles from the currently queried post in wp_head.
+         *
+         * @since 1.2.0
+         *
+         * @return void
+         */
+        private function collect_styles_from_queried_post(): void {
+            $page_id = get_queried_object_id();
+            if ( ! $page_id ) {
+                return;
+            }
+
+            $post = get_post( $page_id );
+            if ( ! $post || empty( $post->post_content ) ) {
+                return;
+            }
+
+            if ( false === strpos( $post->post_content, 'wp:gslider-blocks/' ) ) {
+                return;
+            }
+
+            if ( function_exists( 'parse_blocks' ) ) {
+                $blocks = parse_blocks( $post->post_content );
+                if ( is_array( $blocks ) ) {
+                    $this->extract_styles_from_blocks( $blocks );
+                }
+            }
+        }
+
+        /**
+         * Recursively extracts and sanitizes dynamic styles from parsed Gutenberg blocks.
+         *
+         * @since 1.2.0
+         *
+         * @param array $blocks Array of parsed block structures.
+         * @return void
+         */
+        private function extract_styles_from_blocks( array $blocks ): void {
+            foreach ( $blocks as $block ) {
+                if ( ! is_array( $block ) ) {
+                    continue;
+                }
+
+                if ( ! empty( $block['blockName'] ) && 0 === strpos( $block['blockName'], 'gslider-blocks/' ) ) {
+                    if ( ! empty( $block['attrs']['blockStyle'] ) ) {
+                        $block_id = isset( $block['attrs']['blockId'] )
+                            ? sanitize_key( $block['attrs']['blockId'] )
+                            : 'gslider-blocks-' . md5( serialize( $block['attrs'] ) );
+
+                        $clean_style = CssSanitizer::sanitize( $block['attrs']['blockStyle'] );
+                        if ( '' !== $clean_style ) {
+                            self::$styles[ $block_id ] = $clean_style;
+                        }
+                    }
+                }
+
+                if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+                    $this->extract_styles_from_blocks( $block['innerBlocks'] );
+                }
+            }
+        }
+
+        /**
+         * Resets collected styles in memory (primarily for unit testing).
+         *
+         * @since 1.2.0
+         *
+         * @return void
+         */
+        public static function reset_styles(): void {
+            self::$styles = [];
+        }
+
+        /**
+         * Gets collected styles array (primarily for unit testing).
+         *
+         * @since 1.2.0
+         *
+         * @return string[]
+         */
+        public static function get_collected_styles(): array {
+            return self::$styles;
         }
 
         /**
