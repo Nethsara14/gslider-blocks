@@ -149,15 +149,18 @@ if ( ! class_exists( DashboardController::class, false ) ) {
 		}
 
 		/**
-		 * Counts published sliders across posts and pages with transient caching.
+		 * Counts total published sliders across posts and pages with transient caching.
 		 *
-		 * Queries published posts and pages containing GSlider block markup.
+		 * Queries published posts and pages containing GSlider block markup and
+		 * counts each individual slider block instance (image-slider, testimonial,
+		 * logo-carousel, flexi-content, base) while excluding child slide items.
+		 *
 		 * To avoid expensive table scans on high-traffic sites, the count is
 		 * cached in a transient and flushed automatically on save_post and deleted_post.
 		 *
 		 * @since 1.2.0
 		 *
-		 * @return int Total number of published slider posts/pages.
+		 * @return int Total number of published slider blocks.
 		 */
 		public function get_sliders_count(): int {
 			$cached = get_transient( self::CACHE_KEY_SLIDER_COUNT );
@@ -170,12 +173,35 @@ if ( ! class_exists( DashboardController::class, false ) ) {
 				return 0;
 			}
 
-			$query = "SELECT COUNT(*) FROM {$wpdb->posts}
+			$query = "SELECT post_content FROM {$wpdb->posts}
 				WHERE post_status = 'publish'
 				AND post_type IN ('post', 'page')
 				AND post_content LIKE '%wp:gslider-blocks/%'";
 
-			$count = (int) $wpdb->get_var( $query );
+			$posts_content = method_exists( $wpdb, 'get_col' )
+				? $wpdb->get_col( $query )
+				: [];
+
+			$count = 0;
+			if ( is_array( $posts_content ) && ! empty( $posts_content ) ) {
+				foreach ( $posts_content as $content ) {
+					if ( ! is_string( $content ) || '' === $content ) {
+						continue;
+					}
+
+					// Count every top-level GSlider slider block instance (excluding child items).
+					$matches = null;
+					$matched = preg_match_all(
+						'/<!--\s+wp:gslider-blocks\/(image-slider|testimonial|logo-carousel|flexi-content|base)(?![-\w])/i',
+						$content,
+						$matches
+					);
+
+					if ( false !== $matched ) {
+						$count += (int) $matched;
+					}
+				}
+			}
 
 			$expiration = defined( 'HOUR_IN_SECONDS' ) ? 12 * HOUR_IN_SECONDS : 43200;
 			set_transient( self::CACHE_KEY_SLIDER_COUNT, $count, $expiration );
@@ -197,6 +223,23 @@ if ( ! class_exists( DashboardController::class, false ) ) {
 		}
 
 		/**
+		 * Checks whether a specific block slug is currently enabled.
+		 *
+		 * Supports both short slug ('image-slider') and full block name
+		 * ('gslider-blocks/image-slider') in the disabled blocks array.
+		 *
+		 * @since 1.2.0
+		 *
+		 * @param string        $slug            The block slug without prefix.
+		 * @param array<string> $disabled_blocks The list of disabled blocks.
+		 * @return bool True if block is enabled, false if disabled.
+		 */
+		public function is_block_enabled( string $slug, array $disabled_blocks ): bool {
+			return ! in_array( $slug, $disabled_blocks, true )
+				&& ! in_array( 'gslider-blocks/' . $slug, $disabled_blocks, true );
+		}
+
+		/**
 		 * Retrieves the list of available blocks with their active status.
 		 *
 		 * @since 1.2.0
@@ -213,27 +256,27 @@ if ( ! class_exists( DashboardController::class, false ) ) {
 				[
 					'slug'    => 'image-slider',
 					'name'    => __( 'Image Slider', 'gslider-blocks' ),
-					'enabled' => ! in_array( 'image-slider', $disabled_blocks, true ),
+					'enabled' => $this->is_block_enabled( 'image-slider', $disabled_blocks ),
 				],
 				[
 					'slug'    => 'testimonial',
 					'name'    => __( 'Testimonial Slider', 'gslider-blocks' ),
-					'enabled' => ! in_array( 'testimonial', $disabled_blocks, true ),
+					'enabled' => $this->is_block_enabled( 'testimonial', $disabled_blocks ),
 				],
 				[
 					'slug'    => 'logo-carousel',
 					'name'    => __( 'Logo Carousel', 'gslider-blocks' ),
-					'enabled' => ! in_array( 'logo-carousel', $disabled_blocks, true ),
+					'enabled' => $this->is_block_enabled( 'logo-carousel', $disabled_blocks ),
 				],
 				[
 					'slug'    => 'flexi-content',
 					'name'    => __( 'Flexi Content Slider', 'gslider-blocks' ),
-					'enabled' => ! in_array( 'flexi-content', $disabled_blocks, true ),
+					'enabled' => $this->is_block_enabled( 'flexi-content', $disabled_blocks ),
 				],
 				[
 					'slug'    => 'base',
 					'name'    => __( 'Base Slider', 'gslider-blocks' ),
-					'enabled' => ! in_array( 'base', $disabled_blocks, true ),
+					'enabled' => $this->is_block_enabled( 'base', $disabled_blocks ),
 				],
 			];
 
@@ -257,9 +300,9 @@ if ( ! class_exists( DashboardController::class, false ) ) {
 		public function get_system_metrics(): array {
 			global $wp_version;
 
-			$memory_limit = defined( 'WP_MEMORY_LIMIT' ) ? WP_MEMORY_LIMIT : ini_get( 'memory_limit' );
+			$memory_limit = ini_get( 'memory_limit' );
 			if ( ! $memory_limit ) {
-				$memory_limit = '256M';
+				$memory_limit = defined( 'WP_MEMORY_LIMIT' ) ? WP_MEMORY_LIMIT : '256M';
 			}
 
 			$current_wp_version = function_exists( 'get_bloginfo' )

@@ -103,11 +103,16 @@ if ( ! class_exists( 'WP_Error' ) ) {
 class MockWPDB {
 	public $posts      = 'wp_posts';
 	public $last_query = '';
-	public $return_var = 5;
+	public $return_col = [];
+
+	public function get_col( $query ) {
+		$this->last_query = $query;
+		return $this->return_col;
+	}
 
 	public function get_var( $query ) {
 		$this->last_query = $query;
-		return $this->return_var;
+		return count( $this->return_col );
 	}
 }
 
@@ -286,32 +291,37 @@ assert_true( true === $perm_result, 'Authorized administrator receives true for 
 // Test 5: Sliders Count Query & Transient Caching
 // --------------------------------------------------------------------------
 $wp_transients = [];
-$wpdb->return_var = 7;
+// Mock 2 posts: Post 1 has 2 image sliders and 1 child item; Post 2 has 1 testimonial and 1 base slider.
+// Total actual slider instances = 4 (excluding child items).
+$wpdb->return_col = [
+	'<!-- wp:gslider-blocks/image-slider {"blockId":"img-1"} /--> <p>Hello</p> <!-- wp:gslider-blocks/flexi-content-item /--> <!-- wp:gslider-blocks/image-slider {"blockId":"img-2"} /-->',
+	'<!-- wp:gslider-blocks/testimonial {"blockId":"testi-1"} /--> <!-- wp:gslider-blocks/base {"blockId":"base-1"} /-->',
+];
 
 // Fetch count when transient is empty (triggers DB query).
 $count = $controller->get_sliders_count();
-assert_true( 7 === $count, 'get_sliders_count returns query result on initial fetch' );
+assert_true( 4 === $count, 'get_sliders_count accurately counts total published slider blocks (4 instances across 2 posts)' );
 assert_true( strpos( $wpdb->last_query, "post_status = 'publish'" ) !== false, 'Query filters strictly by publish status' );
 assert_true( strpos( $wpdb->last_query, "post_type IN ('post', 'page')" ) !== false, 'Query filters strictly by post and page post_types' );
 assert_true( strpos( $wpdb->last_query, "post_content LIKE '%wp:gslider-blocks/%'" ) !== false, 'Query matches GSlider block markup' );
 assert_true( isset( $wp_transients['gslider_slider_count_cache'] ), 'Slider count is cached in gslider_slider_count_cache transient' );
-assert_true( 7 === $wp_transients['gslider_slider_count_cache'], 'Transient holds correct count value' );
+assert_true( 4 === $wp_transients['gslider_slider_count_cache'], 'Transient holds correct count value' );
 
-// Modify return_var to verify cached value is returned without hitting DB again.
-$wpdb->return_var = 999;
+// Modify return_col to verify cached value is returned without hitting DB again.
+$wpdb->return_col = [ '<!-- wp:gslider-blocks/base /-->' ];
 $cached_count     = $controller->get_sliders_count();
-assert_true( 7 === $cached_count, 'get_sliders_count returns cached transient value without re-querying DB' );
+assert_true( 4 === $cached_count, 'get_sliders_count returns cached transient value without re-querying DB' );
 
 // Invalidate cache via flush_slider_count_cache().
 $controller->flush_slider_count_cache();
 assert_true( ! isset( $wp_transients['gslider_slider_count_cache'] ), 'flush_slider_count_cache clears the transient' );
 
-// Next fetch should retrieve updated value.
+// Next fetch should retrieve updated value (1 slider).
 $refreshed_count = $controller->get_sliders_count();
-assert_true( 999 === $refreshed_count, 'Refreshed fetch retrieves updated value after transient flush' );
+assert_true( 1 === $refreshed_count, 'Refreshed fetch retrieves updated value after transient flush' );
 
 // --------------------------------------------------------------------------
-// Test 6: Block Status Listing & Disabling Toggle
+// Test 6: Block Status Listing & Disabling Toggle (Short slug & Prefixed name)
 // --------------------------------------------------------------------------
 $wp_options = [];
 $blocks = $controller->get_blocks_status();
@@ -326,8 +336,8 @@ foreach ( $blocks as $block ) {
 	assert_true( ! empty( $block['name'] ), "Block {$block['slug']} has non-empty human name" );
 }
 
-// Test with disabled block in options.
-$wp_options['gslider_disabled_blocks'] = [ 'testimonial', 'base' ];
+// Test with disabled blocks using both short slug ('testimonial') and full block name ('gslider-blocks/base').
+$wp_options['gslider_disabled_blocks'] = [ 'testimonial', 'gslider-blocks/base' ];
 $blocks_with_disabled = $controller->get_blocks_status();
 foreach ( $blocks_with_disabled as $block ) {
 	if ( in_array( $block['slug'], [ 'testimonial', 'base' ], true ) ) {
