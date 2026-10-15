@@ -61,6 +61,15 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
         private static $styles = [];
 
         /**
+         * Block IDs whose styles have already been output in inline mode.
+         *
+         * @since 1.2.0
+         *
+         * @var array<string, bool>
+         */
+        private static $printed_styles = [];
+
+        /**
          * Absolute path to the CSS output directory.
          *
          * @since 1.0.0
@@ -152,6 +161,12 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
                 $block_id = isset( $block['attrs']['blockId'] ) ?
                     sanitize_key( $block['attrs']['blockId'] ) :
                     'gslider-blocks-' . md5( serialize( $block['attrs'] ) );
+
+                // In inline mode, skip re-collecting if this block was already output in wp_head.
+                if ( 'inline' === self::get_css_delivery_mode() && ! empty( self::$printed_styles[ $block_id ] ) ) {
+                    return $block_content;
+                }
+
                 $clean_style = CssSanitizer::sanitize( $block['attrs']['blockStyle'] );
                 if ( '' !== $clean_style ) {
                     self::$styles[ $block_id ] = $clean_style;
@@ -302,29 +317,43 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
                 return;
             }
 
+            $is_head = function_exists( 'doing_action' ) && doing_action( 'wp_head' );
+
             // In wp_head, attempt to extract styles from the queried post before the body renders.
-            if ( function_exists( 'doing_action' ) && doing_action( 'wp_head' ) ) {
+            if ( $is_head ) {
                 $this->collect_styles_from_queried_post();
             }
 
-            if ( empty( self::$styles ) ) {
+            // Filter out any block styles that have already been printed in this request.
+            $unprinted = [];
+            foreach ( self::$styles as $block_id => $style ) {
+                if ( empty( self::$printed_styles[ $block_id ] ) ) {
+                    $unprinted[ $block_id ]             = $style;
+                    self::$printed_styles[ $block_id ] = true;
+                }
+            }
+
+            if ( empty( $unprinted ) ) {
+                self::$styles = [];
                 return;
             }
 
             $css_content = '';
-            foreach ( self::$styles as $block_id => $style ) {
+            foreach ( $unprinted as $block_id => $style ) {
                 $css_content .= $style;
             }
 
             $minified = $this->minify_css( $css_content );
             if ( '' !== $minified ) {
+                $tag_id = $is_head ? 'gslider-blocks-dynamic-styles-inline' : 'gslider-blocks-dynamic-styles-inline-footer';
                 printf(
-                    "<style id=\"gslider-blocks-dynamic-styles-inline\">\n%s\n</style>\n",
+                    "<style id=\"%s\">\n%s\n</style>\n",
+                    esc_attr( $tag_id ),
                     $minified
                 );
             }
 
-            // Clear styles so footer doesn't duplicate them.
+            // Clear styles so subsequent actions only process new, unprinted styles.
             self::$styles = [];
         }
 
@@ -399,7 +428,8 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
          * @return void
          */
         public static function reset_styles(): void {
-            self::$styles = [];
+            self::$styles         = [];
+            self::$printed_styles = [];
         }
 
         /**

@@ -217,6 +217,12 @@ if ( ! function_exists( 'wp_strip_all_tags' ) ) {
 	}
 }
 
+if ( ! function_exists( 'esc_attr' ) ) {
+	function esc_attr( $text ) {
+		return htmlspecialchars( (string) $text, ENT_QUOTES, 'UTF-8' );
+	}
+}
+
 if ( ! function_exists( 'esc_url' ) ) {
 	function esc_url( $url ) {
 		return filter_var( $url, FILTER_SANITIZE_URL ) ?: '';
@@ -506,8 +512,43 @@ $style_gen->enqueue_dynamic_styles();
 assert( empty( $wp_styles ), 'No stylesheet handles should be enqueued in inline mode' );
 echo "OK: Test 10 - StyleGenerator skips file generation and enqueuing in inline mode\n";
 
+// --------------------------------------------------------------------------
+// Test 11: StyleGenerator deduplicates inline styles and never prints duplicate tags in footer
+// --------------------------------------------------------------------------
+StyleGenerator::reset_styles();
+update_option( 'gslider_settings', [ 'css_delivery' => 'inline' ] );
+
+// 1. In wp_head, styles for slider-abc123 are extracted and printed
+$wp_post_content = '<!-- wp:gslider-blocks/image-slider {"blockId":"slider-abc123","blockStyle":".slider-abc123 { border-radius: 8px; }"} -->';
+$wp_current_action = 'wp_head';
+
+ob_start();
+$style_gen->print_inline_styles();
+$head_output = ob_get_clean();
+assert( false !== strpos( $head_output, '.slider-abc123' ), 'Head output contains slider-abc123' );
+
+// 2. During body render, render_block attempts to collect the same block's style
+$wp_current_action = '';
+$block_rendered = [
+	'blockName' => 'gslider-blocks/image-slider',
+	'attrs'     => [
+		'blockId'    => 'slider-abc123',
+		'blockStyle' => '.slider-abc123 { border-radius: 8px; }',
+	],
+];
+$style_gen->collect_dynamic_styles( '<div>slider</div>', $block_rendered );
+
+// 3. In wp_footer, print_inline_styles runs again. It must NOT print a duplicate tag!
+$wp_current_action = 'wp_footer';
+ob_start();
+$style_gen->print_inline_styles();
+$footer_output = ob_get_clean();
+
+assert( empty( $footer_output ), 'Footer output must be completely empty since styles were already printed in head' );
+echo "OK: Test 11 - StyleGenerator successfully deduplicates inline styles between wp_head and wp_footer\n";
+
 // Reset options back to clean state
 delete_option( 'gslider_settings' );
 echo "\n=======================================================\n";
-echo "All 10 Admin Settings & Privacy tests passed successfully!\n";
+echo "All 11 Admin Settings & Privacy tests passed successfully!\n";
 echo "=======================================================\n";
