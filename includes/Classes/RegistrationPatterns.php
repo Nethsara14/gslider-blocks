@@ -266,21 +266,15 @@ if ( ! class_exists( RegistrationPatterns::class, false ) ) {
 				array_unshift( $categories, self::CATEGORY_SLUG );
 			}
 
-			$raw_keywords = array_filter( array_map( 'trim', explode( ',', $meta['keywords'] ?? '' ) ) );
-			$keywords     = [];
-			foreach ( $raw_keywords as $keyword ) {
-				$keywords[] = function_exists( '__' ) ? __( $keyword, 'gslider-blocks' ) : $keyword;
-			}
+			$keywords = array_values( array_filter( array_map( 'trim', explode( ',', $meta['keywords'] ?? '' ) ) ) );
 
 			// Capture the markup output
 			ob_start();
 			include $file;
 			$content = trim( (string) ob_get_clean() );
 
-			$title       = function_exists( '__' ) ? __( $meta['title'], 'gslider-blocks' ) : $meta['title'];
-			$description = ! empty( $meta['description'] )
-				? ( function_exists( '__' ) ? __( $meta['description'], 'gslider-blocks' ) : $meta['description'] )
-				: '';
+			$title       = $meta['title'];
+			$description = $meta['description'] ?? '';
 
 			$pattern = [
 				'slug'        => $slug,
