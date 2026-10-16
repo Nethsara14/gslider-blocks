@@ -14,7 +14,6 @@ import {
 	CubeIcon,
 	SpinnerIcon,
 	PurgeCacheIcon,
-	InfoCircleIcon,
 	TerminalIcon,
 	CheckIcon,
 	CopyIcon,
@@ -215,34 +214,6 @@ const ToolsTab = ( { dashboardData, setDashboardData } ) => {
 	const totalSizeFormatted =
 		dashboardData?.cache?.total_size_formatted ?? '0 KB';
 
-	const metrics = systemReport?.metrics || {};
-	const wpVersion =
-		metrics.wp_version || dashboardData?.system?.wp_version || 'N/A';
-	const phpVersion =
-		metrics.php_version || dashboardData?.system?.php_version || 'N/A';
-	const memoryLimit =
-		metrics.memory_limit || dashboardData?.system?.memory_limit || 'N/A';
-	const webServer = metrics.web_server || 'N/A';
-	const maxExecutionTime = metrics.max_execution_time || 'N/A';
-	const themeName = metrics.theme_name
-		? `${ metrics.theme_name } (${ metrics.theme_version || '' })`
-		: 'N/A';
-	const cssDelivery =
-		metrics.css_delivery || dashboardData?.settings?.css_delivery || 'file';
-	const deliveryLabel =
-		cssDelivery === 'inline'
-			? __( 'Direct Inline Style', 'gslider-blocks' )
-			: __( 'External Generated Stylesheet', 'gslider-blocks' );
-	const googleFontsPrivacy =
-		metrics.google_fonts_privacy ??
-		dashboardData?.settings?.google_fonts_privacy ??
-		false;
-	const privacyLabel = googleFontsPrivacy
-		? __( 'Enabled (GDPR Compliant)', 'gslider-blocks' )
-		: __( 'Disabled (Google Fonts Allowed)', 'gslider-blocks' );
-	const totalSliders =
-		metrics.sliders_count ?? dashboardData?.sliders_count ?? 0;
-
 	return (
 		<div className="gslider-dashboard-tools-container">
 			{ /* Header Description Card */ }
@@ -288,7 +259,7 @@ const ToolsTab = ( { dashboardData, setDashboardData } ) => {
 						</div>
 						<p className="gslider-tools-card-desc">
 							{ __(
-								'GSlider Blocks compiles dynamic block styling into minified, high-performance static stylesheets inside your uploads folder. Purging deletes only generated CSS files and safely regenerates fresh assets on subsequent visitor requests.',
+								'If recent slider design changes or new slides are not appearing on your live site, clear the cache to regenerate fresh stylesheets.',
 								'gslider-blocks'
 							) }
 						</p>
@@ -353,25 +324,6 @@ const ToolsTab = ( { dashboardData, setDashboardData } ) => {
 							{ totalSizeFormatted }
 						</span>
 					</div>
-
-					<div className="gslider-tools-stat-card">
-						<span className="gslider-tools-stat-label">
-							{ __( 'Storage Location', 'gslider-blocks' ) }
-						</span>
-						<span className="gslider-tools-stat-value is-path">
-							wp-content/uploads/gslider-blocks/css/
-						</span>
-					</div>
-				</div>
-
-				<div className="gslider-tools-info-note">
-					<InfoCircleIcon />
-					<span>
-						{ __(
-							'Cache purging is strictly scoped to GSlider generated files matching "gslider-blocks-dynamic-styles-*.min.css". Your media uploads and other plugin files are never touched.',
-							'gslider-blocks'
-						) }
-					</span>
 				</div>
 			</div>
 
@@ -398,7 +350,7 @@ const ToolsTab = ( { dashboardData, setDashboardData } ) => {
 						</div>
 						<p className="gslider-tools-card-desc">
 							{ __(
-								'View WordPress environment, server metrics, and active plugins. Sensitive data such as database credentials and absolute filesystem paths are automatically omitted.',
+								'If you encounter an issue and need help from our support team, click below to copy your system environment details to paste into the support forum. Sensitive credentials and paths are never included.',
 								'gslider-blocks'
 							) }
 						</p>
@@ -440,131 +392,6 @@ const ToolsTab = ( { dashboardData, setDashboardData } ) => {
 							) }
 						</button>
 					</div>
-				</div>
-
-				{ /* System Metrics Grid */ }
-				<div className="gslider-tools-system-grid">
-					<div className="gslider-tools-metric-item">
-						<span className="gslider-tools-metric-label">
-							{ __( 'WordPress Version', 'gslider-blocks' ) }
-						</span>
-						<span className="gslider-tools-metric-val">
-							{ wpVersion }
-						</span>
-					</div>
-
-					<div className="gslider-tools-metric-item">
-						<span className="gslider-tools-metric-label">
-							{ __( 'PHP Version', 'gslider-blocks' ) }
-						</span>
-						<span className="gslider-tools-metric-val">
-							{ phpVersion }
-						</span>
-					</div>
-
-					<div className="gslider-tools-metric-item">
-						<span className="gslider-tools-metric-label">
-							{ __( 'Web Server', 'gslider-blocks' ) }
-						</span>
-						<span className="gslider-tools-metric-val">
-							{ webServer }
-						</span>
-					</div>
-
-					<div className="gslider-tools-metric-item">
-						<span className="gslider-tools-metric-label">
-							{ __( 'PHP Memory Limit', 'gslider-blocks' ) }
-						</span>
-						<span className="gslider-tools-metric-val">
-							{ memoryLimit }
-						</span>
-					</div>
-
-					<div className="gslider-tools-metric-item">
-						<span className="gslider-tools-metric-label">
-							{ __( 'Max Execution Time', 'gslider-blocks' ) }
-						</span>
-						<span className="gslider-tools-metric-val">
-							{ maxExecutionTime }
-						</span>
-					</div>
-
-					<div className="gslider-tools-metric-item">
-						<span className="gslider-tools-metric-label">
-							{ __( 'Active Theme', 'gslider-blocks' ) }
-						</span>
-						<span className="gslider-tools-metric-val">
-							{ themeName }
-						</span>
-					</div>
-
-					<div className="gslider-tools-metric-item">
-						<span className="gslider-tools-metric-label">
-							{ __( 'Dynamic CSS Delivery', 'gslider-blocks' ) }
-						</span>
-						<span className="gslider-tools-metric-val">
-							{ deliveryLabel }
-						</span>
-					</div>
-
-					<div className="gslider-tools-metric-item">
-						<span className="gslider-tools-metric-label">
-							{ __( 'Google Fonts Privacy', 'gslider-blocks' ) }
-						</span>
-						<span className="gslider-tools-metric-val">
-							{ privacyLabel }
-						</span>
-					</div>
-
-					<div className="gslider-tools-metric-item">
-						<span className="gslider-tools-metric-label">
-							{ __( 'Published Sliders', 'gslider-blocks' ) }
-						</span>
-						<span className="gslider-tools-metric-val">
-							{ totalSliders }
-						</span>
-					</div>
-				</div>
-
-				{ /* Preformatted Raw Report Preview */ }
-				<div className="gslider-tools-report-container">
-					<div className="gslider-tools-report-header">
-						<span className="gslider-tools-report-title">
-							{ __(
-								'Diagnostics Report Preview',
-								'gslider-blocks'
-							) }
-						</span>
-						<button
-							type="button"
-							className="gslider-tools-action-btn is-secondary"
-							style={ {
-								padding: '4px 10px',
-								fontSize: '11.5px',
-								backgroundColor: '#334155',
-								color: '#fff',
-								borderColor: '#475569',
-							} }
-							onClick={ handleCopyReport }
-							disabled={ ! systemReport?.formatted_text }
-						>
-							{ isCopied
-								? __( 'Copied!', 'gslider-blocks' )
-								: __( 'Copy', 'gslider-blocks' ) }
-						</button>
-					</div>
-					<pre className="gslider-tools-report-pre">
-						{ isReportLoading
-							? __(
-									'Generating system diagnostic report…',
-									'gslider-blocks'
-							  )
-							: systemReport?.formatted_text ||
-							  __(
-									'System report unavailable.',
-									'gslider-blocks'
-							  ) }
-					</pre>
 				</div>
 			</div>
 

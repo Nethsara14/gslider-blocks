@@ -546,40 +546,19 @@ foreach ( $required_block_strings as $str ) {
 }
 echo "OK: Blocks Manager tab, iOS toggle switches, and REST endpoint integration verified\n";
 
-// Test 20: Compiled Settings tab, GDPR font privacy, CSS delivery, and SVG security shield verification.
-$required_settings_classes = [
-	'.gslider-dashboard-settings-container',
-	'.gslider-dashboard-settings-title',
-	'.gslider-settings-card',
-	'.gslider-settings-badge',
-	'.gslider-settings-status-box',
-	'.gslider-settings-radio-grid',
-	'.gslider-settings-radio-card',
-	'.gslider-settings-save-btn',
-	'.gslider-settings-toast',
+// Test 20: Streamlined 3-Tab Navigation Verification.
+$required_nav_strings = [
+	'Overview',
+	'Blocks',
+	'Tools',
 ];
-foreach ( $required_settings_classes as $class_name ) {
-	if ( strpos( $dashboard_css_content, $class_name ) === false ) {
-		fwrite( STDERR, "FAIL: dashboard.css missing settings class '$class_name'\n" );
-		exit( 1 );
-	}
-}
-
-$required_settings_strings = [
-	'/gslider/v1/dashboard/settings',
-	'Google Fonts Privacy Mode (GDPR)',
-	'Dynamic CSS Delivery Method',
-	'Generated External Stylesheet',
-	'Direct Inline <style> in <head>',
-	'Save Settings',
-];
-foreach ( $required_settings_strings as $str ) {
+foreach ( $required_nav_strings as $str ) {
 	if ( strpos( $dashboard_js_content, $str ) === false ) {
-		fwrite( STDERR, "FAIL: dashboard.js missing settings string '$str'\n" );
+		fwrite( STDERR, "FAIL: dashboard.js missing navigation string '$str'\n" );
 		exit( 1 );
 	}
 }
-echo "OK: Settings tab, GDPR font privacy, and CSS delivery preferences verified\n";
+echo "OK: Streamlined 3-tab navigation verified (Overview, Blocks, Tools)\n";
 
 // Test 21: Compiled Tools tab, Dynamic CSS cache purger, and System Report verification.
 $required_tools_classes = [
@@ -590,9 +569,6 @@ $required_tools_classes = [
 	'.gslider-tools-stats-grid',
 	'.gslider-tools-stat-card',
 	'.gslider-tools-action-btn',
-	'.gslider-tools-system-grid',
-	'.gslider-tools-report-container',
-	'.gslider-tools-report-pre',
 ];
 foreach ( $required_tools_classes as $class_name ) {
 	if ( strpos( $dashboard_css_content, $class_name ) === false ) {
@@ -608,7 +584,6 @@ $required_tools_strings = [
 	'Purge Dynamic CSS Cache',
 	'System Status & Diagnostic Report',
 	'Copy System Report',
-	'Diagnostics Report Preview',
 ];
 foreach ( $required_tools_strings as $str ) {
 	if ( strpos( $dashboard_js_content, $str ) === false ) {
