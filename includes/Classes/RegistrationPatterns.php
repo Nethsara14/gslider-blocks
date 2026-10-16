@@ -98,15 +98,6 @@ if ( ! class_exists( RegistrationPatterns::class, false ) ) {
 				return;
 			}
 
-			// Performance: Return early on frontend, cron, and standard AJAX requests.
-			// Block patterns are only needed in wp-admin (editor) or via REST API requests.
-			$is_admin = function_exists( 'is_admin' ) && is_admin();
-			$is_rest  = defined( 'REST_REQUEST' ) && REST_REQUEST;
-
-			if ( ! $is_admin && ! $is_rest ) {
-				return;
-			}
-
 			/**
 			 * Filters whether GSlider block patterns registration is enabled.
 			 *

@@ -165,27 +165,22 @@ if ( ! $hook_found ) {
 }
 echo "OK: RegistrationPatterns hooks register_patterns into WordPress 'init'\n";
 
-// Test 4: Frontend Performance Early Return (Patterns are NOT registered on normal frontend requests)
+// Test 4: Pattern & Category Registration on 'init' Hook for Any Request Type (Frontend, Admin, REST)
 $is_admin_mock = false;
 $patterns->register_patterns();
-if ( ! empty( $wp_pattern_categories ) || ! empty( $wp_block_patterns ) ) {
-	fwrite( STDERR, "FAIL: Patterns were registered on a normal frontend request! Expected early return.\n" );
-	exit( 1 );
-}
-echo "OK: Patterns and categories are NOT registered on a normal frontend request (early return)\n";
-
-// Test 5: Category & Pattern Registration in Editor (wp-admin) Context
-$is_admin_mock = true;
-$patterns->register_patterns();
 if ( ! isset( $wp_pattern_categories['gslider-blocks'] ) ) {
-	fwrite( STDERR, "FAIL: Block pattern category 'gslider-blocks' not registered in admin\n" );
+	fwrite( STDERR, "FAIL: Block pattern category 'gslider-blocks' not registered on init hook\n" );
 	exit( 1 );
 }
 if ( 'GSlider Blocks' !== $wp_pattern_categories['gslider-blocks']['label'] ) {
 	fwrite( STDERR, "FAIL: Block pattern category label mismatch\n" );
 	exit( 1 );
 }
-echo "OK: Block pattern category 'gslider-blocks' registered correctly in editor context\n";
+if ( empty( $wp_block_patterns ) ) {
+	fwrite( STDERR, "FAIL: Patterns were not registered on init hook\n" );
+	exit( 1 );
+}
+echo "OK: Patterns and categories are registered on 'init' for any request type\n";
 
 // Test 5: Verify Registered Curated Patterns
 $expected_patterns = [
@@ -279,17 +274,25 @@ if ( count( $pattern_files ) < 5 ) {
 	fwrite( STDERR, "FAIL: Expected at least 5 pattern files in '$patterns_dir', found " . count( $pattern_files ) . "\n" );
 	exit( 1 );
 }
-// Test 7: Verify Pattern Registration in REST API Context
-define( 'REST_REQUEST', true );
-$is_admin_mock = false;
-$wp_block_patterns     = [];
-$wp_pattern_categories = [];
-$patterns->register_patterns();
-if ( empty( $wp_block_patterns ) || empty( $wp_pattern_categories ) ) {
-	fwrite( STDERR, "FAIL: Patterns were not registered in REST API request context\n" );
-	exit( 1 );
+// Test 7: Verify Every Bundled Pattern File Has an Entry in get_pattern_translations()
+$ref = new ReflectionMethod( $patterns, 'get_pattern_translations' );
+if ( PHP_VERSION_ID < 80100 ) {
+	$ref->setAccessible( true );
 }
-echo "OK: Patterns and categories are registered in REST API request context\n";
+$translations = $ref->invoke( $patterns );
+
+foreach ( $pattern_files as $file ) {
+	$slug = 'gslider-blocks/' . basename( $file, '.php' );
+	if ( ! isset( $translations[ $slug ] ) ) {
+		fwrite( STDERR, "FAIL: Bundled pattern file '" . basename( $file ) . "' has no entry in get_pattern_translations() for slug '$slug'\n" );
+		exit( 1 );
+	}
+	if ( empty( $translations[ $slug ]['title'] ) || empty( $translations[ $slug ]['description'] ) || empty( $translations[ $slug ]['keywords'] ) ) {
+		fwrite( STDERR, "FAIL: Bundled pattern '$slug' has incomplete translation metadata in get_pattern_translations()\n" );
+		exit( 1 );
+	}
+}
+echo "OK: All " . count( $pattern_files ) . " bundled pattern files have complete entries in get_pattern_translations()\n";
 
 echo "\nAll GSlider Block Patterns Registration tests passed successfully!\n";
 
