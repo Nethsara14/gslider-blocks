@@ -2,7 +2,7 @@
 """
 Native Gemini Code Reviewer for GSlider Blocks.
 100% Native implementation with zero 3rd-party GitHub Action dependencies.
-Powered by Google Gemini 3.8 Flash with High Reasoning.
+Powered by Google Gemini (Flagship to Flash lineup with High Reasoning).
 """
 
 import os
@@ -78,16 +78,23 @@ If the code is clean and follows all standards, give a brief positive summary ap
 ```
 """
 
-    # Up-to-date active Gemini 3.x / 4.x models
-    candidate_models = ["gemini-3.8-flash", "gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-4-argon"]
+    # Hierarchy: Ordered from highest/largest reasoning capability down to fast lightweight
+    candidate_models = [
+        "gemini-4-argon",
+        "gemini-3.1-pro-preview",
+        "gemini-3.8-flash",
+        "gemini-3.7-flash",
+        "gemini-3.6-flash",
+        "gemini-3.5-flash-lite",
+    ]
     response = None
     used_model = None
 
     for model_name in candidate_models:
         print(f"Attempting review with {model_name}...")
-        for attempt in range(1, 4):
+        for attempt in range(1, 3):
             try:
-                # Call model with native thinking
+                # Call model with native high reasoning
                 config = types.GenerateContentConfig(
                     thinking_config=types.ThinkingConfig(thinking_level=types.ThinkingLevel.HIGH)
                 )
@@ -101,16 +108,18 @@ If the code is clean and follows all standards, give a brief positive summary ap
             except Exception as err:
                 err_str = str(err)
                 print(f"Attempt {attempt} on {model_name} encountered: {err_str}")
-                # If model is not found, stop retrying this model immediately and move to next
+                # If model is unavailable or not found, move to next model immediately
                 if "404" in err_str or "NOT_FOUND" in err_str:
                     break
-                # If high demand spike 503, retry with backoff
-                time.sleep(3 * attempt)
+                # If temporary high demand spike (503), wait and retry once
+                time.sleep(2 * attempt)
+
         if response and response.text:
+            print(f"Successfully generated review using: {used_model}")
             break
 
     if not response or not response.text:
-        print("::error::All Gemini models failed to generate a review.")
+        print("::error::All candidate Gemini models failed to generate a review.")
         sys.exit(1)
 
     review_text = response.text
@@ -123,8 +132,7 @@ If the code is clean and follows all standards, give a brief positive summary ap
         f.write(full_comment)
 
     print(f"Posting review comment to Pull Request #{pr_number}...")
-    post_cmd = f"gh pr comment {pr_number} --body-file {comment_file}"
-    result = run_cmd(post_cmd)
+    subprocess.run(["gh", "pr", "comment", str(pr_number), "--body-file", comment_file], check=True, text=True)
     print("Review posted successfully!")
 
 if __name__ == "__main__":
