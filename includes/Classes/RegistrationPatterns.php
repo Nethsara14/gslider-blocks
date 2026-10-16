@@ -199,7 +199,7 @@ if ( ! class_exists( RegistrationPatterns::class, false ) ) {
 						$files[] = $item->getPathname();
 					}
 				}
-			} catch ( \Exception $e ) {
+			} catch ( \Throwable $e ) {
 				// Fallback to simple non-recursive glob if iterator fails
 				$glob_files = glob( $dir . '/*.php' );
 				if ( is_array( $glob_files ) ) {
