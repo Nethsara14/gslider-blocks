@@ -34,7 +34,8 @@ const zip = async () => {
             if (stats.isDirectory()) {
                 archive.directory(fullPath, item, (entry) => {
                     const basename = path.basename(entry.name);
-                    const relativePath = entry.name;
+                    // Normalize Windows path separators to POSIX forward slashes
+                    const relativePath = entry.name.replace(/\\/g, '/');
 
                     // Exclude ALL hidden files and directories (dot-files and dot-directories anywhere in path)
                     // WordPress.org Plugin Check does not allow hidden files.
@@ -56,8 +57,13 @@ const zip = async () => {
                         return false;
                     }
 
-                    // Exclude developer/testing packages leftover in vendor
-                    if (item === 'vendor' && (entry.name.startsWith('phpunit') || entry.name.startsWith('sebastian'))) {
+                    // Exclude developer/testing packages leftover in vendor (both with and without vendor prefix)
+                    if (item === 'vendor' && (
+                        relativePath.startsWith('phpunit') ||
+                        relativePath.startsWith('vendor/phpunit') ||
+                        relativePath.startsWith('sebastian') ||
+                        relativePath.startsWith('vendor/sebastian')
+                    )) {
                         return false;
                     }
 
