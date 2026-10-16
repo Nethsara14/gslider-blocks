@@ -190,10 +190,13 @@ const SettingsTab = ( { dashboardData, setDashboardData } ) => {
 							</span>
 							<h3 className="gslider-settings-card-title">
 								{ __(
-									'Google Fonts GDPR Privacy Mode',
+									'Google Fonts Privacy Mode (GDPR)',
 									'gslider-blocks'
 								) }
 							</h3>
+							<span className="gslider-settings-badge is-gdpr">
+								{ __( 'GDPR Compliant', 'gslider-blocks' ) }
+							</span>
 						</div>
 						<p className="gslider-settings-card-desc">
 							{ __(
