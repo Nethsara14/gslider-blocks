@@ -73,6 +73,22 @@ if ( ! function_exists( 'esc_html__' ) ) {
 	}
 }
 
+if ( ! function_exists( 'esc_url' ) ) {
+	function esc_url( $url ) {
+		return $url;
+	}
+}
+
+if ( ! function_exists( 'plugins_url' ) ) {
+	function plugins_url( $path = '', $plugin = '' ) {
+		return 'https://example.com/wp-content/plugins/gslider-blocks/' . ltrim( $path, '/' );
+	}
+}
+
+if ( ! defined( 'GSLIDER_PLUGIN_URL' ) ) {
+	define( 'GSLIDER_PLUGIN_URL', 'https://example.com/wp-content/plugins/gslider-blocks/' );
+}
+
 // --------------------------------------------------------------------------
 // Require Core Classes Under Test
 // --------------------------------------------------------------------------

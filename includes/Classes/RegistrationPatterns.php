@@ -98,6 +98,17 @@ if ( ! class_exists( RegistrationPatterns::class, false ) ) {
 				return;
 			}
 
+			// Avoid scanning filesystem and registering block patterns on frontend requests.
+			// Block patterns are only needed in the Block Editor (admin), REST API requests, or CLI.
+			if ( function_exists( 'is_admin' ) && ! is_admin() ) {
+				$is_rest = ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || ( function_exists( 'wp_is_json_request' ) && wp_is_json_request() );
+				$is_cli  = defined( 'WP_CLI' ) && WP_CLI;
+
+				if ( ! $is_rest && ! $is_cli && ! ( function_exists( 'apply_filters' ) && apply_filters( 'gslider_blocks_load_patterns_on_frontend', false ) ) ) {
+					return;
+				}
+			}
+
 			/**
 			 * Filters whether GSlider block patterns registration is enabled.
 			 *
@@ -113,7 +124,7 @@ if ( ! class_exists( RegistrationPatterns::class, false ) ) {
 				register_block_pattern_category(
 					self::CATEGORY_SLUG,
 					[
-						'label' => function_exists( 'esc_html__' ) ? esc_html__( 'GSlider Blocks', 'gslider-blocks' ) : 'GSlider Blocks',
+						'label' => function_exists( '__' ) ? __( 'GSlider Blocks', 'gslider-blocks' ) : 'GSlider Blocks',
 					]
 				);
 			}
@@ -141,19 +152,17 @@ if ( ! class_exists( RegistrationPatterns::class, false ) ) {
 			$this->patterns_cache = [];
 			$patterns_dir         = $this->get_patterns_dir();
 
-			if ( ! is_dir( $patterns_dir ) ) {
-				return $this->patterns_cache;
-			}
+			if ( is_dir( $patterns_dir ) ) {
+				$pattern_files = $this->scan_pattern_files( $patterns_dir );
+				sort( $pattern_files );
 
-			$pattern_files = $this->scan_pattern_files( $patterns_dir );
-			sort( $pattern_files );
-
-			foreach ( $pattern_files as $file ) {
-				$parsed = $this->parse_pattern_file( $file );
-				if ( ! empty( $parsed['slug'] ) ) {
-					$slug = $parsed['slug'];
-					unset( $parsed['slug'] );
-					$this->patterns_cache[ $slug ] = $parsed;
+				foreach ( $pattern_files as $file ) {
+					$parsed = $this->parse_pattern_file( $file );
+					if ( ! empty( $parsed['slug'] ) ) {
+						$slug = $parsed['slug'];
+						unset( $parsed['slug'] );
+						$this->patterns_cache[ $slug ] = $parsed;
+					}
 				}
 			}
 
@@ -273,8 +282,14 @@ if ( ! class_exists( RegistrationPatterns::class, false ) ) {
 			include $file;
 			$content = trim( (string) ob_get_clean() );
 
-			$title       = $meta['title'];
-			$description = $meta['description'] ?? '';
+			$translations = $this->get_pattern_translations();
+			if ( isset( $translations[ $slug ] ) ) {
+				$title       = $translations[ $slug ]['title'];
+				$description = $translations[ $slug ]['description'];
+			} else {
+				$title       = $meta['title'];
+				$description = $meta['description'] ?? '';
+			}
 
 			$pattern = [
 				'slug'        => $slug,
@@ -293,6 +308,45 @@ if ( ! class_exists( RegistrationPatterns::class, false ) ) {
 			}
 
 			return $pattern;
+		}
+
+		/**
+		 * Translatable metadata dictionary for curated core patterns.
+		 *
+		 * Exposes static string literals to gettext/wp-cli make-pot,
+		 * enabling multi-lingual localization for curated starter patterns.
+		 *
+		 * @since 1.2.0
+		 *
+		 * @return array<string, array{title: string, description: string}>
+		 */
+		private function get_pattern_translations(): array {
+			if ( ! function_exists( '__' ) ) {
+				return [];
+			}
+
+			return [
+				'gslider-blocks/full-width-hero-slider' => [
+					'title'       => __( 'Full-Width Hero Slider', 'gslider-blocks' ),
+					'description' => __( 'High-impact full-width slider with responsive layout, auto-play, navigation arrows, and bullet pagination.', 'gslider-blocks' ),
+				],
+				'gslider-blocks/product-showcase-carousel' => [
+					'title'       => __( 'E-commerce Product Showcase Carousel', 'gslider-blocks' ),
+					'description' => __( 'Responsive 3-column card carousel with space between items and navigation controls.', 'gslider-blocks' ),
+				],
+				'gslider-blocks/social-proof-testimonial-cards' => [
+					'title'       => __( 'Social Proof Testimonial Cards', 'gslider-blocks' ),
+					'description' => __( 'Two-column client review cards with 5-star ratings and reviewer details.', 'gslider-blocks' ),
+				],
+				'gslider-blocks/partner-brand-logo-carousel' => [
+					'title'       => __( 'Partner Brand Logo Carousel', 'gslider-blocks' ),
+					'description' => __( 'Two-column logo carousel for trusted brands and client showcases, with autoplay off.', 'gslider-blocks' ),
+				],
+				'gslider-blocks/content-hero-slider' => [
+					'title'       => __( 'Content Hero Slider', 'gslider-blocks' ),
+					'description' => __( 'Single-column content slider with titles, descriptions, and call-to-action buttons, using a fade transition and autoplay.', 'gslider-blocks' ),
+				],
+			];
 		}
 
 	}
