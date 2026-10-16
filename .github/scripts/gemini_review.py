@@ -79,12 +79,17 @@ If the code is clean and follows all standards, give a brief positive summary ap
 ```
 """
 
-    # Hierarchy: Gemini 3.8 Flash first, followed by reliable active fallbacks
+    # Hierarchy: Ordered from highest reasoning capability down to fast flash
     candidate_models = [
+        "gemini-4-argon",
+        "gemini-3.1-pro-preview",
         "gemini-3.8-flash",
+        "gemini-3.7-flash",
+        "gemini-3.6-flash",
         "gemini-3.5-flash-lite",
         "gemini-2.5-pro",
         "gemini-2.5-flash",
+        "gemini-2.0-flash",
     ]
     response = None
     used_model = None
