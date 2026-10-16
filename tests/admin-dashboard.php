@@ -571,8 +571,6 @@ $required_settings_strings = [
 	'Dynamic CSS Delivery Method',
 	'Generated External Stylesheet',
 	'Direct Inline <style> in <head>',
-	'SVG Upload Security Shield',
-	'Active & Enforced',
 	'Save Settings',
 ];
 foreach ( $required_settings_strings as $str ) {
@@ -581,7 +579,7 @@ foreach ( $required_settings_strings as $str ) {
 		exit( 1 );
 	}
 }
-echo "OK: Settings tab, GDPR font privacy, CSS delivery preferences, and security shield verified\n";
+echo "OK: Settings tab, GDPR font privacy, and CSS delivery preferences verified\n";
 
 // Test 21: Compiled Tools tab, Dynamic CSS cache purger, and System Report verification.
 $required_tools_classes = [

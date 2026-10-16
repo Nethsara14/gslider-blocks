@@ -17,8 +17,6 @@ import {
 	GlobeIcon,
 	InfoCircleIcon,
 	CodeIcon,
-	ShieldCheckIcon,
-	LockIcon,
 	CrossCircleIcon,
 	CloseIcon,
 } from '../icons';
@@ -141,7 +139,7 @@ const SettingsTab = ( { dashboardData, setDashboardData } ) => {
 						</h2>
 						<p className="gslider-dashboard-settings-desc">
 							{ __(
-								'Configure privacy compliance, CSS delivery architecture, and verify system security protections for GSlider Blocks across your WordPress site.',
+								'Manage global styling performance, typography privacy, and preferences for GSlider Blocks across your site.',
 								'gslider-blocks'
 							) }
 						</p>
@@ -200,7 +198,7 @@ const SettingsTab = ( { dashboardData, setDashboardData } ) => {
 						</div>
 						<p className="gslider-settings-card-desc">
 							{ __(
-								'When enabled, prevents all external HTTP requests to Google Fonts servers (fonts.googleapis.com). Blocks will safely fall back to native system font stacks (Inter, -apple-system, Segoe UI, Roboto) to ensure 100% GDPR, DSGVO, and LGPD compliance without external tracking.',
+								'Prevents external requests to Google Fonts servers to ensure 100% privacy compliance (GDPR). When enabled, sliders safely use fast system fonts without external tracking.',
 								'gslider-blocks'
 							) }
 						</p>
@@ -241,7 +239,7 @@ const SettingsTab = ( { dashboardData, setDashboardData } ) => {
 								</strong>
 								{ ' — ' }
 								{ __(
-									'All external requests to Google Fonts are blocked. Sliders will automatically render with fast, native system font stacks.',
+									'External font requests are blocked. Sliders render with fast, native system fonts.',
 									'gslider-blocks'
 								) }
 							</>
@@ -255,7 +253,7 @@ const SettingsTab = ( { dashboardData, setDashboardData } ) => {
 								</strong>
 								{ ' — ' }
 								{ __(
-									'Google Fonts are enqueued from fonts.googleapis.com when custom font families are selected in slider block inspector controls.',
+									'Google Fonts are loaded automatically when custom typography is selected in slider inspector controls.',
 									'gslider-blocks'
 								) }
 							</>
@@ -281,7 +279,7 @@ const SettingsTab = ( { dashboardData, setDashboardData } ) => {
 						</div>
 						<p className="gslider-settings-card-desc">
 							{ __(
-								'Choose how dynamically generated block styles are served to site visitors. Both methods sanitize all styles via the GSlider CssSanitizer engine to guarantee security.',
+								'Choose how slider styling is delivered to site visitors. External files provide better speed and caching, while inline styles work best on restricted web hosts.',
 								'gslider-blocks'
 							) }
 						</p>
@@ -328,14 +326,7 @@ const SettingsTab = ( { dashboardData, setDashboardData } ) => {
 						</div>
 						<p className="gslider-settings-radio-desc">
 							{ __(
-								'Saves compiled styles into minified .css files in',
-								'gslider-blocks'
-							) }{ ' ' }
-							<code className="gslider-settings-radio-code">
-								wp-content/uploads/gslider-blocks/css/
-							</code>{ ' ' }
-							{ __(
-								'and enqueues them via standard WordPress handles. Delivers maximum caching performance and CDN compatibility.',
+								'Saves compiled styles into static CSS files for maximum speed, browser caching, and CDN compatibility. Recommended for most sites.',
 								'gslider-blocks'
 							) }
 						</p>
@@ -370,70 +361,11 @@ const SettingsTab = ( { dashboardData, setDashboardData } ) => {
 						</div>
 						<p className="gslider-settings-radio-desc">
 							{ __(
-								'Injects minified, sanitized styles directly into the document',
-								'gslider-blocks'
-							) }{ ' ' }
-							<code className="gslider-settings-radio-code">
-								&lt;head&gt;
-							</code>{ ' ' }
-							{ __(
-								'via wp_head. Ideal for hosting environments with read-only filesystems or strict server-side disk write restrictions.',
+								'Injects styles directly into page HTML. Ideal for hosting environments with read-only filesystems or server disk write restrictions.',
 								'gslider-blocks'
 							) }
 						</p>
 					</div>
-				</div>
-			</div>
-
-			{ /* Informative Security Card: SVG Upload Security Shield (Display-Only) */ }
-			<div className="gslider-settings-card">
-				<div className="gslider-settings-card-header">
-					<div className="gslider-settings-card-info">
-						<div className="gslider-settings-card-title-row">
-							<span className="gslider-settings-card-icon is-security">
-								<ShieldCheckIcon />
-							</span>
-							<h3 className="gslider-settings-card-title">
-								{ __(
-									'SVG Upload Security Shield',
-									'gslider-blocks'
-								) }
-							</h3>
-							<span className="gslider-settings-badge is-active-security">
-								<CheckIcon
-									width="10"
-									height="10"
-									strokeWidth="2.5"
-								/>
-								{ __( 'Active & Enforced', 'gslider-blocks' ) }
-							</span>
-						</div>
-						<p className="gslider-settings-card-desc">
-							{ __(
-								'GSlider Blocks includes hardened server-side SVG sanitization powered by SupportSVG.php. All uploaded vector files are rigorously inspected to strip malicious JavaScript, inline event handlers (onload, onerror), embedded iframes, and XML External Entity (XXE) injection payloads before storage.',
-								'gslider-blocks'
-							) }
-						</p>
-					</div>
-				</div>
-
-				<div className="gslider-settings-status-box is-security-note">
-					<span className="gslider-settings-status-icon">
-						<LockIcon />
-					</span>
-					<span>
-						<strong>
-							{ __(
-								'Permanent Security Protection',
-								'gslider-blocks'
-							) }
-						</strong>
-						{ ' — ' }
-						{ __(
-							'To protect 100% of websites from stored Cross-Site Scripting (XSS) vulnerabilities, SVG security sanitization is permanently enabled and cannot be turned off.',
-							'gslider-blocks'
-						) }
-					</span>
 				</div>
 			</div>
 
