@@ -19,7 +19,7 @@ Every block's `attributes.js` file MUST declare these 7 foundational keys:
 | `blockStyle` | `string` | `""` | Sanitized compiled scoped CSS string generated from `styling.js`. |
 | `globalID` | `string` | `""` | Optional custom HTML anchor ID applied to the block container. |
 | `globalClass` | `string` | `""` | Optional additional custom CSS classes applied to container. |
-| `globalCustomCSS` | `string` | `""` | Free-form custom CSS rules scoped to this block instance. |
+| `globalCustomCSS` | `string` | `""` | *(Deprecated / Legacy)* Retained strictly for backward compatibility with older block instances. UI controls and active CSS injection have been retired. |
 | `zIndex` | `number` | `1` | CSS container stacking context `z-index`. |
 
 ---
