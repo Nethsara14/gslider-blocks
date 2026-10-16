@@ -13,18 +13,19 @@ import subprocess
 from google import genai
 from google.genai import types
 
-def run_cmd(cmd):
-    result = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, shell=True)
+def run_cmd(args):
+    result = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     return result.stdout.strip()
 
 def get_pr_diff():
     # Diff against target base branch (main, develop, etc.)
     base_branch = os.environ.get("GITHUB_BASE_REF", "main")
-    exclude_globs = (
-        "':!build' ':!vendor' ':!node_modules' ':!assets' "
-        "':!package-lock.json' ':!composer.lock' ':!*.zip' ':!*.md' ':!*.txt'"
-    )
-    return run_cmd(f"git diff origin/{base_branch}...HEAD -- . {exclude_globs}")
+    args = [
+        "git", "diff", f"origin/{base_branch}...HEAD", "--", ".",
+        ":!build", ":!vendor", ":!node_modules", ":!assets",
+        ":!package-lock.json", ":!composer.lock", ":!*.zip", ":!*.md", ":!*.txt"
+    ]
+    return run_cmd(args)
 
 def main():
     api_key = os.environ.get("GEMINI_API_KEY")
