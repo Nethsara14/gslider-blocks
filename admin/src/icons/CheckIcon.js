@@ -3,10 +3,11 @@
  *
  * @since 1.2.0
  *
- * @param {Object} props Component properties.
+ * @param {Object}        props                   Component properties.
+ * @param {string|number} [props.strokeWidth='2'] Stroke line thickness.
  * @return {JSX.Element} SVG element.
  */
-const CheckIcon = ( props ) => {
+const CheckIcon = ( { strokeWidth = '2', ...props } ) => {
 	return (
 		<svg
 			width="16"
@@ -20,7 +21,7 @@ const CheckIcon = ( props ) => {
 			<path
 				d="M16.6667 5L7.50001 14.1667L3.33334 10"
 				stroke="currentColor"
-				strokeWidth="2"
+				strokeWidth={ strokeWidth }
 				strokeLinecap="round"
 				strokeLinejoin="round"
 			/>
