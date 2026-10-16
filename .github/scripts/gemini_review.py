@@ -41,9 +41,7 @@ def get_pr_diff(pr_number=None):
                     if not skip_file:
                         filtered_lines.append(line)
 
-                clean_diff = "".join(filtered_lines).strip()
-                if clean_diff:
-                    return clean_diff
+                return "".join(filtered_lines).strip()
         except Exception as err:
             print(f"gh pr diff notice: {err}. Falling back to git diff...")
 
@@ -52,7 +50,7 @@ def get_pr_diff(pr_number=None):
     args = [
         "git", "diff", f"origin/{base_branch}...HEAD", "--", ".",
         ":!package-lock.json", ":!composer.lock", ":!*.md", ":!*.txt", ":!*.zip",
-        ":!build/*", ":!vendor/*", ":!node_modules/*", ":!assets/*"
+        ":!build/", ":!vendor/", ":!node_modules/", ":!assets/"
     ]
     return run_cmd(args)
 
