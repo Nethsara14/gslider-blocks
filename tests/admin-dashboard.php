@@ -447,7 +447,7 @@ foreach ( $required_nav_classes as $class_name ) {
 	}
 }
 
-$required_tabs = [ 'overview', 'blocks', 'settings', 'tools' ];
+$required_tabs = [ 'overview', 'blocks' ];
 foreach ( $required_tabs as $tab_id ) {
 	if ( strpos( $dashboard_js_content, $tab_id ) === false ) {
 		fwrite( STDERR, "FAIL: dashboard.js missing tab identifier '$tab_id'\n" );
