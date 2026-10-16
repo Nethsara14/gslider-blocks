@@ -1,6 +1,6 @@
 # Model Context Protocol (MCP) Server & AI Assistant Workflows
 
-This guide explains how to set up, build, and connect the **GSlider Model Context Protocol (MCP) Server** with modern AI coding assistants, including **Cursor**, **Claude Desktop**, **Antigravity**, and **VS Code (Cline / Roo Code)**.
+This guide explains how to set up, build, and connect the **GSlider Model Context Protocol (MCP) Server** with modern AI coding assistants, including **Claude Desktop**, **OpenAI Models & ChatGPT**, **Cursor**, **Antigravity**, **GitHub Copilot & VS Code (Cline / Roo Code)**, and **Windsurf**.
 
 ---
 
@@ -91,31 +91,14 @@ npm run mcp:test
 
 ## 💻 AI Assistant Client Configuration
 
-Configure your AI assistant to execute `packages/mcp-server/dist/index.js` using Node.js. 
+The server is **model-agnostic** and connects seamlessly to any LLM and agentic runtime. Configure your AI assistant to execute `packages/mcp-server/dist/index.js` using Node.js.
 
 > [!IMPORTANT]
 > Replace `/absolute/path/to/gslider-blocks` with the actual absolute path to your cloned repository on your workstation.
 
-### 1. Cursor (`.cursor/mcp.json`)
-
-Create or update `.cursor/mcp.json` in your project or global user settings:
-
-```json
-{
-  "mcpServers": {
-    "gslider": {
-      "command": "node",
-      "args": [
-        "/absolute/path/to/gslider-blocks/packages/mcp-server/dist/index.js"
-      ]
-    }
-  }
-}
-```
-
 ---
 
-### 2. Claude Desktop (`claude_desktop_config.json`)
+### 1. Claude Desktop (`claude_desktop_config.json`)
 
 Locate your Claude Desktop configuration file:
 - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
@@ -138,9 +121,41 @@ Add the `gslider` server definition:
 
 ---
 
-### 3. Antigravity IDE (`.antigravity/mcp.json`)
+### 2. OpenAI Models & ChatGPT (GPT-4o, o1, o3-mini)
 
-Configure in your workspace `.antigravity/mcp.json`:
+Connect the GSlider MCP server to any OpenAI model or agentic workflow via standard function calling and the MCP SDK:
+
+```javascript
+import { Client } from "@modelcontextprotocol/sdk/client/index.js";
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import OpenAI from "openai";
+
+const transport = new StdioClientTransport({
+  command: "node",
+  args: ["/absolute/path/to/gslider-blocks/packages/mcp-server/dist/index.js"]
+});
+
+const mcp = new Client({ name: "openai-gslider-agent", version: "1.0.0" }, { capabilities: {} });
+await mcp.connect(transport);
+
+// Dynamically expose GSlider MCP tools to OpenAI GPT-4o
+const { tools } = await mcp.listTools();
+const openai = new OpenAI();
+const completion = await openai.chat.completions.create({
+  model: "gpt-4o",
+  messages: [{ role: "user", content: "Inspect available GSlider block schemas" }],
+  tools: tools.map((t) => ({
+    type: "function",
+    function: { name: t.name, description: t.description, parameters: t.inputSchema }
+  }))
+});
+```
+
+---
+
+### 3. Cursor IDE (`.cursor/mcp.json`)
+
+*Compatible with Claude 3.7, OpenAI GPT-4o, and Gemini models inside Cursor:*
 
 ```json
 {
@@ -157,9 +172,47 @@ Configure in your workspace `.antigravity/mcp.json`:
 
 ---
 
-### 4. VS Code (Cline / Roo Code) (`cline_mcp_settings.json`)
+### 4. Antigravity IDE (Google DeepMind Agentic Workflow)
 
-In your Cline MCP settings:
+Configure in your workspace `.antigravity/mcp.json` or global Antigravity MCP settings:
+
+```json
+{
+  "mcpServers": {
+    "gslider": {
+      "command": "node",
+      "args": [
+        "/absolute/path/to/gslider-blocks/packages/mcp-server/dist/index.js"
+      ]
+    }
+  }
+}
+```
+
+---
+
+### 5. GitHub Copilot & VS Code (Cline / Roo Code)
+
+In VS Code, add to `cline_mcp_settings.json` or Roo Code MCP Settings:
+
+```json
+{
+  "mcpServers": {
+    "gslider": {
+      "command": "node",
+      "args": [
+        "/absolute/path/to/gslider-blocks/packages/mcp-server/dist/index.js"
+      ]
+    }
+  }
+}
+```
+
+---
+
+### 6. Windsurf IDE (`~/.codeium/windsurf/mcp_config.json`)
+
+*Compatible with Windsurf Cascade and Codeium agentic workflows:*
 
 ```json
 {
