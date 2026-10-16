@@ -23,7 +23,7 @@ permissions:
 
 jobs:
   gemini-review:
-    name: Gemini 3.8 Flash High Code Review
+    name: Native Gemini 3.8 Flash Review
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -31,31 +31,18 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Run Gemini AI Review
-        uses: sshnaidm/gemini-code-review-action@v2
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          gemini-key: ${{ secrets.GEMINI_API_KEY }}
-          model: 'gemini-3.8-flash'
-          thinking: 'dynamic'
-          temperature: 0.1
-          review-title: '⚡ Gemini 3.8 Flash Code Review'
-          prompt: |
-            You are a Principal WordPress Core & React/Gutenberg Senior Code Reviewer.
-            Analyze the pull request code changes thoroughly using high reasoning.
+          python-version: '3.11'
 
-            Focus on:
-            1. WordPress Security & Standards:
-               - Input sanitization (sanitize_text_field, sanitize_key, wp_strip_all_tags).
-               - Output escaping (esc_html__, esc_attr__, esc_url, wp_kses_post).
-               - Strict prevention of arbitrary user-defined custom CSS inputs or script injection.
-               - PHP 7.4+ compatibility (avoid PHP 8-only features like union types or match statements without backward compatibility).
-            2. React & Gutenberg Block Architecture:
-               - Block attribute management and schema consistency.
-               - useEffect hooks: ensure Swiper.js instances have proper cleanup (swiper.destroy(true, true)).
-               - Responsive attribute handling (Desktop, Tablet, Mobile).
-               - Avoid direct DOM mutations outside Swiper refs.
-            3. Performance & Clean Code:
-               - Unnecessary re-renders, redundant database/REST calls, or unbounded queries.
-               - Clear, actionable suggestions with file paths, line numbers, and clean replacement code snippets.
+      - name: Install Google GenAI SDK
+        run: pip install google-genai
 
-            Format your review cleanly using Markdown with GitHub-style alerts (> [!IMPORTANT], > [!TIP], > [!WARNING]).
+      - name: Run Native Gemini Code Review
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          python3 .github/scripts/gemini_review.py
