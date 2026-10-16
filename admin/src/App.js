@@ -13,12 +13,11 @@ import Header from './components/Header';
 import Navigation from './components/Navigation';
 import OverviewTab from './tabs/OverviewTab';
 import BlocksTab from './tabs/BlocksTab';
-import ToolsTab from './tabs/ToolsTab';
 
 /**
  * Valid tab identifiers.
  */
-const VALID_TABS = [ 'overview', 'blocks', 'tools' ];
+const VALID_TABS = [ 'overview', 'blocks' ];
 const DEFAULT_TAB = 'overview';
 
 /**
@@ -133,13 +132,6 @@ const App = () => {
 
 					{ activeTab === 'blocks' && (
 						<BlocksTab
-							dashboardData={ dashboardData }
-							setDashboardData={ setDashboardData }
-						/>
-					) }
-
-					{ activeTab === 'tools' && (
-						<ToolsTab
 							dashboardData={ dashboardData }
 							setDashboardData={ setDashboardData }
 						/>

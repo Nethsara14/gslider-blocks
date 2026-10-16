@@ -546,11 +546,10 @@ foreach ( $required_block_strings as $str ) {
 }
 echo "OK: Blocks Manager tab, iOS toggle switches, and REST endpoint integration verified\n";
 
-// Test 20: Streamlined 3-Tab Navigation Verification.
+// Test 20: Streamlined 2-Tab Navigation Verification.
 $required_nav_strings = [
 	'Overview',
 	'Blocks',
-	'Tools',
 ];
 foreach ( $required_nav_strings as $str ) {
 	if ( strpos( $dashboard_js_content, $str ) === false ) {
@@ -558,39 +557,6 @@ foreach ( $required_nav_strings as $str ) {
 		exit( 1 );
 	}
 }
-echo "OK: Streamlined 3-tab navigation verified (Overview, Blocks, Tools)\n";
-
-// Test 21: Compiled Tools tab, Dynamic CSS cache purger, and System Report verification.
-$required_tools_classes = [
-	'.gslider-dashboard-tools-container',
-	'.gslider-dashboard-tools-title',
-	'.gslider-tools-card',
-	'.gslider-tools-badge',
-	'.gslider-tools-stats-grid',
-	'.gslider-tools-stat-card',
-	'.gslider-tools-action-btn',
-];
-foreach ( $required_tools_classes as $class_name ) {
-	if ( strpos( $dashboard_css_content, $class_name ) === false ) {
-		fwrite( STDERR, "FAIL: dashboard.css missing tools class '$class_name'\n" );
-		exit( 1 );
-	}
-}
-
-$required_tools_strings = [
-	'/gslider/v1/dashboard/clear-cache',
-	'/gslider/v1/dashboard/system-report',
-	'Dynamic CSS Cache Purger',
-	'Purge Dynamic CSS Cache',
-	'System Status & Diagnostic Report',
-	'Copy System Report',
-];
-foreach ( $required_tools_strings as $str ) {
-	if ( strpos( $dashboard_js_content, $str ) === false ) {
-		fwrite( STDERR, "FAIL: dashboard.js missing tools string '$str'\n" );
-		exit( 1 );
-	}
-}
-echo "OK: Tools tab, dynamic CSS cache purger, and system diagnostic report exporter verified\n";
+echo "OK: Streamlined 2-tab navigation verified (Overview, Blocks)\n";
 
 echo "All Admin Dashboard tests passed successfully!\n";

@@ -11,7 +11,6 @@ import { __ } from '@wordpress/i18n';
 import {
 	OverviewTabIcon,
 	BlocksTabIcon,
-	ToolsTabIcon,
 } from '../icons';
 
 /**
@@ -28,11 +27,6 @@ const TABS = [
 		label: __( 'Blocks', 'gslider-blocks' ),
 		hasBadge: true,
 		icon: <BlocksTabIcon />,
-	},
-	{
-		id: 'tools',
-		label: __( 'Tools', 'gslider-blocks' ),
-		icon: <ToolsTabIcon />,
 	},
 ];
 
