@@ -98,15 +98,13 @@ if ( ! class_exists( RegistrationPatterns::class, false ) ) {
 				return;
 			}
 
-			// Avoid scanning filesystem and registering block patterns on frontend requests.
-			// Block patterns are only needed in the Block Editor (admin), REST API requests, or CLI.
-			if ( function_exists( 'is_admin' ) && ! is_admin() ) {
-				$is_rest = ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || ( function_exists( 'wp_is_json_request' ) && wp_is_json_request() );
-				$is_cli  = defined( 'WP_CLI' ) && WP_CLI;
+			// Performance: Return early on frontend, cron, and standard AJAX requests.
+			// Block patterns are only needed in wp-admin (editor) or via REST API requests.
+			$is_admin = function_exists( 'is_admin' ) && is_admin();
+			$is_rest  = defined( 'REST_REQUEST' ) && REST_REQUEST;
 
-				if ( ! $is_rest && ! $is_cli && ! ( function_exists( 'apply_filters' ) && apply_filters( 'gslider_blocks_load_patterns_on_frontend', false ) ) ) {
-					return;
-				}
+			if ( ! $is_admin && ! $is_rest ) {
+				return;
 			}
 
 			/**
@@ -158,7 +156,7 @@ if ( ! class_exists( RegistrationPatterns::class, false ) ) {
 
 				foreach ( $pattern_files as $file ) {
 					$parsed = $this->parse_pattern_file( $file );
-					if ( ! empty( $parsed['slug'] ) ) {
+					if ( is_array( $parsed ) && ! empty( $parsed['slug'] ) ) {
 						$slug = $parsed['slug'];
 						unset( $parsed['slug'] );
 						$this->patterns_cache[ $slug ] = $parsed;
@@ -235,11 +233,6 @@ if ( ! class_exists( RegistrationPatterns::class, false ) ) {
 				return null;
 			}
 
-			$file_content = file_get_contents( $file );
-			if ( false === $file_content ) {
-				return null;
-			}
-
 			$headers = [
 				'title'       => 'Title',
 				'slug'        => 'Slug',
@@ -253,6 +246,11 @@ if ( ! class_exists( RegistrationPatterns::class, false ) ) {
 			if ( function_exists( 'get_file_data' ) ) {
 				$meta = get_file_data( $file, $headers );
 			} else {
+				$file_content = file_get_contents( $file );
+				if ( false === $file_content ) {
+					return null;
+				}
+
 				foreach ( $headers as $field => $regex ) {
 					if ( preg_match( '/^[ \t\/*#@]*' . preg_quote( $regex, '/' ) . ':(.*)$/mi', $file_content, $match ) ) {
 						$meta[ $field ] = trim( $match[1] );
@@ -275,8 +273,6 @@ if ( ! class_exists( RegistrationPatterns::class, false ) ) {
 				array_unshift( $categories, self::CATEGORY_SLUG );
 			}
 
-			$keywords = array_values( array_filter( array_map( 'trim', explode( ',', $meta['keywords'] ?? '' ) ) ) );
-
 			// Capture the markup output
 			ob_start();
 			include $file;
@@ -286,9 +282,11 @@ if ( ! class_exists( RegistrationPatterns::class, false ) ) {
 			if ( isset( $translations[ $slug ] ) ) {
 				$title       = $translations[ $slug ]['title'];
 				$description = $translations[ $slug ]['description'];
+				$keywords    = $translations[ $slug ]['keywords'];
 			} else {
 				$title       = $meta['title'];
 				$description = $meta['description'] ?? '';
+				$keywords    = array_values( array_filter( array_map( 'trim', explode( ',', $meta['keywords'] ?? '' ) ) ) );
 			}
 
 			$pattern = [
@@ -318,7 +316,7 @@ if ( ! class_exists( RegistrationPatterns::class, false ) ) {
 		 *
 		 * @since 1.2.0
 		 *
-		 * @return array<string, array{title: string, description: string}>
+		 * @return array<string, array{title: string, description: string, keywords: array<int, string>}>
 		 */
 		private function get_pattern_translations(): array {
 			if ( ! function_exists( '__' ) ) {
@@ -329,22 +327,57 @@ if ( ! class_exists( RegistrationPatterns::class, false ) ) {
 				'gslider-blocks/full-width-hero-slider' => [
 					'title'       => __( 'Full-Width Hero Slider', 'gslider-blocks' ),
 					'description' => __( 'High-impact full-width slider with responsive layout, auto-play, navigation arrows, and bullet pagination.', 'gslider-blocks' ),
+					'keywords'    => [
+						__( 'slider', 'gslider-blocks' ),
+						__( 'hero', 'gslider-blocks' ),
+						__( 'carousel', 'gslider-blocks' ),
+						__( 'banner', 'gslider-blocks' ),
+						__( 'image', 'gslider-blocks' ),
+					],
 				],
 				'gslider-blocks/product-showcase-carousel' => [
 					'title'       => __( 'E-commerce Product Showcase Carousel', 'gslider-blocks' ),
 					'description' => __( 'Responsive 3-column card carousel with space between items and navigation controls.', 'gslider-blocks' ),
+					'keywords'    => [
+						__( 'product', 'gslider-blocks' ),
+						__( 'ecommerce', 'gslider-blocks' ),
+						__( 'shop', 'gslider-blocks' ),
+						__( 'carousel', 'gslider-blocks' ),
+						__( 'slider', 'gslider-blocks' ),
+					],
 				],
 				'gslider-blocks/social-proof-testimonial-cards' => [
 					'title'       => __( 'Social Proof Testimonial Cards', 'gslider-blocks' ),
 					'description' => __( 'Two-column client review cards with 5-star ratings and reviewer details.', 'gslider-blocks' ),
+					'keywords'    => [
+						__( 'testimonial', 'gslider-blocks' ),
+						__( 'reviews', 'gslider-blocks' ),
+						__( 'social proof', 'gslider-blocks' ),
+						__( 'quotes', 'gslider-blocks' ),
+						__( 'rating', 'gslider-blocks' ),
+					],
 				],
 				'gslider-blocks/partner-brand-logo-carousel' => [
 					'title'       => __( 'Partner Brand Logo Carousel', 'gslider-blocks' ),
 					'description' => __( 'Two-column logo carousel for trusted brands and client showcases, with autoplay off.', 'gslider-blocks' ),
+					'keywords'    => [
+						__( 'logo', 'gslider-blocks' ),
+						__( 'carousel', 'gslider-blocks' ),
+						__( 'brand', 'gslider-blocks' ),
+						__( 'partners', 'gslider-blocks' ),
+						__( 'clients', 'gslider-blocks' ),
+					],
 				],
 				'gslider-blocks/content-hero-slider' => [
 					'title'       => __( 'Content Hero Slider', 'gslider-blocks' ),
 					'description' => __( 'Single-column content slider with titles, descriptions, and call-to-action buttons, using a fade transition and autoplay.', 'gslider-blocks' ),
+					'keywords'    => [
+						__( 'content', 'gslider-blocks' ),
+						__( 'hero', 'gslider-blocks' ),
+						__( 'slider', 'gslider-blocks' ),
+						__( 'cta', 'gslider-blocks' ),
+						__( 'banner', 'gslider-blocks' ),
+					],
 				],
 			];
 		}

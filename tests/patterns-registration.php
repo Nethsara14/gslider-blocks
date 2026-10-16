@@ -73,6 +73,22 @@ if ( ! function_exists( 'esc_html__' ) ) {
 	}
 }
 
+global $is_admin_mock;
+$is_admin_mock = false;
+
+if ( ! function_exists( 'is_admin' ) ) {
+	function is_admin() {
+		global $is_admin_mock;
+		return (bool) $is_admin_mock;
+	}
+}
+
+if ( ! function_exists( 'esc_url_raw' ) ) {
+	function esc_url_raw( $url ) {
+		return $url;
+	}
+}
+
 if ( ! function_exists( 'esc_url' ) ) {
 	function esc_url( $url ) {
 		return $url;
@@ -149,17 +165,27 @@ if ( ! $hook_found ) {
 }
 echo "OK: RegistrationPatterns hooks register_patterns into WordPress 'init'\n";
 
-// Test 4: Category Registration
+// Test 4: Frontend Performance Early Return (Patterns are NOT registered on normal frontend requests)
+$is_admin_mock = false;
+$patterns->register_patterns();
+if ( ! empty( $wp_pattern_categories ) || ! empty( $wp_block_patterns ) ) {
+	fwrite( STDERR, "FAIL: Patterns were registered on a normal frontend request! Expected early return.\n" );
+	exit( 1 );
+}
+echo "OK: Patterns and categories are NOT registered on a normal frontend request (early return)\n";
+
+// Test 5: Category & Pattern Registration in Editor (wp-admin) Context
+$is_admin_mock = true;
 $patterns->register_patterns();
 if ( ! isset( $wp_pattern_categories['gslider-blocks'] ) ) {
-	fwrite( STDERR, "FAIL: Block pattern category 'gslider-blocks' not registered\n" );
+	fwrite( STDERR, "FAIL: Block pattern category 'gslider-blocks' not registered in admin\n" );
 	exit( 1 );
 }
 if ( 'GSlider Blocks' !== $wp_pattern_categories['gslider-blocks']['label'] ) {
 	fwrite( STDERR, "FAIL: Block pattern category label mismatch\n" );
 	exit( 1 );
 }
-echo "OK: Block pattern category 'gslider-blocks' registered correctly\n";
+echo "OK: Block pattern category 'gslider-blocks' registered correctly in editor context\n";
 
 // Test 5: Verify Registered Curated Patterns
 $expected_patterns = [
@@ -253,7 +279,17 @@ if ( count( $pattern_files ) < 5 ) {
 	fwrite( STDERR, "FAIL: Expected at least 5 pattern files in '$patterns_dir', found " . count( $pattern_files ) . "\n" );
 	exit( 1 );
 }
-echo "OK: Modular pattern files discovered (" . count( $pattern_files ) . " pattern files in patterns/)\n";
+// Test 7: Verify Pattern Registration in REST API Context
+define( 'REST_REQUEST', true );
+$is_admin_mock = false;
+$wp_block_patterns     = [];
+$wp_pattern_categories = [];
+$patterns->register_patterns();
+if ( empty( $wp_block_patterns ) || empty( $wp_pattern_categories ) ) {
+	fwrite( STDERR, "FAIL: Patterns were not registered in REST API request context\n" );
+	exit( 1 );
+}
+echo "OK: Patterns and categories are registered in REST API request context\n";
 
 echo "\nAll GSlider Block Patterns Registration tests passed successfully!\n";
 
