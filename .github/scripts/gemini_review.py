@@ -17,8 +17,36 @@ def run_cmd(args):
     result = subprocess.run(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     return result.stdout.strip()
 
-def get_pr_diff():
-    # Diff against target base branch (main, develop, etc.)
+def get_pr_diff(pr_number=None):
+    # Strategy 1: Fetch directly using GitHub CLI for the specific PR number
+    # Works seamlessly for both automated pull_request events and manual workflow_dispatch
+    if pr_number:
+        try:
+            diff = run_cmd(["gh", "pr", "diff", str(pr_number)])
+            if diff:
+                filtered_lines = []
+                skip_file = False
+                excluded_exts = ('.md', '.txt', '.zip', '.lock', 'package-lock.json', 'composer.lock')
+                excluded_dirs = ('build/', 'vendor/', 'node_modules/', 'assets/')
+
+                for line in diff.splitlines(keepends=True):
+                    if line.startswith('diff --git'):
+                        parts = line.strip().split()
+                        filepath = parts[-1].lstrip('b/') if len(parts) >= 4 else ""
+                        if any(filepath.startswith(d) or f"/{d}" in filepath for d in excluded_dirs) or filepath.endswith(excluded_exts):
+                            skip_file = True
+                        else:
+                            skip_file = False
+                    if not skip_file:
+                        filtered_lines.append(line)
+
+                clean_diff = "".join(filtered_lines).strip()
+                if clean_diff:
+                    return clean_diff
+        except Exception as err:
+            print(f"gh pr diff notice: {err}. Falling back to git diff...")
+
+    # Strategy 2: Fallback to local git diff against base branch
     base_branch = os.environ.get("GITHUB_BASE_REF", "main")
     args = [
         "git", "diff", f"origin/{base_branch}...HEAD", "--", ".",
@@ -40,7 +68,7 @@ def main():
         sys.exit(0)
 
     print(f"Fetching code diff for PR #{pr_number}...")
-    diff = get_pr_diff()
+    diff = get_pr_diff(pr_number)
     
     if not diff:
         print("No relevant code changes found to review.")
