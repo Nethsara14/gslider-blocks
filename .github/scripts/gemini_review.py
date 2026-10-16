@@ -2,12 +2,13 @@
 """
 Native Gemini Code Reviewer for GSlider Blocks.
 100% Native implementation with zero 3rd-party GitHub Action dependencies.
-Powered by Google Gemini (Flagship to Flash lineup with High Reasoning).
+Powered by Google Gemini 3.8 Flash with High Reasoning.
 """
 
 import os
 import sys
 import time
+import tempfile
 import subprocess
 from google import genai
 from google.genai import types
@@ -17,21 +18,21 @@ def run_cmd(cmd):
     return result.stdout.strip()
 
 def get_pr_diff():
-    # Diff against the target branch (main), excluding compiled bundles, locks, and vendor
+    # Diff against target base branch (main, develop, etc.)
+    base_branch = os.environ.get("GITHUB_BASE_REF", "main")
     exclude_globs = (
         "':!build' ':!vendor' ':!node_modules' ':!assets' "
         "':!package-lock.json' ':!composer.lock' ':!*.zip' ':!*.md' ':!*.txt'"
     )
-    diff = run_cmd(f"git diff origin/main...HEAD -- . {exclude_globs}")
-    return diff
+    return run_cmd(f"git diff origin/{base_branch}...HEAD -- . {exclude_globs}")
 
 def main():
     api_key = os.environ.get("GEMINI_API_KEY")
     pr_number = os.environ.get("PR_NUMBER")
     
     if not api_key:
-        print("::error::GEMINI_API_KEY environment variable is missing.")
-        sys.exit(1)
+        print("::warning::GEMINI_API_KEY is missing (fork PR or unconfigured secret). Skipping review gracefully.")
+        sys.exit(0)
 
     if not pr_number:
         print("::warning::PR_NUMBER is missing. Skipping review.")
@@ -59,7 +60,7 @@ Carefully analyze the following Pull Request git diff for the WordPress plugin '
    - Proper input sanitization (`sanitize_text_field`, `sanitize_key`, `wp_strip_all_tags`).
    - Output escaping (`esc_html__`, `esc_attr__`, `esc_url`, `wp_kses_post`).
    - Strict adherence to WordPress.org guidelines: NO arbitrary user-defined custom CSS inputs or script injection.
-   - PHP 7.4+ compatibility (avoid PHP 8-only features without backward compatibility).
+   - PHP 7.4+ compatibility.
 2. **React & Gutenberg Block Lifecycle**:
    - Attribute schema consistency in `attributes.js`.
    - `useEffect` hooks: ensure Swiper.js instances are cleaned up with `swiper.destroy(true, true)` on unmount/re-init.
@@ -78,14 +79,12 @@ If the code is clean and follows all standards, give a brief positive summary ap
 ```
 """
 
-    # Hierarchy: Ordered from highest/largest reasoning capability down to fast lightweight
+    # Hierarchy: Gemini 3.8 Flash first, followed by reliable active fallbacks
     candidate_models = [
-        "gemini-4-argon",
-        "gemini-3.1-pro-preview",
         "gemini-3.8-flash",
-        "gemini-3.7-flash",
-        "gemini-3.6-flash",
         "gemini-3.5-flash-lite",
+        "gemini-2.5-pro",
+        "gemini-2.5-flash",
     ]
     response = None
     used_model = None
@@ -94,9 +93,11 @@ If the code is clean and follows all standards, give a brief positive summary ap
         print(f"Attempting review with {model_name}...")
         for attempt in range(1, 3):
             try:
-                # Call model with native high reasoning
+                # Use thinking_level or thinking_budget depending on model generation
                 config = types.GenerateContentConfig(
                     thinking_config=types.ThinkingConfig(thinking_level=types.ThinkingLevel.HIGH)
+                ) if "3" in model_name or "4" in model_name else types.GenerateContentConfig(
+                    thinking_config=types.ThinkingConfig(thinking_budget=2048)
                 )
                 response = client.models.generate_content(
                     model=model_name,
@@ -108,10 +109,8 @@ If the code is clean and follows all standards, give a brief positive summary ap
             except Exception as err:
                 err_str = str(err)
                 print(f"Attempt {attempt} on {model_name} encountered: {err_str}")
-                # If model is unavailable or not found, move to next model immediately
                 if "404" in err_str or "NOT_FOUND" in err_str:
                     break
-                # If temporary high demand spike (503), wait and retry once
                 time.sleep(2 * attempt)
 
         if response and response.text:
@@ -127,13 +126,17 @@ If the code is clean and follows all standards, give a brief positive summary ap
     footer = f"\n\n---\n*Automated review powered natively by Google Gemini ({used_model}).*"
     full_comment = header + review_text + footer
 
-    comment_file = "/tmp/gemini_review_comment.md"
-    with open(comment_file, "w", encoding="utf-8") as f:
+    with tempfile.NamedTemporaryFile("w", encoding="utf-8", delete=False) as f:
         f.write(full_comment)
+        comment_file = f.name
 
-    print(f"Posting review comment to Pull Request #{pr_number}...")
-    subprocess.run(["gh", "pr", "comment", str(pr_number), "--body-file", comment_file], check=True, text=True)
-    print("Review posted successfully!")
+    try:
+        print(f"Posting review comment to Pull Request #{pr_number}...")
+        subprocess.run(["gh", "pr", "comment", str(pr_number), "--body-file", comment_file], check=True, text=True)
+        print("Review posted successfully!")
+    finally:
+        if os.path.exists(comment_file):
+            os.remove(comment_file)
 
 if __name__ == "__main__":
     main()
