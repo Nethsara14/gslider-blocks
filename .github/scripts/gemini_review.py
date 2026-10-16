@@ -2,11 +2,12 @@
 """
 Native Gemini Code Reviewer for GSlider Blocks.
 100% Native implementation with zero 3rd-party GitHub Action dependencies.
-Powered by Google Gemini 3.8 Flash with High Reasoning.
+Powered by Google Gemini with High Reasoning.
 """
 
 import os
 import sys
+import time
 import subprocess
 from google import genai
 from google.genai import types
@@ -48,7 +49,6 @@ def main():
     if len(diff) > max_chars:
         diff = diff[:max_chars] + "\n\n...[Diff truncated due to size]..."
 
-    print("Sending diff to Gemini 3.8 Flash High Reasoning...")
     client = genai.Client(api_key=api_key)
 
     prompt = f"""You are a Principal WordPress Core & React/Gutenberg Senior Code Reviewer.
@@ -78,25 +78,17 @@ If the code is clean and follows all standards, give a brief positive summary ap
 ```
 """
 
-    model_name = "gemini-3.8-flash"
-    
-    try:
-        # Attempt calling with High Reasoning
-        config = types.GenerateContentConfig(
-            thinking_config=types.ThinkingConfig(thinking_level=types.ThinkingLevel.HIGH),
-            temperature=0.1
-        )
-        response = client.models.generate_content(
-            model=model_name,
-            contents=prompt,
-            config=config
-        )
-    except Exception as e:
-        print(f"Notice: Falling back to standard reasoning budget due to: {e}")
+    # List of candidate models in order of preference
+    candidate_models = ["gemini-3.8-flash", "gemini-2.5-flash", "gemini-2.0-flash"]
+    response = None
+    used_model = None
+
+    for model_name in candidate_models:
+        print(f"Attempting review with {model_name}...")
         try:
-            # Fallback configuration if thinking_level enum varies
+            # 1. Try with High Reasoning
             config = types.GenerateContentConfig(
-                thinking_config=types.ThinkingConfig(thinking_budget=-1),
+                thinking_config=types.ThinkingConfig(thinking_level=types.ThinkingLevel.HIGH),
                 temperature=0.1
             )
             response = client.models.generate_content(
@@ -104,27 +96,37 @@ If the code is clean and follows all standards, give a brief positive summary ap
                 contents=prompt,
                 config=config
             )
-        except Exception as e2:
-            print(f"Fallback to default model config due to: {e2}")
-            response = client.models.generate_content(
-                model=model_name,
-                contents=prompt
-            )
+            used_model = model_name
+            break
+        except Exception as err:
+            print(f"Notice: High reasoning attempt on {model_name} encountered: {err}")
+            time.sleep(2)
+            try:
+                # 2. Try with standard config on same model
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=prompt
+                )
+                used_model = model_name
+                break
+            except Exception as err2:
+                print(f"Notice: Standard attempt on {model_name} failed: {err2}. Trying next model...")
+                time.sleep(2)
+
+    if not response or not response.text:
+        print("::error::All Gemini models failed to generate a review.")
+        sys.exit(1)
 
     review_text = response.text
-    if not review_text:
-        print("::warning::Gemini returned an empty review.")
-        sys.exit(0)
-
-    header = "## 🤖 ⚡ Gemini 3.8 Flash High Code Review\n\n"
-    footer = "\n\n---\n*Automated review powered natively by Google Gemini 3.8 Flash.*"
+    header = f"## 🤖 ⚡ Gemini Code Review ({used_model})\n\n"
+    footer = f"\n\n---\n*Automated review powered natively by Google Gemini ({used_model}).*"
     full_comment = header + review_text + footer
 
     comment_file = "/tmp/gemini_review_comment.md"
     with open(comment_file, "w", encoding="utf-8") as f:
         f.write(full_comment)
 
-    print("Posting review comment to Pull Request...")
+    print(f"Posting review comment to Pull Request #{pr_number}...")
     post_cmd = f"gh pr comment {pr_number} --body-file {comment_file}"
     result = run_cmd(post_cmd)
     print("Review posted successfully!")
