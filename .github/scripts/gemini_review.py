@@ -2,7 +2,7 @@
 """
 Native Gemini Code Reviewer for GSlider Blocks.
 100% Native implementation with zero 3rd-party GitHub Action dependencies.
-Powered by Google Gemini with High Reasoning.
+Powered by Google Gemini 3.8 Flash with High Reasoning.
 """
 
 import os
@@ -78,40 +78,36 @@ If the code is clean and follows all standards, give a brief positive summary ap
 ```
 """
 
-    # List of candidate models in order of preference
-    candidate_models = ["gemini-3.8-flash", "gemini-2.5-flash", "gemini-2.0-flash"]
+    # Up-to-date active Gemini 3.x / 4.x models
+    candidate_models = ["gemini-3.8-flash", "gemini-3.6-flash", "gemini-3.5-flash-lite", "gemini-4-argon"]
     response = None
     used_model = None
 
     for model_name in candidate_models:
         print(f"Attempting review with {model_name}...")
-        try:
-            # 1. Try with High Reasoning
-            config = types.GenerateContentConfig(
-                thinking_config=types.ThinkingConfig(thinking_level=types.ThinkingLevel.HIGH),
-                temperature=0.1
-            )
-            response = client.models.generate_content(
-                model=model_name,
-                contents=prompt,
-                config=config
-            )
-            used_model = model_name
-            break
-        except Exception as err:
-            print(f"Notice: High reasoning attempt on {model_name} encountered: {err}")
-            time.sleep(2)
+        for attempt in range(1, 4):
             try:
-                # 2. Try with standard config on same model
+                # Call model with native thinking
+                config = types.GenerateContentConfig(
+                    thinking_config=types.ThinkingConfig(thinking_level=types.ThinkingLevel.HIGH)
+                )
                 response = client.models.generate_content(
                     model=model_name,
-                    contents=prompt
+                    contents=prompt,
+                    config=config
                 )
                 used_model = model_name
                 break
-            except Exception as err2:
-                print(f"Notice: Standard attempt on {model_name} failed: {err2}. Trying next model...")
-                time.sleep(2)
+            except Exception as err:
+                err_str = str(err)
+                print(f"Attempt {attempt} on {model_name} encountered: {err_str}")
+                # If model is not found, stop retrying this model immediately and move to next
+                if "404" in err_str or "NOT_FOUND" in err_str:
+                    break
+                # If high demand spike 503, retry with backoff
+                time.sleep(3 * attempt)
+        if response and response.text:
+            break
 
     if not response or not response.text:
         print("::error::All Gemini models failed to generate a review.")
