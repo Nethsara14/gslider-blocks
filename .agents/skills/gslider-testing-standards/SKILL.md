@@ -58,19 +58,23 @@ Every core service and controller in GSlider Blocks maps directly to a matching 
 Tests in GSlider Blocks are designed as a **zero-dependency, standalone CLI harness** that runs instantly across PHP 7.4 through 8.5 without requiring an external MySQL database:
 
 ```bash
-# Run all tests in order
-for f in tests/*Test.php; do php "$f"; done
+# Run all tests recursively in order (standalone runner)
+for test in $(find tests -name '*.php' ! -name 'bootstrap.php' ! -path '*/stubs/*' | sort); do
+  echo "=== Running $test ==="
+  php "$test"
+done
 
 # Run a specific test suite
-php tests/RegistrationPatternsTest.php
-php tests/StyleGeneratorTest.php
+php tests/phpunit/Admin/DashboardTest.php
+php tests/phpunit/Classes/RegistrationPatternsTest.php
+php tests/phpunit/RestApi/BlockParserTest.php
 ```
 
 ### GitHub Actions CI Configuration (`.github/workflows/ci.yml`):
 ```yaml
       - name: Run Test Suites
         run: |
-          for test in tests/*Test.php; do
+          for test in $(find tests -name '*.php' ! -name 'bootstrap.php' ! -path '*/stubs/*' | sort); do
             echo "Running $test on PHP ${{ matrix.php-version }}..."
             php "$test"
           done
@@ -78,9 +82,77 @@ php tests/StyleGeneratorTest.php
 
 ---
 
+## 🏛️ WordPress Core 7.2 Modern Engineering & Testing Standards
+
+When writing PHP code and unit tests, GSlider Blocks strictly adheres to the official standards established by WordPress Core 7.2 Trac initiatives:
+
+### 1. Strict Type Assertions Over Loose Comparisons ([Trac #64895](https://core.trac.wordpress.org/ticket/64895))
+- **Rule:** Never use loose comparisons (`==`, `!=`, or `assertEquals()`). Always use strict identical comparisons (`===`, `!==`, or `assertSame()`).
+- **Rationale:** Loose comparisons hide subtle bugs, type coercion vulnerabilities, and false-positive truthy/falsy matches (e.g. `0 == false` or `"0" == false`).
+- **Code Pattern:**
+  ```php
+  // ✅ Correct: Strict identical assertion
+  $this->assert_true( 'gslider-blocks/base' === $one['blockName'], 'blockName matches' );
+  $this->assert_true( 1 === $one['totalSlides'], 'totalSlides count matches' );
+
+  // ❌ Prohibited: Loose comparison
+  if ( $one['totalSlides'] == 1 ) ...
+  ```
+
+### 2. Static Analysis & PHPStan Level 5+ Cleanliness ([Trac #65817](https://core.trac.wordpress.org/ticket/65817))
+- **Rule:** Explicitly declare method return types (`: void`, `: array`, `: bool`) and typed parameters. Eliminate dead variables, uninitialized properties, and unsafe mixed return types.
+- **Rationale:** Preempts runtime type errors across PHP 7.4 through 8.5 without requiring runtime assertions.
+- **Code Pattern:**
+  ```php
+  // ✅ Correct: Explicit return type and typed parameters
+  public function run_all_tests(): void { ... }
+  public function assert_true( $condition, string $message ): void { ... }
+  private function normalize( array $attrs, string $name ): array { ... }
+  ```
+
+### 3. Comprehensive DocBlocks with Type Fidelity ([Trac #65860](https://core.trac.wordpress.org/ticket/65860))
+- **Rule:** Every test class, test method, and helper must contain a complete, well-formed PHPDoc DocBlock including `@package`, description, `@param`, and `@return`.
+- **Code Pattern:**
+  ```php
+  /**
+   * Test class for GSlider\Admin\Dashboard.
+   *
+   * @package GSlider\Tests\Admin
+   */
+  class DashboardTest {
+      /**
+       * Test 1 & 2: Class exists, implements Registrable, and is a true singleton.
+       *
+       * @return void
+       */
+      public function test_class_implements_registrable_and_singleton(): void { ... }
+  ```
+
+### 4. PHP 8.1–8.5 Compatibility & Reflection Guards ([Trac #65819](https://core.trac.wordpress.org/ticket/65819))
+- **Rule:** Never call `$reflectionProperty->setAccessible( true )` or `$reflectionMethod->setAccessible( true )` unconditionally on PHP 8.1+. Always guard with `PHP_VERSION_ID < 80100`.
+- **Rationale:** PHP 8.1+ makes all reflection properties and methods accessible by default, and PHP 8.5 officially issues a deprecation notice when calling `setAccessible( true )`.
+- **Code Pattern:**
+  ```php
+  $plugin_reflection = new ReflectionClass( Plugin::class );
+  $services_property = $plugin_reflection->getProperty( 'services' );
+
+  // ✅ Correct: Guarded against PHP 8.5 deprecation notice
+  if ( PHP_VERSION_ID < 80100 ) {
+      $services_property->setAccessible( true );
+  }
+  ```
+
+### 5. WordPress Coding Standards (WPCS) Formatting ([Trac #65818](https://core.trac.wordpress.org/ticket/65818))
+- **Rule:** Strict WPCS adherence:
+  - Spaces inside parentheses: `if ( ! empty( $output ) )`
+  - Spaces inside array brackets: `[ 'Desktop' => 4 ]`
+  - Yoda conditions for all equality checks: `'gslider-blocks' === $slug` and `61 === Dashboard::MENU_POSITION`.
+
+---
+
 ## 📐 Golden Rules for Writing Test Classes
 
-1. **One Class Per Test File:** Every `*Test.php` file should focus exclusively on validating its matching production class.
-2. **Deterministic & Isolated:** Tests must never depend on real database connections or external network APIs; all WordPress core functions must be provided via lightweight stubs in `tests/stubs/`.
+1. **One Class Per Test File:** Every `*Test.php` file in `tests/phpunit/` must focus exclusively on validating its matching production class in `includes/`.
+2. **Deterministic & Isolated:** Tests must never depend on real database connections or external network APIs; all WordPress core functions must be provided via lightweight stubs in `tests/phpunit/bootstrap.php` or `tests/stubs/`.
 3. **Strict Security Validation:** Any class dealing with user or block input (`StyleGenerator`, `CssSanitizer`, `SupportSVG`) must test known malicious payloads (XSS, script injection, arbitrary protocols).
 4. **Descriptive Failure Messages:** Every assertion must output an explicit failure message with expected vs actual values.
