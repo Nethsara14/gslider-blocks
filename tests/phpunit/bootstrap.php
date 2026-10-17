@@ -520,11 +520,11 @@ if ( ! function_exists( 'get_post' ) ) {
 if ( ! function_exists( 'post_password_required' ) ) {
 	function post_password_required( $post ) {
 		global $password_clear;
-		$id = $post instanceof WP_Post ? $post->ID : (int) $post;
-		if ( empty( $post->post_password ) ) {
+		$post = get_post( $post );
+		if ( ! $post instanceof WP_Post || empty( $post->post_password ) ) {
 			return false;
 		}
-		return empty( $password_clear[ $id ] );
+		return empty( $password_clear[ (int) $post->ID ] );
 	}
 }
 
