@@ -20,7 +20,7 @@
     <img src="https://img.shields.io/badge/License-GPLv2-green.svg" alt="License">
   </a>
   <a href="https://wordpress.org/plugins/gslider-blocks/">
-    <img src="https://img.shields.io/badge/Version-1.1.6-orange.svg" alt="Version">
+    <img src="https://img.shields.io/badge/Version-1.2.0-orange.svg" alt="Version">
   </a>
   <a href="https://wordpress.org/plugins/gslider-blocks/">
     <img src="https://img.shields.io/badge/Active%20Installs-700+-brightgreen.svg" alt="Active Installs">
