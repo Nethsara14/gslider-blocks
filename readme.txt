@@ -165,6 +165,7 @@ This plugin may connect to or load resources from external third-party services 
 = 1.2.0 – October 17, 2026 =
 * Security: Eliminated dynamic CSS file generation in wp-content/uploads/ in favor of safe, block-scoped inline styles rendered via wp_add_inline_style().
 * Security: Implemented strict CSS sanitization and selector scoping to prevent arbitrary CSS injection, rejecting disallowed selectors and dangerous CSS rules.
+* Security: Fully cleaned up legacy custom CSS attributes and removed unused code editor dependencies across all blocks.
 * Security: Bundled Font Awesome icon library locally within the plugin, completely removing runtime remote asset fetching from external repositories.
 * Documentation: Fixed 404 broken URLs in readme.txt for Appsero license and privacy policy links to valid endpoints.
 
