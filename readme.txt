@@ -134,6 +134,10 @@ This plugin bundles and uses the following open-source third-party libraries:
 * **Appsero Client** (v2.0.7)
   - Source: https://github.com/Appsero/client
   - License: MIT License (https://github.com/Appsero/client/blob/develop/composer.json)
+* **Font Awesome Free SVG Icons**
+  - Source: https://fontawesome.com/
+  - Repository: https://github.com/FortAwesome/Font-Awesome
+  - License: CC BY 4.0 / SIL OFL 1.1 / MIT (https://github.com/FortAwesome/Font-Awesome/blob/6.x/LICENSE.txt)
 
 == External Services ==
 

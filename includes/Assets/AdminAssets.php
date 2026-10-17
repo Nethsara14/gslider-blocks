@@ -77,6 +77,7 @@ class AdminAssets {
             'ajax_url'   => admin_url( 'admin-ajax.php' ),
             'nonce'      => wp_create_nonce( 'gslider_nonce' ),
             'pluginUrl'  => GSLIDER_PLUGIN_URL,
+            'iconsUrl'   => GSLIDER_PLUGIN_URL . 'assets/icon-library/icons.json',
         ];
 
         // We use a global handle for localization that blocks can access.
