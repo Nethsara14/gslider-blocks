@@ -3,7 +3,7 @@ Contributors: noruzzaman
 Tags: slider, carousel, logo carousel, slideshow, gutenberg
 Requires at least: 5.0
 Tested up to: 7.1
-Stable tag: 1.1.9
+Stable tag: 1.2.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -161,6 +161,12 @@ This plugin may connect to or load resources from external third-party services 
 == Screenshots ==
 
 == Changelog ==
+
+= 1.2.0 – October 17, 2026 =
+* Security: Eliminated dynamic CSS file generation in wp-content/uploads/ in favor of safe, block-scoped inline styles rendered via wp_add_inline_style().
+* Security: Implemented strict CSS sanitization and selector scoping to prevent arbitrary CSS injection, rejecting disallowed selectors and dangerous CSS rules.
+* Security: Bundled Font Awesome icon library locally within the plugin, completely removing runtime remote asset fetching from external repositories.
+* Documentation: Fixed 404 broken URLs in readme.txt for Appsero license and privacy policy links to valid endpoints.
 
 = 1.1.9 – October 14, 2026 =
 * Security: Removed custom CSS input editor and arbitrary code insertion across all blocks to strictly comply with WordPress.org security guidelines.
