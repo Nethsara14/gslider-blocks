@@ -27,7 +27,7 @@ gslider-blocks/
 │   ├── components/            # 23+ Reusable UI controls (Responsive controls, color, typography, etc.)
 │   ├── constants/             # Global options, bounds, alignment definitions, font lists
 │   ├── store/                 # Redux store for deviceType and editor state
-│   └── utils/                 # Helpers (useBlockIdGenerator, getCustomCss, loadGoogleFont, etc.)
+│   └── utils/                 # Helpers (useBlockIdGenerator, loadGoogleFont, etc.)
 ├── admin/                     # Admin SCSS stylesheets
 ├── assets/                    # Compiled assets, vendor libraries (Swiper, fsLightbox, Google Fonts)
 └── build/                     # Compiled Gutenberg blocks output directory
@@ -42,7 +42,7 @@ When developing or modifying code in this repository, reference the dedicated wo
 | Skill Name | Purpose & Scope |
 | :--- | :--- |
 | **[`gslider-block-development`](.agents/skills/gslider-block-development/SKILL.md)** | Step-by-step procedure for creating new blocks, modifying existing blocks, managing attributes, deprecations, and block lifecycle. |
-| **[`gslider-style-engine`](.agents/skills/gslider-style-engine/SKILL.md)** | Dynamic CSS generation pipeline (`styling.js` -> `blockStyle` attribute -> `StyleGenerator.php`), responsive breakpoints (`Desktop`, `Tablet`, `Mobile`), unit parsing, and custom CSS. |
+| **[`gslider-style-engine`](.agents/skills/gslider-style-engine/SKILL.md)** | Dynamic CSS generation pipeline (`styling.js` -> `blockStyle` attribute -> `StyleGenerator.php`), responsive breakpoints (`Desktop`, `Tablet`, `Mobile`), and unit parsing. |
 | **[`gslider-swiper-integration`](.agents/skills/gslider-swiper-integration/SKILL.md)** | Swiper.js integration in editor (`edit.js` lifecycle with cleanup) and frontend (`save.js` + `view.js`), handling transitions, pagination, navigation, and autoplay. |
 | **[`gslider-ui-controls`](.agents/skills/gslider-ui-controls/SKILL.md)** | Guide to using the 23+ custom React UI controls in `src/components/` (Responsive range/typography/spacing, color pickers, icon picker, etc.). |
 | **[`gslider-php-backend`](.agents/skills/gslider-php-backend/SKILL.md)** | Backend architecture, PSR-4 autoloading, WordPress hooks, Singleton pattern, security/sanitization, and dynamic block registration. |
@@ -72,7 +72,7 @@ When developing or modifying code in this repository, reference the dedicated wo
    - **Spacing**: 8-key pattern (`<prefix>PaddingUnits`, `<prefix>PaddingDesktop`, `<prefix>PaddingDesktopCssStyle`, `<prefix>PaddingTablet`, `<prefix>PaddingTabletCssStyle`, `<prefix>PaddingMobile`, `<prefix>PaddingMobileCssStyle`, `<prefix>PaddingLink`).
    - **Typography**: 13-key pattern (`<prefix>FontFamily`, `<prefix>FontSize`, `<prefix>FontSizeUnits`, `<prefix>FontWeight`, `<prefix>FontStyle`, `<prefix>TextTransform`, `<prefix>TextDecoration`, `<prefix>LineHeight`, `<prefix>LineHeightUnits`, `<prefix>LetterSpacing`, `<prefix>LetterSpacingUnits`, `<prefix>WordSpacing`, `<prefix>WordSpacingUnits`).
    - **Colors**: `<prefix>ColorSwitcher`, `<prefix>Color`, `<prefix>ColorHover`.
-   - **Mandatory Defaults**: `blockId`, `deviceType`, `blockStyle`, `globalID`, `globalClass`, `globalCustomCSS`, `zIndex`.
+   - **Mandatory Defaults**: `blockId`, `deviceType`, `blockStyle`, `globalID`, `globalClass`, `zIndex`.
 3. **Dynamic CSS Generation**: Never write hardcoded inline CSS in `save.js`. Dynamic styles MUST be generated via `styling.js`, saved into the `blockStyle` attribute, and rendered via `StyleGenerator.php`.
 4. **Unique Block ID**: Always call `useBlockIdGenerator` in `edit.js` to ensure unique scoping (`gslider-xxxxxxxx`) for styling and Swiper instances.
 5. **Responsive-First Architecture**: All visual and layout attributes must support responsive objects: `{ Desktop: value, Tablet: value, Mobile: value }`.
