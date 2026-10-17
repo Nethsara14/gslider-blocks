@@ -6,10 +6,10 @@ const getIconsUrl = () => {
 			return window.GSliderBlocksData.iconsUrl;
 		}
 		if (window.GSliderBlocksData.pluginUrl) {
-			return window.GSliderBlocksData.pluginUrl + 'assets/icon-library/icons.json';
+			return window.GSliderBlocksData.pluginUrl + 'assets/icon-library/font-awesome.json';
 		}
 	}
-	return '/wp-content/plugins/gslider-blocks/assets/icon-library/icons.json';
+	return '/wp-content/plugins/gslider-blocks/assets/icon-library/font-awesome.json';
 };
 
 const fetchSvgIcons = async () => {
