@@ -23,7 +23,7 @@ In enterprise PHP and modern WordPress engineering, tests maintain **strict 1-to
 2. **Matching Test Class & File (`*Test.php`):**
    - Test File Name: **`RegistrationPatternsTest.php`**
    - Test Class Name: **`RegistrationPatternsTest`**
-   - Test Path: `tests/RegistrationPatternsTest.php` (or mirrored under `tests/Classes/RegistrationPatternsTest.php`)
+   - Test Path: `tests/phpunit/Classes/RegistrationPatternsTest.php` (mirroring `includes/Classes/`)
 
 3. **Test Method Naming Pattern (`test_<method_name>_<expected_behavior>`):**
    - Production Method: `public function register_patterns()`
@@ -33,23 +33,23 @@ In enterprise PHP and modern WordPress engineering, tests maintain **strict 1-to
 
 ## 🗺️ Complete 1-to-1 Production Class to Test Class Matrix
 
-Every core service and controller in GSlider Blocks maps directly to a matching `*Test.php` file:
+Every core service and controller in GSlider Blocks maps directly to a matching `*Test.php` file in `tests/phpunit/`:
 
-| Production File (`includes/`) | Production Class Name | Test File Name (`tests/`) | Test Class Name | Scope of Tests |
+| Production File (`includes/`) | Production Class Name | Test File Path (`tests/phpunit/`) | Test Class Name | Scope of Tests |
 | :--- | :--- | :--- | :--- | :--- |
-| `includes/Classes/RegistrationPatterns.php` | `RegistrationPatterns` | **`RegistrationPatternsTest.php`** | `RegistrationPatternsTest` | Pattern registration, category, translations, Gutenberg markup |
-| `includes/Classes/StyleGenerator.php` | `StyleGenerator` | **`StyleGeneratorTest.php`** | `StyleGeneratorTest` | Inline `<style>` generation, CSS sanitization, block ID scoping |
-| `includes/Classes/RegistrationBlocks.php` | `RegistrationBlocks` | **`RegistrationBlocksTest.php`** | `RegistrationBlocksTest` | Block type registration, `block.json` schema validation |
-| `includes/Classes/FontLoader.php` | `FontLoader` | **`FontLoaderTest.php`** | `FontLoaderTest` | Google Fonts enqueueing, GDPR privacy suppression |
-| `includes/Classes/RegistrationCategory.php` | `RegistrationCategory` | **`RegistrationCategoryTest.php`** | `RegistrationCategoryTest` | Custom Gutenberg block category registration |
-| `includes/Classes/SupportSVG.php` | `SupportSVG` | **`SupportSVGTest.php`** | `SupportSVGTest` | SVG upload mime types, XML sanitization security |
-| `includes/Admin/Dashboard.php` | `Dashboard` | **`DashboardTest.php`** | `DashboardTest` | Admin menu registration, block visibility filter |
-| `includes/Admin/DashboardController.php` | `DashboardController` | **`DashboardControllerTest.php`** | `DashboardControllerTest` | REST endpoints (`/dashboard`, settings, tools, toggles) |
-| `includes/RestApi/BlocksController.php` | `BlocksController` | **`BlocksControllerTest.php`** | `BlocksControllerTest` | Headless REST endpoints (`/blocks/<id>`), permissions, schema |
-| `includes/RestApi/BlockParser.php` | `BlockParser` | **`BlockParserTest.php`** | `BlockParserTest` | Slide parsing, Swiper config extraction, normalization |
-| `includes/Utils/CssSanitizer.php` | `CssSanitizer` | **`CssSanitizerTest.php`** | `CssSanitizerTest` | CSS exploit defense (`@import`, `javascript:`, expressions) |
-| `includes/Assets/FrontendAssets.php` | `FrontendAssets` | **`FrontendAssetsTest.php`** | `FrontendAssetsTest` | Swiper/vendor script & style enqueueing |
-| `includes/Assets/AdminAssets.php` | `AdminAssets` | **`AdminAssetsTest.php`** | `AdminAssetsTest` | Admin dashboard CSS & JS script registration |
+| `includes/Classes/RegistrationPatterns.php` | `RegistrationPatterns` | **`tests/phpunit/Classes/RegistrationPatternsTest.php`** | `RegistrationPatternsTest` | Pattern registration, category, translations, Gutenberg markup |
+| `includes/Classes/StyleGenerator.php` | `StyleGenerator` | **`tests/phpunit/Classes/StyleGeneratorTest.php`** | `StyleGeneratorTest` | Inline `<style>` generation, CSS sanitization, block ID scoping |
+| `includes/Classes/RegistrationBlocks.php` | `RegistrationBlocks` | **`tests/phpunit/Classes/RegistrationBlocksTest.php`** | `RegistrationBlocksTest` | Block type registration, `block.json` schema validation |
+| `includes/Classes/FontLoader.php` | `FontLoader` | **`tests/phpunit/Classes/FontLoaderTest.php`** | `FontLoaderTest` | Google Fonts enqueueing, GDPR privacy suppression |
+| `includes/Classes/RegistrationCategory.php` | `RegistrationCategory` | **`tests/phpunit/Classes/RegistrationCategoryTest.php`** | `RegistrationCategoryTest` | Custom Gutenberg block category registration |
+| `includes/Classes/SupportSVG.php` | `SupportSVG` | **`tests/phpunit/Classes/SupportSVGTest.php`** | `SupportSVGTest` | SVG upload mime types, XML sanitization security |
+| `includes/Admin/Dashboard.php` | `Dashboard` | **`tests/phpunit/Admin/DashboardTest.php`** | `DashboardTest` | Admin menu registration, block visibility filter |
+| `includes/Admin/DashboardController.php` | `DashboardController` | **`tests/phpunit/Admin/DashboardControllerTest.php`** | `DashboardControllerTest` | REST endpoints (`/dashboard`, settings, tools, toggles) |
+| `includes/RestApi/BlocksController.php` | `BlocksController` | **`tests/phpunit/RestApi/BlocksControllerTest.php`** | `BlocksControllerTest` | Headless REST endpoints (`/blocks/<id>`), permissions, schema |
+| `includes/RestApi/BlockParser.php` | `BlockParser` | **`tests/phpunit/RestApi/BlockParserTest.php`** | `BlockParserTest` | Slide parsing, Swiper config extraction, normalization |
+| `includes/Utils/CssSanitizer.php` | `CssSanitizer` | **`tests/phpunit/Utils/CssSanitizerTest.php`** | `CssSanitizerTest` | CSS exploit defense (`@import`, `javascript:`, expressions) |
+| `includes/Assets/FrontendAssets.php` | `FrontendAssets` | **`tests/phpunit/Assets/FrontendAssetsTest.php`** | `FrontendAssetsTest` | Swiper/vendor script & style enqueueing |
+| `includes/Assets/AdminAssets.php` | `AdminAssets` | **`tests/phpunit/Assets/AdminAssetsTest.php`** | `AdminAssetsTest` | Admin dashboard CSS & JS script registration |
 
 ---
 

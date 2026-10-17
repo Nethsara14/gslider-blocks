@@ -14,152 +14,10 @@
  * 9. Assets localization provides all required runtime config keys.
  * 10. Compiled dashboard CSS and JS bundles exist and contain verified selectors and components.
  *
- * @package GSlider\Tests
+ * @package GSlider\Tests\Admin
  */
 
-if ( ! defined( 'ABSPATH' ) ) {
-	define( 'ABSPATH', dirname( __DIR__ ) . '/' );
-}
-
-// Global test stubs.
-global $wp_actions, $wp_menu_pages, $current_caps, $enqueued_styles, $enqueued_scripts, $localized_scripts;
-$wp_actions        = [];
-$wp_menu_pages     = [];
-$current_caps      = [];
-$enqueued_styles   = [];
-$enqueued_scripts  = [];
-$localized_scripts = [];
-
-if ( ! function_exists( 'add_action' ) ) {
-	function add_action( $hook, $callback, $priority = 10, $accepted_args = 1 ) {
-		global $wp_actions;
-		$wp_actions[ $hook ][] = [
-			'callback'      => $callback,
-			'priority'      => $priority,
-			'accepted_args' => $accepted_args,
-		];
-	}
-}
-
-if ( ! function_exists( 'add_filter' ) ) {
-	function add_filter( $hook, $callback, $priority = 10, $accepted_args = 1 ) {
-		global $wp_actions;
-		$wp_actions[ $hook ][] = [
-			'callback'      => $callback,
-			'priority'      => $priority,
-			'accepted_args' => $accepted_args,
-		];
-	}
-}
-
-if ( ! function_exists( 'add_menu_page' ) ) {
-	function add_menu_page( $page_title, $menu_title, $capability, $menu_slug, $callback = '', $icon_url = '', $position = null ) {
-		global $wp_menu_pages;
-		$wp_menu_pages[] = [
-			'page_title' => $page_title,
-			'menu_title' => $menu_title,
-			'capability' => $capability,
-			'menu_slug'  => $menu_slug,
-			'callback'   => $callback,
-			'icon_url'   => $icon_url,
-			'position'   => $position,
-		];
-		return 'toplevel_page_' . $menu_slug;
-	}
-}
-
-if ( ! function_exists( 'current_user_can' ) ) {
-	function current_user_can( $capability ) {
-		global $current_caps;
-		return ! empty( $current_caps[ $capability ] );
-	}
-}
-
-if ( ! function_exists( 'esc_html__' ) ) {
-	function esc_html__( $text, $domain = 'default' ) {
-		return $text;
-	}
-}
-
-if ( ! function_exists( '__' ) ) {
-	function __( $text, $domain = 'default' ) {
-		return $text;
-	}
-}
-
-if ( ! function_exists( 'is_admin' ) ) {
-	function is_admin() {
-		return true;
-	}
-}
-
-if ( ! function_exists( 'wp_enqueue_style' ) ) {
-	function wp_enqueue_style( $handle, $src = '', $deps = [], $ver = false, $media = 'all' ) {
-		global $enqueued_styles;
-		$enqueued_styles[ $handle ] = [
-			'src'   => $src,
-			'deps'  => $deps,
-			'ver'   => $ver,
-			'media' => $media,
-		];
-	}
-}
-
-if ( ! function_exists( 'wp_enqueue_script' ) ) {
-	function wp_enqueue_script( $handle, $src = '', $deps = [], $ver = false, $in_footer = false ) {
-		global $enqueued_scripts;
-		$enqueued_scripts[ $handle ] = [
-			'src'       => $src,
-			'deps'      => $deps,
-			'ver'       => $ver,
-			'in_footer' => $in_footer,
-		];
-	}
-}
-
-if ( ! function_exists( 'wp_localize_script' ) ) {
-	function wp_localize_script( $handle, $object_name, $l10n ) {
-		global $localized_scripts;
-		$localized_scripts[ $handle ][ $object_name ] = $l10n;
-		return true;
-	}
-}
-
-if ( ! function_exists( 'site_url' ) ) {
-	function site_url( $path = '' ) {
-		return 'http://example.org' . ( $path ? '/' . ltrim( $path, '/' ) : '' );
-	}
-}
-
-if ( ! function_exists( 'admin_url' ) ) {
-	function admin_url( $path = '' ) {
-		return 'http://example.org/wp-admin/' . ltrim( $path, '/' );
-	}
-}
-
-if ( ! function_exists( 'rest_url' ) ) {
-	function rest_url( $path = '' ) {
-		return 'http://example.org/wp-json/' . ltrim( $path, '/' );
-	}
-}
-
-if ( ! function_exists( 'wp_create_nonce' ) ) {
-	function wp_create_nonce( $action = -1 ) {
-		return 'mock_nonce_' . $action;
-	}
-}
-
-if ( ! defined( 'GSLIDER_PLUGIN_URL' ) ) {
-	define( 'GSLIDER_PLUGIN_URL', 'http://example.org/wp-content/plugins/gslider-blocks/' );
-}
-if ( ! defined( 'GSLIDER_DIR_PATH' ) ) {
-	define( 'GSLIDER_DIR_PATH', dirname( __DIR__ ) . '/' );
-}
-if ( ! defined( 'GSLIDER_VERSION' ) ) {
-	define( 'GSLIDER_VERSION', '1.1.9' );
-}
-
-require_once dirname( __DIR__ ) . '/vendor/autoload.php';
+require_once dirname( __DIR__ ) . '/bootstrap.php';
 
 use GSlider\Admin\Dashboard;
 use GSlider\Interfaces\Registrable;
@@ -515,7 +373,7 @@ class DashboardTest {
 	 * @return void
 	 */
 	public function test_compiled_dashboard_stylesheet(): void {
-		$dashboard_css_file = dirname( __DIR__ ) . '/assets/admin/css/dashboard.css';
+		$dashboard_css_file = GSLIDER_DIR_PATH . 'assets/admin/css/dashboard.css';
 		if ( ! file_exists( $dashboard_css_file ) ) {
 			fwrite( STDERR, "FAIL: Compiled assets/admin/css/dashboard.css not found\n" );
 			exit( 1 );
@@ -542,7 +400,7 @@ class DashboardTest {
 	 * @return void
 	 */
 	public function test_compiled_dashboard_header_component(): void {
-		$dashboard_css_file    = dirname( __DIR__ ) . '/assets/admin/css/dashboard.css';
+		$dashboard_css_file    = GSLIDER_DIR_PATH . 'assets/admin/css/dashboard.css';
 		$dashboard_css_content = file_get_contents( $dashboard_css_file );
 
 		$required_header_classes = [
@@ -560,7 +418,7 @@ class DashboardTest {
 				exit( 1 );
 			}
 		}
-		$dashboard_js_file = dirname( __DIR__ ) . '/assets/admin/js/dashboard.js';
+		$dashboard_js_file = GSLIDER_DIR_PATH . 'assets/admin/js/dashboard.js';
 		if ( ! file_exists( $dashboard_js_file ) ) {
 			fwrite( STDERR, "FAIL: Compiled assets/admin/js/dashboard.js not found\n" );
 			exit( 1 );
@@ -583,8 +441,8 @@ class DashboardTest {
 	 * @return void
 	 */
 	public function test_compiled_dashboard_tabs_navigation(): void {
-		$dashboard_css_file    = dirname( __DIR__ ) . '/assets/admin/css/dashboard.css';
-		$dashboard_js_file     = dirname( __DIR__ ) . '/assets/admin/js/dashboard.js';
+		$dashboard_css_file    = GSLIDER_DIR_PATH . 'assets/admin/css/dashboard.css';
+		$dashboard_js_file     = GSLIDER_DIR_PATH . 'assets/admin/js/dashboard.js';
 		$dashboard_css_content = file_get_contents( $dashboard_css_file );
 		$dashboard_js_content  = file_get_contents( $dashboard_js_file );
 
@@ -625,8 +483,8 @@ class DashboardTest {
 	 * @return void
 	 */
 	public function test_compiled_overview_tab_and_rest_integration(): void {
-		$dashboard_css_file    = dirname( __DIR__ ) . '/assets/admin/css/dashboard.css';
-		$dashboard_js_file     = dirname( __DIR__ ) . '/assets/admin/js/dashboard.js';
+		$dashboard_css_file    = GSLIDER_DIR_PATH . 'assets/admin/css/dashboard.css';
+		$dashboard_js_file     = GSLIDER_DIR_PATH . 'assets/admin/js/dashboard.js';
 		$dashboard_css_content = file_get_contents( $dashboard_css_file );
 		$dashboard_js_content  = file_get_contents( $dashboard_js_file );
 
@@ -666,7 +524,7 @@ class DashboardTest {
 			}
 		}
 
-		$asset_php_file = dirname( __DIR__ ) . '/assets/admin/js/dashboard.asset.php';
+		$asset_php_file = GSLIDER_DIR_PATH . 'assets/admin/js/dashboard.asset.php';
 		$asset_data     = require $asset_php_file;
 		if ( ! in_array( 'wp-api-fetch', $asset_data['dependencies'], true ) ) {
 			fwrite( STDERR, "FAIL: dashboard.asset.php missing 'wp-api-fetch' dependency\n" );
@@ -681,8 +539,8 @@ class DashboardTest {
 	 * @return void
 	 */
 	public function test_compiled_blocks_manager_tab(): void {
-		$dashboard_css_file    = dirname( __DIR__ ) . '/assets/admin/css/dashboard.css';
-		$dashboard_js_file     = dirname( __DIR__ ) . '/assets/admin/js/dashboard.js';
+		$dashboard_css_file    = GSLIDER_DIR_PATH . 'assets/admin/css/dashboard.css';
+		$dashboard_js_file     = GSLIDER_DIR_PATH . 'assets/admin/js/dashboard.js';
 		$dashboard_css_content = file_get_contents( $dashboard_css_file );
 		$dashboard_js_content  = file_get_contents( $dashboard_js_file );
 
@@ -732,7 +590,7 @@ class DashboardTest {
 	 * @return void
 	 */
 	public function test_streamlined_two_tab_navigation(): void {
-		$dashboard_js_file    = dirname( __DIR__ ) . '/assets/admin/js/dashboard.js';
+		$dashboard_js_file    = GSLIDER_DIR_PATH . 'assets/admin/js/dashboard.js';
 		$dashboard_js_content = file_get_contents( $dashboard_js_file );
 
 		$required_nav_strings = [
