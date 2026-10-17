@@ -133,7 +133,7 @@ This plugin bundles and uses the following open-source third-party libraries:
   - License: Free / Commercial
 * **Appsero Client** (v2.0.7)
   - Source: https://github.com/Appsero/client
-  - License: MIT License (https://github.com/Appsero/client/blob/master/LICENSE)
+  - License: MIT License (https://github.com/Appsero/client/blob/develop/composer.json)
 
 == External Services ==
 
@@ -152,8 +152,7 @@ This plugin may connect to or load resources from external third-party services 
    - **Purpose:** Used for plugin diagnostics, crash analytics, and feature usage to help improve the plugin.
    - **Consent:** Telemetry is strictly opt-in and requires explicit user consent upon activation. Users can decline or deactivate tracking at any time.
    - **Terms & Privacy:**
-     - Privacy Policy: https://appsero.com/privacy-policy/
-     - Terms of Service: https://appsero.com/terms-of-service/
+     - Terms & Privacy Policy: https://appsero.com/privacy-policy/
 
 == Screenshots ==
 
