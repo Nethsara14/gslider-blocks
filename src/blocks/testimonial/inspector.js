@@ -1664,7 +1664,7 @@ const Inspector = ({ attributes, setAttributes, handleAddItem, handleChangeItem,
 
                     {paginationType === 'bullets' && (
                         <ToggleControl
-                            label={__("Dynamic Bullets", "slider-blocks")}
+                            label={__("Dynamic Bullets", "gslider-blocks")}
                             checked={dynamicBullets}
                             onChange={(value) => setAttributes({ dynamicBullets: value })}
                         />
@@ -2784,7 +2784,7 @@ const Inspector = ({ attributes, setAttributes, handleAddItem, handleChangeItem,
                     />
 
                     <ToggleControl
-                        label={__("Position", "frontis-blocks")}
+                        label={__("Position", "gslider-blocks")}
                         checked={quoteIconPositionSwitcher}
                         onChange={(value) => setAttributes({ quoteIconPositionSwitcher: value })}
                     />
