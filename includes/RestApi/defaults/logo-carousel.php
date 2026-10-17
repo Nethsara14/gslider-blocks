@@ -1238,5 +1238,4 @@ return [
 	'globalBoxShadowCssValue' => '',
 	'globalBoxShadowHoverValues' => [],
 	'globalBoxShadowHoverCssValue' => '',
-	'globalCustomCSS' => '',
 ];
