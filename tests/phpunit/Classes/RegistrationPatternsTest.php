@@ -19,13 +19,6 @@ require_once dirname( __DIR__ ) . '/bootstrap.php';
 global $is_admin_mock;
 $is_admin_mock = false;
 
-if ( ! function_exists( 'is_admin' ) ) {
-	function is_admin() {
-		global $is_admin_mock;
-		return (bool) $is_admin_mock;
-	}
-}
-
 if ( ! function_exists( 'plugins_url' ) ) {
 	function plugins_url( $path = '', $plugin = '' ) {
 		return 'https://example.com/wp-content/plugins/gslider-blocks/' . ltrim( $path, '/' );

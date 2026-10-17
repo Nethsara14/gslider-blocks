@@ -49,8 +49,8 @@ if ( ! function_exists( 'add_action' ) ) {
 
 if ( ! function_exists( 'add_filter' ) ) {
 	function add_filter( $hook, $callback, $priority = 10, $accepted_args = 1 ) {
-		global $wp_actions;
-		$wp_actions[ $hook ][] = [
+		global $wp_filters;
+		$wp_filters[ $hook ][] = [
 			'callback'      => $callback,
 			'priority'      => $priority,
 			'accepted_args' => $accepted_args,
@@ -114,7 +114,8 @@ if ( ! function_exists( 'esc_url_raw' ) ) {
 
 if ( ! function_exists( 'is_admin' ) ) {
 	function is_admin() {
-		return true;
+		global $is_admin_mock;
+		return isset( $is_admin_mock ) ? (bool) $is_admin_mock : true;
 	}
 }
 
