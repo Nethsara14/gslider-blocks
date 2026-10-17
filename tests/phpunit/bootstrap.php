@@ -214,6 +214,29 @@ if ( ! function_exists( 'register_block_pattern' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wp_strip_all_tags' ) ) {
+	function wp_strip_all_tags( $text, $remove_breaks = false ) {
+		$text = preg_replace( '@<(script|style)[^>]*?>.*?</\\1>@si', '', (string) $text );
+		$text = strip_tags( $text );
+		if ( $remove_breaks ) {
+			$text = preg_replace( '/[\r\n\t ]+/', ' ', $text );
+		}
+		return trim( $text );
+	}
+}
+
+if ( ! function_exists( 'wp_kses_post' ) ) {
+	function wp_kses_post( $text ) {
+		return (string) $text;
+	}
+}
+
+if ( ! function_exists( 'render_block' ) ) {
+	function render_block( $block ) {
+		return '<p>flexi</p>';
+	}
+}
+
 // Composer autoloader.
 $gslider_autoloader = dirname( __DIR__, 2 ) . '/vendor/autoload.php';
 if ( file_exists( $gslider_autoloader ) ) {
