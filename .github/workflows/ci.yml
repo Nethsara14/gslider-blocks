@@ -89,7 +89,7 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             echo "Checking only modified JavaScript files in PR..."
-            JS_FILES=$(git diff --name-only --diff-filter=ACMR origin/main...HEAD | grep -E '\.(js|jsx)$' | grep -v -E '^(build|vendor|assets|node_modules|packages|storybook-static)/' || true)
+            JS_FILES=$(git diff --name-only --diff-filter=ACMR "origin/${{ github.base_ref }}...HEAD" | grep -E '\.(js|jsx)$' | grep -v -E '^(build|vendor|assets|node_modules|packages|storybook-static)/' || true)
             if [ -n "$JS_FILES" ]; then
               echo "Linting changed JS files:"
               echo "$JS_FILES"
@@ -107,7 +107,7 @@ jobs:
         run: |
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             echo "Checking only modified SCSS/CSS files in PR..."
-            CSS_FILES=$(git diff --name-only --diff-filter=ACMR origin/main...HEAD | grep -E '\.(css|scss)$' | grep -v -E '^(build|vendor|assets|node_modules|packages|storybook-static)/' || true)
+            CSS_FILES=$(git diff --name-only --diff-filter=ACMR "origin/${{ github.base_ref }}...HEAD" | grep -E '\.(css|scss)$' | grep -v -E '^(build|vendor|assets|node_modules|packages|storybook-static)/' || true)
             if [ -n "$CSS_FILES" ]; then
               echo "Linting changed SCSS/CSS files:"
               echo "$CSS_FILES"
