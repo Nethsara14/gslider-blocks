@@ -31,6 +31,9 @@ const config = {
 				__dirname,
 				'./mocks/block-editor.js'
 			),
+			'__real_wordpress_block_editor$': require.resolve(
+				'@wordpress/block-editor'
+			),
 			'@Components': path.resolve( __dirname, '../src/components/' ),
 			'@Utils': path.resolve( __dirname, '../src/utils/' ),
 			'@Constants': path.resolve( __dirname, '../src/constants/' ),

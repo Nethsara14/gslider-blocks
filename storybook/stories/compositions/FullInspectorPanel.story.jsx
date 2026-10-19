@@ -156,10 +156,10 @@ function FullInspectorSandbox( props ) {
 	const zIndex = props.zIndex || '1';
 	const setZIndex = ( val ) => updateArgs( { zIndex: val } );
 
-	const customClass = props.customClass || '';
+	const customClass = props.customClass || 'my-custom-slider';
 	const setCustomClass = ( val ) => updateArgs( { customClass: val } );
 
-	const htmlAnchor = props.htmlAnchor || '';
+	const htmlAnchor = props.htmlAnchor || 'hero-slider';
 	const setHtmlAnchor = ( val ) => updateArgs( { htmlAnchor: val } );
 
 	// ── General Tab State ─────────────────────────────────
@@ -236,127 +236,142 @@ function FullInspectorSandbox( props ) {
 	const [ fontWeight, setFontWeight ] = useState( '700' );
 
 	const [ customGradientSwitcher, setCustomGradientSwitcher ] =
-		useState( 'gradient' );
-	const [ customGradientValue, setCustomGradientValue ] = useState(
-		'linear-gradient(135deg, #2563eb 0%, #10b981 100%)'
-	);
+		useState( false );
+	const [ customGradientValue, setCustomGradientValue ] = useState( '' );
 	const [ gradientColor, setGradientColor ] = useState(
-		'linear-gradient(135deg, #2563eb 0%, #10b981 100%)'
+		'linear-gradient(135deg,rgb(37,99,235) 0%,rgb(16,185,129) 100%)'
 	);
 
 	const [ normalBgType, setNormalBgType ] = useState( 'classic' );
-	const [ normalBgColor, setNormalBgColor ] = useState( '#f8fafc' );
+	const [ normalBgColor, setNormalBgColor ] = useState( '#ffffff' );
 
-	const [ bgImageUrl, setBgImageUrl ] = useState(
-		'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&auto=format&fit=crop'
-	);
-	const [ bgImageAlt, setBgImageAlt ] = useState( 'Night Mountains' );
-	const [ bgImageId, setBgImageId ] = useState( 102 );
+	const [ bgImageUrl, setBgImageUrl ] = useState( '' );
+	const [ bgImageAlt, setBgImageAlt ] = useState( '' );
+	const [ bgImageId, setBgImageId ] = useState( '' );
 	const [ bgPosition, setBgPosition ] = useState( {
-		Desktop: 'center center',
+		Desktop: { x: 0.5, y: 0.5 },
+		Tablet: { x: 0.5, y: 0.5 },
+		Mobile: { x: 0.5, y: 0.5 },
 	} );
-	const [ bgAttachment, setBgAttachment ] = useState( { Desktop: 'scroll' } );
-	const [ bgRepeat, setBgRepeat ] = useState( { Desktop: 'no-repeat' } );
-	const [ bgSize, setBgSize ] = useState( { Desktop: 'cover' } );
+	const [ bgAttachment, setBgAttachment ] = useState( {
+		Desktop: 'scroll',
+		Tablet: 'scroll',
+		Mobile: 'scroll',
+	} );
+	const [ bgRepeat, setBgRepeat ] = useState( {
+		Desktop: 'no-repeat',
+		Tablet: 'no-repeat',
+		Mobile: 'no-repeat',
+	} );
+	const [ bgSize, setBgSize ] = useState( {
+		Desktop: 'cover',
+		Tablet: 'cover',
+		Mobile: 'cover',
+	} );
 
-	const [ boxShadow, setBoxShadow ] = useState(
-		'0px 10px 25px rgba(0, 0, 0, 0.08)'
-	);
+	const [ boxShadow, setBoxShadow ] = useState( [
+		0,
+		4,
+		12,
+		0,
+		'',
+		'rgba(0,0,0,0.08)',
+	] );
 
 	// ── Advanced Tab State ────────────────────────────────
-	const [ slideUrl, setSlideUrl ] = useState( 'https://gslider.io' );
-	const [ urlOpenInNewTab, setUrlOpenInNewTab ] = useState( true );
+	const [ slideUrl, setSlideUrl ] = useState( 'https://example.com' );
+	const [ urlOpenInNewTab, setUrlOpenInNewTab ] = useState( false );
 	const [ urlNofollow, setUrlNofollow ] = useState( false );
 	const [ urlSponsored, setUrlSponsored ] = useState( false );
 
 	// ── General Controls Assembly ─────────────────────────
 	const generalControls = (
 		<>
-			<PanelBody title="Layout & Presets" initialOpen={ true }>
-				<PresetSelector
-					label="Slider Layout Preset"
-					options={ SAMPLE_PRESETS }
-					value={ presetStyle }
-					onChange={ setPresetStyle }
-				/>
+			<PanelBody title="Slider Layout" initialOpen={ true }>
 				<SwitcherControl
-					label="Height Mode"
+					label="Layout Height"
 					value={ heightSwitcher }
-					onChange={ setHeightSwitcher }
 					options={ [
 						{ label: 'Auto', value: 'auto' },
-						{ label: 'Custom', value: 'custom' },
+						{ label: 'Fixed', value: 'fixed' },
 					] }
+					onChange={ setHeightSwitcher }
+					help="Choose adaptive auto-height or fixed height."
 				/>
 				<HtmlTagControl
-					label="Slide Title HTML Tag"
-					tag={ titleTag }
+					label="Title HTML Tag"
+					value={ titleTag }
 					options={ HTML_TAGS }
-					onChangeTag={ setTitleTag }
+					onChange={ setTitleTag }
 				/>
 				<ResponsiveAlignmentControl
 					label="Content Alignment"
 					deviceType={ deviceType }
-					alignment={ alignment }
+					alignmentValue={ alignment }
+					setAlignmentValue={ setAlignment }
 					options={ ALIGN_OPTIONS }
-					onDeviceChange={ setDeviceType }
-					onAlignmentChange={ setAlignment }
+					setAttributes={ () => {} }
+				/>
+				<PresetSelector
+					label="Layout Preset"
+					value={ presetStyle }
+					presets={ SAMPLE_PRESETS }
+					onChange={ setPresetStyle }
+					setAttributes={ () => {} }
 				/>
 			</PanelBody>
 
-			<PanelBody title="Navigation & Autoplay" initialOpen={ false }>
+			<PanelBody title="Navigation & Controls" initialOpen={ false }>
 				<ResponsiveToggleControl
-					label="Arrow Navigation"
+					label="Navigation Arrows"
 					deviceType={ deviceType }
-					toggle={ navigationToggle }
-					onDeviceChange={ setDeviceType }
-					onToggleChange={ setNavigationToggle }
+					toggleValue={ navigationToggle }
+					setToggleValue={ setNavigationToggle }
+					setAttributes={ () => {} }
 				/>
 				<IconPicker
 					label="Navigation Arrow Icon"
 					value={ arrowIcon }
-					onChange={ setArrowIcon }
+					setIconHandler={ setArrowIcon }
 				/>
 				<ResponsiveToggleControl
 					label="Pagination Dots"
 					deviceType={ deviceType }
-					toggle={ paginationToggle }
-					onDeviceChange={ setDeviceType }
-					onToggleChange={ setPaginationToggle }
+					toggleValue={ paginationToggle }
+					setToggleValue={ setPaginationToggle }
+					setAttributes={ () => {} }
 				/>
 				<ResponsiveToggleControl
-					label="Autoplay Slides"
+					label="Autoplay"
 					deviceType={ deviceType }
-					toggle={ autoplayToggle }
-					onDeviceChange={ setDeviceType }
-					onToggleChange={ setAutoplayToggle }
+					toggleValue={ autoplayToggle }
+					setToggleValue={ setAutoplayToggle }
+					setAttributes={ () => {} }
 				/>
 			</PanelBody>
 
-			<PanelBody title="Slide Content & Media" initialOpen={ false }>
+			<PanelBody title="Slide Content Order" initialOpen={ false }>
 				<ContentOrderControl
-					label="Slide Content Order"
+					label="Content Hierarchy"
 					items={ SLIDE_CONTENT_ITEMS }
-					value={ contentOrder }
+					order={ contentOrder }
 					onChange={ setContentOrder }
+					help="Drag items to rearrange stacking order."
 				/>
+			</PanelBody>
+
+			<PanelBody title="Slide Media Image" initialOpen={ false }>
 				<ImageControl
 					label="Active Slide Image"
-					url={ slideImageUrl }
-					alt={ slideImageAlt }
-					id={ slideImageId }
-					size={ slideImageSize }
-					onChangeImage={ ( media ) => {
-						setSlideImageUrl( media.url );
-						setSlideImageAlt( media.alt || 'Slide image' );
-						setSlideImageId( media.id );
-					} }
-					onRemoveImage={ () => {
-						setSlideImageUrl( '' );
-						setSlideImageAlt( '' );
-						setSlideImageId( 0 );
-					} }
-					onChangeSize={ setSlideImageSize }
+					imageUrl={ slideImageUrl }
+					setImageUrl={ setSlideImageUrl }
+					imageAlt={ slideImageAlt }
+					setImageAlt={ setSlideImageAlt }
+					imageID={ slideImageId }
+					setImageID={ setSlideImageId }
+					imageSize={ slideImageSize }
+					setImageSize={ setSlideImageSize }
+					isImageSize={ true }
 				/>
 			</PanelBody>
 		</>
@@ -369,17 +384,17 @@ function FullInspectorSandbox( props ) {
 				<ResponsiveSpacingControl
 					label="Container Padding"
 					deviceType={ deviceType }
-					isLinked={ paddingLink }
+					onChangeDeviceType={ setDeviceType }
 					units={ paddingUnits }
+					onChangeUnits={ setPaddingUnits }
 					desktopSpacing={ paddingDesktop }
+					onChangeDesktopSpacing={ setPaddingDesktop }
 					tabletSpacing={ paddingTablet }
+					onChangeTabletSpacing={ setPaddingTablet }
 					mobileSpacing={ paddingMobile }
-					onDeviceChange={ setDeviceType }
-					onLinkChange={ setPaddingLink }
-					onUnitChange={ setPaddingUnits }
-					onDesktopChange={ setPaddingDesktop }
-					onTabletChange={ setPaddingTablet }
-					onMobileChange={ setPaddingMobile }
+					onChangeMobileSpacing={ setPaddingMobile }
+					isLinked={ paddingLink }
+					onChangeLink={ setPaddingLink }
 				/>
 			</PanelBody>
 
@@ -388,12 +403,11 @@ function FullInspectorSandbox( props ) {
 					label="Title Typography"
 					deviceType={ deviceType }
 					fontFamily={ fontFamily }
+					onChangeFontFamily={ setFontFamily }
 					fontSize={ fontSize }
+					onChangeFontSize={ setFontSize }
 					fontWeight={ fontWeight }
-					onDeviceChange={ setDeviceType }
-					onFontFamilyChange={ setFontFamily }
-					onFontSizeChange={ setFontSize }
-					onFontWeightChange={ setFontWeight }
+					onChangeFontWeight={ setFontWeight }
 				/>
 			</PanelBody>
 
@@ -523,8 +537,8 @@ export const Default = {
 		textColor: '#1e293b',
 		deviceType: 'Desktop',
 		zIndex: '1',
-		customClass: '',
-		htmlAnchor: '',
+		customClass: 'my-custom-slider',
+		htmlAnchor: 'hero-slider',
 	},
 	render: function Render( args ) {
 		return <FullInspectorSandbox { ...args } />;

@@ -10,20 +10,12 @@ import '../../assets/admin/css/block-controls.css';
  * @param {Object}   context Storybook context.
  * @return {Element} Rendered element.
  */
-export const WithGlobalCSS = ( Story, context ) => {
-	const css = context?.globals?.css || 'wordpress';
-
-	let className = 'gslider-storybook-root';
-	if ( css === 'wordpress' ) {
-		className += ' gslider-storybook-wordpress-root wp-core-ui';
-	} else if ( css === 'basic' ) {
-		className += ' gslider-storybook-font-only';
-	}
-
+export const WithGlobalCSS = ( Story ) => {
 	return createElement(
 		'div',
 		{
-			className,
+			className:
+				'gslider-storybook-root gslider-storybook-wordpress-root wp-core-ui',
 			style: {
 				fontFamily:
 					'-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif',

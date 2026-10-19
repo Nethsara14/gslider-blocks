@@ -22,23 +22,6 @@ export const globalTypes = {
 			],
 		},
 	},
-	css: {
-		name: 'Global CSS',
-		description:
-			'Inject global CSS stylesheets loaded in Gutenberg contexts.',
-		defaultValue: 'wordpress',
-		toolbar: {
-			icon: 'document',
-			items: [
-				{ value: 'none', title: 'None' },
-				{ value: 'basic', title: 'Font only' },
-				{
-					value: 'wordpress',
-					title: 'WordPress (core components & block controls)',
-				},
-			],
-		},
-	},
 	maxWidthWrapper: {
 		name: 'Max-Width Wrapper',
 		description: 'Wrap the component in a responsive container or sidebar.',
