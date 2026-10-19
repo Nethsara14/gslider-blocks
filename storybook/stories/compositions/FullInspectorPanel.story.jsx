@@ -4,21 +4,30 @@ import { SlotFillProvider, PanelBody } from '@wordpress/components';
 import { InspectorControls } from '@wordpress/block-editor';
 import { createReduxStore, register, select } from '@wordpress/data';
 
+// All 22 GSlider Core Inspector Components
 import InspectorControl from '@Components/inspector-controls';
 import SwitcherControl from '@Components/switcher-control';
+import HtmlTagControl from '@Components/html-tag-control';
 import ResponsiveAlignmentControl from '@Components/responsive-alignment-control';
 import PresetSelector from '@Components/preset-selector';
-import ContentOrderControl from '@Components/content-order-control';
 import ResponsiveToggleControl from '@Components/responsive-toggle-control';
+import IconPicker from '@Components/icon-picker';
+import ContentOrderControl from '@Components/content-order-control';
+import ImageControl from '@Components/image-control';
+
 import ResponsiveSpacingControl from '@Components/responsive-spacing-control';
 import ResponsiveTypographyControl from '@Components/responsive-typography-control';
 import ColorControl from '@Components/color-control';
+import GradientColorControl from '@Components/gradient-color-control';
+import BackgroundControl from '@Components/background-control';
+import ResponsiveBackgroundImageControl from '@Components/responsive-background-image-control';
 import BoxShadowSettingsControl from '@Components/box-shadow-control';
+
 import InputControls from '@Components/input-control';
 import UrlControl from '@Components/url-control';
-import { HORIZONTAL_POSITION_ICONS } from '@Constants';
+import { HORIZONTAL_POSITION_ICONS, HTML_TAGS } from '@Constants';
 
-// Register core/editor store mock in Storybook so ColorControl does not error
+// 1. Register core/editor Redux store mock in Storybook so ColorControl does not error
 if ( typeof window !== 'undefined' && ! window.__gslider_editor_store_mocked ) {
 	window.__gslider_editor_store_mocked = true;
 	try {
@@ -49,7 +58,7 @@ if ( typeof window !== 'undefined' && ! window.__gslider_editor_store_mocked ) {
 	} catch ( _ ) {}
 }
 
-// Ensure Google Fonts mock fallback is available for typography control
+// 2. Ensure Google Fonts mock fallback is available for typography control
 if ( typeof window !== 'undefined' && ! window.__gslider_fetch_mocked ) {
 	window.__gslider_fetch_mocked = true;
 	const originalFetch = window.fetch.bind( window );
@@ -79,6 +88,91 @@ if ( typeof window !== 'undefined' && ! window.__gslider_fetch_mocked ) {
 	};
 }
 
+// 3. Ensure wp.media mock is available in Storybook for media uploads
+if ( typeof window !== 'undefined' && ! window.wp?.media ) {
+	window.wp = window.wp || {};
+	window.wp.media = () => {
+		let selectCallback = null;
+		const instance = {
+			state: () => ( {
+				get: () => ( {
+					first: () => ( {
+						toJSON: () => ( {
+							id: 101,
+							url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop',
+							alt: 'Sample Slider Image',
+						} ),
+					} ),
+				} ),
+			} ),
+			on: ( event, cb ) => {
+				if ( event === 'select' ) {
+					selectCallback = cb;
+				}
+			},
+			open: () => {
+				if ( selectCallback ) {
+					selectCallback();
+				}
+			},
+		};
+		return instance;
+	};
+}
+
+// 4. Pre-seed fallback icons for IconPicker in Storybook
+if ( typeof window !== 'undefined' && ! window.__gslider_icons_preseeded ) {
+	window.__gslider_icons_preseeded = true;
+	try {
+		const icons = {
+			'angle-left': {
+				svg: {
+					solid: {
+						width: 384,
+						height: 512,
+						path: 'M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 278.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z',
+					},
+				},
+				label: 'angle-left',
+			},
+			'angle-right': {
+				svg: {
+					solid: {
+						width: 384,
+						height: 512,
+						path: 'M342.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L274.7 256 105.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z',
+					},
+				},
+				label: 'angle-right',
+			},
+			'arrow-left': {
+				svg: {
+					solid: {
+						width: 448,
+						height: 512,
+						path: 'M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z',
+					},
+				},
+				label: 'arrow-left',
+			},
+			'arrow-right': {
+				svg: {
+					solid: {
+						width: 448,
+						height: 512,
+						path: 'M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.8 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z',
+					},
+				},
+				label: 'arrow-right',
+			},
+		};
+		window.localStorage.setItem(
+			'gslider_svg_icons',
+			JSON.stringify( icons )
+		);
+	} catch ( _ ) {}
+}
+
 export default {
 	title: 'GSlider Compositions/FullInspectorPanel',
 	component: InspectorControl,
@@ -87,7 +181,7 @@ export default {
 		docs: {
 			description: {
 				component:
-					'FullInspectorPanel demonstrates the authentic WordPress Gutenberg Block Inspector Sidebar composition in GSlider Blocks. It integrates `InspectorControl` with General, Style, and Advanced tabs, housing 12+ production controls (SwitcherControl, ResponsiveAlignmentControl, PresetSelector, ContentOrderControl, ResponsiveToggleControl, ResponsiveSpacingControl, ResponsiveTypographyControl, ColorControl, BoxShadowSettingsControl, InputControls, and UrlControl).',
+					'FullInspectorPanel is the benchmark composition showcase for GSlider Blocks. It integrates all 22 custom controls into an authentic WordPress Gutenberg Block Inspector Sidebar with General, Style, and Advanced tabs.',
 			},
 		},
 	},
@@ -138,19 +232,22 @@ function FullInspectorSandbox() {
 	// Active device for responsive controls
 	const [ deviceType, setDeviceType ] = useState( 'Desktop' );
 
-	// General tab state
+	// ── General Tab State ─────────────────────────────────
 	const [ heightSwitcher, setHeightSwitcher ] = useState( 'auto' );
+	const [ titleTag, setTitleTag ] = useState( 'h2' );
 	const [ alignment, setAlignment ] = useState( {
 		Desktop: 'center',
 		Tablet: 'center',
 		Mobile: 'center',
 	} );
 	const [ presetStyle, setPresetStyle ] = useState( 'preset-classic' );
+
 	const [ navigationToggle, setNavigationToggle ] = useState( {
 		Desktop: true,
 		Tablet: true,
 		Mobile: true,
 	} );
+	const [ arrowIcon, setArrowIcon ] = useState( 'angle-right' );
 	const [ paginationToggle, setPaginationToggle ] = useState( {
 		Desktop: true,
 		Tablet: true,
@@ -161,6 +258,7 @@ function FullInspectorSandbox() {
 		Tablet: false,
 		Mobile: false,
 	} );
+
 	const [ contentOrder, setContentOrder ] = useState( [
 		'title',
 		'subtitle',
@@ -168,7 +266,14 @@ function FullInspectorSandbox() {
 		'buttons',
 	] );
 
-	// Style tab state
+	const [ slideImageUrl, setSlideImageUrl ] = useState(
+		'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop'
+	);
+	const [ slideImageAlt, setSlideImageAlt ] = useState( 'Slide Beach Image' );
+	const [ slideImageId, setSlideImageId ] = useState( 101 );
+	const [ slideImageSize, setSlideImageSize ] = useState( 'full' );
+
+	// ── Style Tab State ───────────────────────────────────
 	const [ paddingDesktop, setPaddingDesktop ] = useState( {
 		top: '30',
 		right: '30',
@@ -203,7 +308,39 @@ function FullInspectorSandbox() {
 	const [ fontWeight, setFontWeight ] = useState( '700' );
 
 	const [ textColor, setTextColor ] = useState( '#1e293b' );
-	const [ bgColor, setBgColor ] = useState( '#ffffff' );
+	const [ customGradientSwitcher, setCustomGradientSwitcher ] =
+		useState( false );
+	const [ customGradientValue, setCustomGradientValue ] = useState( '' );
+	const [ gradientColor, setGradientColor ] = useState(
+		'linear-gradient(135deg,rgb(37,99,235) 0%,rgb(16,185,129) 100%)'
+	);
+
+	const [ normalBgType, setNormalBgType ] = useState( 'classic' );
+	const [ normalBgColor, setNormalBgColor ] = useState( '#ffffff' );
+	const [ bgImageUrl, setBgImageUrl ] = useState( '' );
+	const [ bgImageAlt, setBgImageAlt ] = useState( '' );
+	const [ bgImageId, setBgImageId ] = useState( '' );
+	const [ bgPosition, setBgPosition ] = useState( {
+		Desktop: { x: 0.5, y: 0.5 },
+		Tablet: { x: 0.5, y: 0.5 },
+		Mobile: { x: 0.5, y: 0.5 },
+	} );
+	const [ bgAttachment, setBgAttachment ] = useState( {
+		Desktop: 'scroll',
+		Tablet: 'scroll',
+		Mobile: 'scroll',
+	} );
+	const [ bgRepeat, setBgRepeat ] = useState( {
+		Desktop: 'no-repeat',
+		Tablet: 'no-repeat',
+		Mobile: 'no-repeat',
+	} );
+	const [ bgSize, setBgSize ] = useState( {
+		Desktop: 'cover',
+		Tablet: 'cover',
+		Mobile: 'cover',
+	} );
+
 	const [ boxShadow, setBoxShadow ] = useState( [
 		0,
 		4,
@@ -213,7 +350,7 @@ function FullInspectorSandbox() {
 		'rgba(0,0,0,0.08)',
 	] );
 
-	// Advanced tab state
+	// ── Advanced Tab State ────────────────────────────────
 	const [ zIndex, setZIndex ] = useState( '1' );
 	const [ customClass, setCustomClass ] = useState( 'my-custom-slider' );
 	const [ htmlAnchor, setHtmlAnchor ] = useState( 'hero-slider' );
@@ -222,6 +359,7 @@ function FullInspectorSandbox() {
 	const [ urlNofollow, setUrlNofollow ] = useState( false );
 	const [ urlSponsored, setUrlSponsored ] = useState( false );
 
+	// ── General Controls Assembly ─────────────────────────
 	const generalControls = (
 		<>
 			<PanelBody title="Slider Layout" initialOpen={ true }>
@@ -233,7 +371,13 @@ function FullInspectorSandbox() {
 						{ label: 'Fixed', value: 'fixed' },
 					] }
 					onChange={ setHeightSwitcher }
-					help="Choose adaptive auto-height or a fixed viewport height."
+					help="Choose adaptive auto-height or fixed height."
+				/>
+				<HtmlTagControl
+					label="Title HTML Tag"
+					value={ titleTag }
+					options={ HTML_TAGS }
+					onChange={ setTitleTag }
 				/>
 				<ResponsiveAlignmentControl
 					label="Content Alignment"
@@ -257,6 +401,11 @@ function FullInspectorSandbox() {
 					toggleValue={ navigationToggle }
 					setToggleValue={ setNavigationToggle }
 				/>
+				<IconPicker
+					label="Navigation Arrow Icon"
+					value={ arrowIcon }
+					setIconHandler={ setArrowIcon }
+				/>
 				<ResponsiveToggleControl
 					label="Pagination Dots"
 					deviceType={ deviceType }
@@ -277,12 +426,28 @@ function FullInspectorSandbox() {
 					items={ SLIDE_CONTENT_ITEMS }
 					order={ contentOrder }
 					onChange={ setContentOrder }
-					help="Drag items to rearrange the stacking hierarchy."
+					help="Drag items to rearrange stacking order."
+				/>
+			</PanelBody>
+
+			<PanelBody title="Slide Media Image" initialOpen={ false }>
+				<ImageControl
+					label="Active Slide Image"
+					imageUrl={ slideImageUrl }
+					setImageUrl={ setSlideImageUrl }
+					imageAlt={ slideImageAlt }
+					setImageAlt={ setSlideImageAlt }
+					imageID={ slideImageId }
+					setImageID={ setSlideImageId }
+					imageSize={ slideImageSize }
+					setImageSize={ setSlideImageSize }
+					isImageSize={ true }
 				/>
 			</PanelBody>
 		</>
 	);
 
+	// ── Style Controls Assembly ───────────────────────────
 	const styleControls = (
 		<>
 			<PanelBody title="Spacing & Dimensions" initialOpen={ true }>
@@ -317,16 +482,60 @@ function FullInspectorSandbox() {
 				/>
 			</PanelBody>
 
-			<PanelBody title="Colors & Background" initialOpen={ false }>
+			<PanelBody title="Colors & Gradients" initialOpen={ false }>
 				<ColorControl
 					label="Text Color"
 					color={ textColor }
 					onChangeColor={ setTextColor }
 				/>
-				<ColorControl
-					label="Background Color"
-					color={ bgColor }
-					onChangeColor={ setBgColor }
+				<GradientColorControl
+					label="Slide Gradient Overlay"
+					globalCustomGradientSwitcher={ customGradientSwitcher }
+					globalCustomGradientInputValue={ customGradientValue }
+					globalGradientColor={ gradientColor }
+					setGlobalCustomGradientSwitcher={
+						setCustomGradientSwitcher
+					}
+					setGlobalCustomGradientInputValue={ setCustomGradientValue }
+					setGlobalGradientColor={ setGradientColor }
+				/>
+			</PanelBody>
+
+			<PanelBody title="Multi-layer Background" initialOpen={ false }>
+				<BackgroundControl
+					label="Slide Background"
+					deviceType={ deviceType }
+					normalBackgroundType={ normalBgType }
+					setNormalBackgroundType={ setNormalBgType }
+					normalClassicColor={ normalBgColor }
+					setNormalClassicColor={ setNormalBgColor }
+					isBackgroundImage={ true }
+					isHover={ false }
+				/>
+			</PanelBody>
+
+			<PanelBody
+				title="Responsive Background Image"
+				initialOpen={ false }
+			>
+				<ResponsiveBackgroundImageControl
+					label="Responsive Backdrop"
+					deviceType={ deviceType }
+					globalBackgroundImageUrl={ bgImageUrl }
+					setGlobalBackgroundImageUrl={ setBgImageUrl }
+					globalBackgroundImageAlt={ bgImageAlt }
+					setGlobalBackgroundImageAlt={ setBgImageAlt }
+					globalBackgroundImageID={ bgImageId }
+					setGlobalBackgroundImageID={ setBgImageId }
+					globalBackgroundImagePosition={ bgPosition }
+					setGlobalBackgroundImagePosition={ setBgPosition }
+					globalBackgroundImageAttachment={ bgAttachment }
+					setGlobalBackgroundImageAttachment={ setBgAttachment }
+					globalBackgroundImageRepeat={ bgRepeat }
+					setGlobalBackgroundImageRepeat={ setBgRepeat }
+					globalBackgroundImageSize={ bgSize }
+					setGlobalBackgroundImageSize={ setBgSize }
+					setAttributes={ () => {} }
 				/>
 			</PanelBody>
 
@@ -340,6 +549,7 @@ function FullInspectorSandbox() {
 		</>
 	);
 
+	// ── Advanced Controls Assembly ────────────────────────
 	const advancedControls = (
 		<>
 			<PanelBody title="Layout & Positioning" initialOpen={ true }>
@@ -359,11 +569,11 @@ function FullInspectorSandbox() {
 					label="HTML Anchor"
 					value={ htmlAnchor }
 					onChangeValue={ setHtmlAnchor }
-					helpText="Enter a word or two without spaces to create a unique web address for this block."
+					helpText="Enter a word or two without spaces to create a unique anchor link."
 				/>
 			</PanelBody>
 
-			<PanelBody title="Slide Action URL" initialOpen={ false }>
+			<PanelBody title="Action Link Settings" initialOpen={ false }>
 				<UrlControl
 					label="Destination Link"
 					url={ slideUrl }
