@@ -54,8 +54,8 @@ jobs:
               }
             }
 
-            // 1. Conventional Commits & Common Issue Prefixes parser
-            if (/^(fix|bug)(\(.*\))?:/i.test(title)) labelsToAdd.add('type: bug');
+            // 1. Conventional Commits prefix parser
+            if (/^fix(\(.*\))?:/i.test(title)) labelsToAdd.add('type: bug');
             if (/^feat(\(.*\))?:/i.test(title)) labelsToAdd.add('type: enhancement');
             if (/^refactor(\(.*\))?:/i.test(title)) labelsToAdd.add('type: architecture');
             if (/^perf(\(.*\))?:/i.test(title)) labelsToAdd.add('type: performance');
@@ -63,23 +63,14 @@ jobs:
             if (/^docs(\(.*\))?:/i.test(title)) labelsToAdd.add('type: documentation');
             if (/^(ci|chore|test)(\(.*\))?:/i.test(title)) labelsToAdd.add('focus: ci-cd');
 
-            // Explicit component / tool prefix parser (e.g. `Storybook: ...`, `[Storybook] ...`)
-            if (/^\[?storybook\]?:?/i.test(title)) {
-              labelsToAdd.add('focus: design-system');
-              labelsToAdd.add('focus: ci-cd');
-            }
-
-            // 2. Scope parser (e.g. feat(mcp): ..., refactor(design-system): ..., [mcp]: ...)
-            const scopeMatch = title.match(/^[a-z]+(?:\(([^)]+)\))?:/i) || title.match(/^\[([^\]]+)\]/i);
+            // 2. Scope parser (e.g. feat(mcp): ..., refactor(design-system): ...)
+            const scopeMatch = title.match(/^[a-z]+(?:\(([^)]+)\))?:/i);
             if (scopeMatch && scopeMatch[1]) {
               const scope = scopeMatch[1].toLowerCase().trim();
-              if (scope.includes('design') || scope.includes('admin') || scope.includes('ui') || scope.includes('control') || scope.includes('storybook')) {
+              if (scope.includes('design') || scope.includes('admin') || scope.includes('ui') || scope.includes('control')) {
                 labelsToAdd.add('focus: design-system');
               }
-              if (scope.includes('storybook')) {
-                labelsToAdd.add('focus: ci-cd');
-              }
-              if (scope.includes('block') || scope.includes('slider') || scope.includes('carousel')) {
+              if (scope.includes('block')) {
                 labelsToAdd.add('focus: blocks');
               }
               if (scope.includes('mcp')) {
@@ -94,7 +85,7 @@ jobs:
               if (scope.includes('core') || scope.includes('php') || scope.includes('backend')) {
                 labelsToAdd.add('focus: php-backend');
               }
-              if (scope.includes('ci') || scope.includes('deps') || scope.includes('build') || scope.includes('release') || scope.includes('workflow')) {
+              if (scope.includes('ci') || scope.includes('deps') || scope.includes('build') || scope.includes('release')) {
                 labelsToAdd.add('focus: ci-cd');
               }
               if (scope.includes('a11y') || scope.includes('accessibility')) {
@@ -105,42 +96,19 @@ jobs:
               }
             }
 
-            // 3. Fallback keywords parser (checks title & issue body)
+            // 3. Fallback title keywords if no conventional commit scope was matched
             const lowerTitle = title.toLowerCase();
-            const lowerBody = (issue.body || '').toLowerCase();
-
-            if (!labelsToAdd.has('focus: mcp') && (lowerTitle.includes('mcp') || lowerBody.includes('mcp server'))) {
+            if (!labelsToAdd.has('focus: mcp') && lowerTitle.includes('mcp')) {
               labelsToAdd.add('focus: mcp');
             }
             if (!labelsToAdd.has('focus: swiper-engine') && (lowerTitle.includes('swiper') || lowerTitle.includes('carousel'))) {
               labelsToAdd.add('focus: swiper-engine');
             }
-            if (!labelsToAdd.has('focus: headless') && (lowerTitle.includes('rest api') || lowerTitle.includes('headless') || lowerTitle.includes('wpgraphql'))) {
+            if (!labelsToAdd.has('focus: headless') && (lowerTitle.includes('rest api') || lowerTitle.includes('headless'))) {
               labelsToAdd.add('focus: headless');
             }
-            if (!labelsToAdd.has('focus: design-system') && (lowerTitle.includes('admin') || lowerTitle.includes('dashboard') || lowerTitle.includes('controls') || lowerTitle.includes('storybook') || lowerTitle.includes('component') || lowerTitle.includes('inspector'))) {
+            if (!labelsToAdd.has('focus: design-system') && (lowerTitle.includes('admin') || lowerTitle.includes('dashboard') || lowerTitle.includes('controls'))) {
               labelsToAdd.add('focus: design-system');
-            }
-            if (!labelsToAdd.has('focus: ci-cd') && (lowerTitle.includes('storybook') || lowerTitle.includes('github action') || lowerTitle.includes('workflow') || lowerTitle.includes('ci'))) {
-              labelsToAdd.add('focus: ci-cd');
-            }
-            if (!labelsToAdd.has('focus: blocks') && (lowerTitle.includes('block') || lowerTitle.includes('slider') || lowerTitle.includes('testimonial') || lowerTitle.includes('flexi'))) {
-              labelsToAdd.add('focus: blocks');
-            }
-            if (!labelsToAdd.has('focus: accessibility') && (lowerTitle.includes('a11y') || lowerTitle.includes('aria') || lowerTitle.includes('wcag') || lowerTitle.includes('screen reader'))) {
-              labelsToAdd.add('focus: accessibility');
-            }
-
-            // 4. Fallback type inference if no type label was matched
-            const hasTypeLabel = Array.from(labelsToAdd).some(l => l.startsWith('type:'));
-            if (!hasTypeLabel) {
-              if (/\b(bug|error|crash|broken|empty|fail|fails|failed|issue|wrong|cannot|not working|raw text|inconsistent|mocks?)\b/i.test(lowerTitle)) {
-                labelsToAdd.add('type: bug');
-              } else if (/\b(add|feat|feature|enhancement|support|match|align|improve|update|request)\b/i.test(lowerTitle)) {
-                labelsToAdd.add('type: enhancement');
-              } else if (/\b(doc|docs|documentation|readme|guide)\b/i.test(lowerTitle)) {
-                labelsToAdd.add('type: documentation');
-              }
             }
 
             // Apply labels

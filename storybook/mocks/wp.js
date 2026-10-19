@@ -232,8 +232,9 @@ if ( typeof window !== 'undefined' && ! window.__gslider_icons_preseeded ) {
 			},
 		};
 
-		const serialized = JSON.stringify( icons );
-		window.localStorage.setItem( 'iconData', serialized );
-		window.localStorage.setItem( 'gslider_svg_icons', serialized );
+		const existing = window.localStorage.getItem( 'iconData' );
+		if ( ! existing ) {
+			window.localStorage.setItem( 'iconData', JSON.stringify( icons ) );
+		}
 	} catch ( _ ) {}
 }

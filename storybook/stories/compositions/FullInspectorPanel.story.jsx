@@ -233,7 +233,45 @@ function FullInspectorSandbox( props ) {
 		Tablet: 26,
 		Mobile: 20,
 	} );
+	const [ fontSizeUnits, setFontSizeUnits ] = useState( {
+		Desktop: 'px',
+		Tablet: 'px',
+		Mobile: 'px',
+	} );
 	const [ fontWeight, setFontWeight ] = useState( '700' );
+	const [ fontStyle, setFontStyle ] = useState( 'normal' );
+	const [ textTransform, setTextTransform ] = useState( 'none' );
+	const [ textDecoration, setTextDecoration ] = useState( 'none' );
+	const [ lineHeight, setLineHeight ] = useState( {
+		Desktop: '1.4',
+		Tablet: '1.4',
+		Mobile: '1.3',
+	} );
+	const [ lineHeightUnits, setLineHeightUnits ] = useState( {
+		Desktop: 'em',
+		Tablet: 'em',
+		Mobile: 'em',
+	} );
+	const [ letterSpacing, setLetterSpacing ] = useState( {
+		Desktop: '0',
+		Tablet: '0',
+		Mobile: '0',
+	} );
+	const [ letterSpacingUnits, setLetterSpacingUnits ] = useState( {
+		Desktop: 'px',
+		Tablet: 'px',
+		Mobile: 'px',
+	} );
+	const [ wordSpacing, setWordSpacing ] = useState( {
+		Desktop: '0',
+		Tablet: '0',
+		Mobile: '0',
+	} );
+	const [ wordSpacingUnits, setWordSpacingUnits ] = useState( {
+		Desktop: 'px',
+		Tablet: 'px',
+		Mobile: 'px',
+	} );
 
 	const [ customGradientSwitcher, setCustomGradientSwitcher ] =
 		useState( false );
@@ -406,8 +444,28 @@ function FullInspectorSandbox( props ) {
 					onChangeFontFamily={ setFontFamily }
 					fontSize={ fontSize }
 					onChangeFontSize={ setFontSize }
+					fontSizeUnits={ fontSizeUnits }
+					onChangeFontSizeUnit={ setFontSizeUnits }
 					fontWeight={ fontWeight }
 					onChangeFontWeight={ setFontWeight }
+					fontStyle={ fontStyle }
+					onChangeFontStyle={ setFontStyle }
+					textTransform={ textTransform }
+					onChangeTextTransform={ setTextTransform }
+					textDecoration={ textDecoration }
+					onChangeTextDecoration={ setTextDecoration }
+					lineHeight={ lineHeight }
+					onChangeLineHeight={ setLineHeight }
+					lineHeightUnits={ lineHeightUnits }
+					onChangeLineHeightUnit={ setLineHeightUnits }
+					letterSpacing={ letterSpacing }
+					onChangeLetterSpacing={ setLetterSpacing }
+					letterSpacingUnits={ letterSpacingUnits }
+					onChangeLetterSpacingUnit={ setLetterSpacingUnits }
+					wordSpacing={ wordSpacing }
+					onChangeWordSpacing={ setWordSpacing }
+					wordSpacingUnits={ wordSpacingUnits }
+					onChangeWordSpacingUnit={ setWordSpacingUnits }
 				/>
 			</PanelBody>
 
