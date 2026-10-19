@@ -87,3 +87,22 @@ updates:
       actions:
         patterns:
           - "*"
+
+  # 4. PHP Composer dependencies
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      timezone: "Asia/Dhaka"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "chore(deps-php)"
+    labels:
+      - "focus: php-backend"
+    groups:
+      dev-dependencies:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
