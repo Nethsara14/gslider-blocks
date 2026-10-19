@@ -33,7 +33,7 @@ updates:
           - "minor"
           - "patch"
     ignore:
-      - dependency-name: "@wordpress/scripts"
+      - dependency-name: "@wordpress/*"
         update-types: ["version-update:semver-major"]
       - dependency-name: "@storybook/*"
         update-types: ["version-update:semver-major"]
@@ -56,6 +56,13 @@ updates:
       prefix: "chore(deps-mcp)"
     labels:
       - "focus: mcp"
+    groups:
+      wordpress:
+        patterns:
+          - "@wordpress/*"
+        update-types:
+          - "minor"
+          - "patch"
     ignore:
       - dependency-name: "react"
         update-types: ["version-update:semver-major"]
@@ -73,8 +80,7 @@ updates:
       timezone: "Asia/Dhaka"
     open-pull-requests-limit: 5
     commit-message:
-      prefix: "ci"
-      include: "scope"
+      prefix: "ci(actions)"
     labels:
       - "focus: ci-cd"
     groups:
