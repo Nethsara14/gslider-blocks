@@ -57,7 +57,7 @@ jobs:
         run: npm run zip
 
   code-quality:
-    name: Code Quality Advisory (JS & CSS Lint)
+    name: Code Quality (JS & CSS Standards)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
