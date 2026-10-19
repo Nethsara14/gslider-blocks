@@ -1,8 +1,9 @@
 /* eslint-disable import/no-unresolved */
 import { useState } from 'react';
+import { useArgs } from '@storybook/preview-api';
+import { expect, within } from '@storybook/test';
 import { SlotFillProvider, PanelBody } from '@wordpress/components';
 import { InspectorControls } from '@wordpress/block-editor';
-import { createReduxStore, register, select } from '@wordpress/data';
 
 // All 22 GSlider Core Inspector Components
 import InspectorControl from '@Components/inspector-controls';
@@ -27,154 +28,8 @@ import InputControls from '@Components/input-control';
 import UrlControl from '@Components/url-control';
 import { HORIZONTAL_POSITION_ICONS, HTML_TAGS } from '@Constants';
 
-// 1. Register core/editor Redux store mock in Storybook so ColorControl does not error
-if ( typeof window !== 'undefined' && ! window.__gslider_editor_store_mocked ) {
-	window.__gslider_editor_store_mocked = true;
-	try {
-		if ( ! select( 'core/editor' ) ) {
-			const editorStore = createReduxStore( 'core/editor', {
-				reducer: ( state = {} ) => state,
-				selectors: {
-					getEditorSettings: () => ( {
-						colors: [
-							{
-								name: 'Primary',
-								slug: 'primary',
-								color: '#2563eb',
-							},
-							{
-								name: 'Secondary',
-								slug: 'secondary',
-								color: '#10b981',
-							},
-							{ name: 'Dark', slug: 'dark', color: '#1e293b' },
-							{ name: 'Light', slug: 'light', color: '#f8fafc' },
-						],
-					} ),
-				},
-			} );
-			register( editorStore );
-		}
-	} catch ( _ ) {}
-}
-
-// 2. Ensure Google Fonts mock fallback is available for typography control
-if ( typeof window !== 'undefined' && ! window.__gslider_fetch_mocked ) {
-	window.__gslider_fetch_mocked = true;
-	const originalFetch = window.fetch.bind( window );
-	window.fetch = async ( ...args ) => {
-		const url =
-			typeof args[ 0 ] === 'string'
-				? args[ 0 ]
-				: args[ 0 ]?.url || String( args[ 0 ] );
-		if ( url.includes( 'google-fonts.json' ) ) {
-			try {
-				const response = await originalFetch( ...args );
-				if ( response.ok ) {
-					return response;
-				}
-			} catch ( _ ) {}
-			return new Response(
-				JSON.stringify( {
-					Default: [ 'inherit' ],
-					Roboto: [ '400', '700' ],
-					'Open Sans': [ '400', '600', '700' ],
-					Inter: [ '400', '500', '600', '700' ],
-				} ),
-				{ headers: { 'Content-Type': 'application/json' } }
-			);
-		}
-		return originalFetch( ...args );
-	};
-}
-
-// 3. Ensure wp.media mock is available in Storybook for media uploads
-if ( typeof window !== 'undefined' && ! window.wp?.media ) {
-	window.wp = window.wp || {};
-	window.wp.media = () => {
-		let selectCallback = null;
-		const instance = {
-			state: () => ( {
-				get: () => ( {
-					first: () => ( {
-						toJSON: () => ( {
-							id: 101,
-							url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&auto=format&fit=crop',
-							alt: 'Sample Slider Image',
-						} ),
-					} ),
-				} ),
-			} ),
-			on: ( event, cb ) => {
-				if ( event === 'select' ) {
-					selectCallback = cb;
-				}
-			},
-			open: () => {
-				if ( selectCallback ) {
-					selectCallback();
-				}
-			},
-		};
-		return instance;
-	};
-}
-
-// 4. Pre-seed fallback icons for IconPicker in Storybook
-if ( typeof window !== 'undefined' && ! window.__gslider_icons_preseeded ) {
-	window.__gslider_icons_preseeded = true;
-	try {
-		const icons = {
-			'angle-left': {
-				svg: {
-					solid: {
-						width: 384,
-						height: 512,
-						path: 'M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l192 192c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 278.6 86.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-192 192z',
-					},
-				},
-				label: 'angle-left',
-			},
-			'angle-right': {
-				svg: {
-					solid: {
-						width: 384,
-						height: 512,
-						path: 'M342.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-192 192c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L274.7 256 105.4 86.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l192 192z',
-					},
-				},
-				label: 'angle-right',
-			},
-			'arrow-left': {
-				svg: {
-					solid: {
-						width: 448,
-						height: 512,
-						path: 'M9.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.2 288 416 288c17.7 0 32-14.3 32-32s-14.3-32-32-32l-306.7 0L214.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z',
-					},
-				},
-				label: 'arrow-left',
-			},
-			'arrow-right': {
-				svg: {
-					solid: {
-						width: 448,
-						height: 512,
-						path: 'M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.8 0L233.4 393.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z',
-					},
-				},
-				label: 'arrow-right',
-			},
-		};
-		window.localStorage.setItem(
-			'gslider_svg_icons',
-			JSON.stringify( icons )
-		);
-	} catch ( _ ) {}
-}
-
 export default {
-	title: 'GSlider Compositions/FullInspectorPanel',
+	title: 'Compositions/FullInspectorPanel',
 	component: InspectorControl,
 	tags: [ 'autodocs' ],
 	parameters: {
@@ -183,6 +38,60 @@ export default {
 				component:
 					'FullInspectorPanel is the benchmark composition showcase for GSlider Blocks. It integrates all 22 custom controls into an authentic WordPress Gutenberg Block Inspector Sidebar with General, Style, and Advanced tabs.',
 			},
+		},
+	},
+	argTypes: {
+		presetStyle: {
+			name: 'Preset Style',
+			control: 'select',
+			options: [
+				'preset-classic',
+				'preset-modern',
+				'preset-minimal',
+				'preset-bold',
+			],
+			description: 'Active layout preset selection',
+		},
+		titleTag: {
+			name: 'Title Tag',
+			control: 'select',
+			options: [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span' ],
+			description: 'Slide title HTML heading tag',
+		},
+		textColor: {
+			name: 'Text Color',
+			control: 'color',
+			description: 'Primary title text color',
+		},
+		deviceType: {
+			name: 'Device View',
+			control: 'select',
+			options: [ 'Desktop', 'Tablet', 'Mobile' ],
+			description: 'Active responsive device breakpoint',
+		},
+		zIndex: {
+			name: 'Z-Index',
+			control: 'text',
+			description: 'Container stacking order',
+		},
+		customClass: {
+			name: 'Custom Class',
+			control: 'text',
+			description: 'Additional CSS class names',
+		},
+		htmlAnchor: {
+			name: 'HTML Anchor',
+			control: 'text',
+			description: 'Unique anchor link ID',
+		},
+		generalControls: {
+			table: { disable: true },
+		},
+		styleControls: {
+			table: { disable: true },
+		},
+		advancedControls: {
+			table: { disable: true },
 		},
 	},
 };
@@ -228,19 +137,38 @@ const ALIGN_OPTIONS = [
 	{ label: HORIZONTAL_POSITION_ICONS.right, value: 'right' },
 ];
 
-function FullInspectorSandbox() {
-	// Active device for responsive controls
-	const [ deviceType, setDeviceType ] = useState( 'Desktop' );
+function FullInspectorSandbox( props ) {
+	const [ , updateArgs ] = useArgs();
+
+	// Synced args
+	const deviceType = props.deviceType || 'Desktop';
+	const setDeviceType = ( val ) => updateArgs( { deviceType: val } );
+
+	const titleTag = props.titleTag || 'h2';
+	const setTitleTag = ( val ) => updateArgs( { titleTag: val } );
+
+	const presetStyle = props.presetStyle || 'preset-classic';
+	const setPresetStyle = ( val ) => updateArgs( { presetStyle: val } );
+
+	const textColor = props.textColor || '#1e293b';
+	const setTextColor = ( val ) => updateArgs( { textColor: val } );
+
+	const zIndex = props.zIndex || '1';
+	const setZIndex = ( val ) => updateArgs( { zIndex: val } );
+
+	const customClass = props.customClass || '';
+	const setCustomClass = ( val ) => updateArgs( { customClass: val } );
+
+	const htmlAnchor = props.htmlAnchor || '';
+	const setHtmlAnchor = ( val ) => updateArgs( { htmlAnchor: val } );
 
 	// ── General Tab State ─────────────────────────────────
 	const [ heightSwitcher, setHeightSwitcher ] = useState( 'auto' );
-	const [ titleTag, setTitleTag ] = useState( 'h2' );
 	const [ alignment, setAlignment ] = useState( {
 		Desktop: 'center',
 		Tablet: 'center',
 		Mobile: 'center',
 	} );
-	const [ presetStyle, setPresetStyle ] = useState( 'preset-classic' );
 
 	const [ navigationToggle, setNavigationToggle ] = useState( {
 		Desktop: true,
@@ -299,149 +227,136 @@ function FullInspectorSandbox() {
 		Mobile: 'px',
 	} );
 
-	const [ fontFamily, setFontFamily ] = useState( 'Default' );
+	const [ fontFamily, setFontFamily ] = useState( 'Inter' );
 	const [ fontSize, setFontSize ] = useState( {
-		Desktop: '32',
-		Tablet: '26',
-		Mobile: '20',
+		Desktop: 32,
+		Tablet: 26,
+		Mobile: 20,
 	} );
 	const [ fontWeight, setFontWeight ] = useState( '700' );
 
-	const [ textColor, setTextColor ] = useState( '#1e293b' );
 	const [ customGradientSwitcher, setCustomGradientSwitcher ] =
-		useState( false );
-	const [ customGradientValue, setCustomGradientValue ] = useState( '' );
+		useState( 'gradient' );
+	const [ customGradientValue, setCustomGradientValue ] = useState(
+		'linear-gradient(135deg, #2563eb 0%, #10b981 100%)'
+	);
 	const [ gradientColor, setGradientColor ] = useState(
-		'linear-gradient(135deg,rgb(37,99,235) 0%,rgb(16,185,129) 100%)'
+		'linear-gradient(135deg, #2563eb 0%, #10b981 100%)'
 	);
 
 	const [ normalBgType, setNormalBgType ] = useState( 'classic' );
-	const [ normalBgColor, setNormalBgColor ] = useState( '#ffffff' );
-	const [ bgImageUrl, setBgImageUrl ] = useState( '' );
-	const [ bgImageAlt, setBgImageAlt ] = useState( '' );
-	const [ bgImageId, setBgImageId ] = useState( '' );
-	const [ bgPosition, setBgPosition ] = useState( {
-		Desktop: { x: 0.5, y: 0.5 },
-		Tablet: { x: 0.5, y: 0.5 },
-		Mobile: { x: 0.5, y: 0.5 },
-	} );
-	const [ bgAttachment, setBgAttachment ] = useState( {
-		Desktop: 'scroll',
-		Tablet: 'scroll',
-		Mobile: 'scroll',
-	} );
-	const [ bgRepeat, setBgRepeat ] = useState( {
-		Desktop: 'no-repeat',
-		Tablet: 'no-repeat',
-		Mobile: 'no-repeat',
-	} );
-	const [ bgSize, setBgSize ] = useState( {
-		Desktop: 'cover',
-		Tablet: 'cover',
-		Mobile: 'cover',
-	} );
+	const [ normalBgColor, setNormalBgColor ] = useState( '#f8fafc' );
 
-	const [ boxShadow, setBoxShadow ] = useState( [
-		0,
-		4,
-		12,
-		0,
-		'',
-		'rgba(0,0,0,0.08)',
-	] );
+	const [ bgImageUrl, setBgImageUrl ] = useState(
+		'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=800&auto=format&fit=crop'
+	);
+	const [ bgImageAlt, setBgImageAlt ] = useState( 'Night Mountains' );
+	const [ bgImageId, setBgImageId ] = useState( 102 );
+	const [ bgPosition, setBgPosition ] = useState( {
+		Desktop: 'center center',
+	} );
+	const [ bgAttachment, setBgAttachment ] = useState( { Desktop: 'scroll' } );
+	const [ bgRepeat, setBgRepeat ] = useState( { Desktop: 'no-repeat' } );
+	const [ bgSize, setBgSize ] = useState( { Desktop: 'cover' } );
+
+	const [ boxShadow, setBoxShadow ] = useState(
+		'0px 10px 25px rgba(0, 0, 0, 0.08)'
+	);
 
 	// ── Advanced Tab State ────────────────────────────────
-	const [ zIndex, setZIndex ] = useState( '1' );
-	const [ customClass, setCustomClass ] = useState( 'my-custom-slider' );
-	const [ htmlAnchor, setHtmlAnchor ] = useState( 'hero-slider' );
-	const [ slideUrl, setSlideUrl ] = useState( 'https://example.com' );
-	const [ urlOpenInNewTab, setUrlOpenInNewTab ] = useState( false );
+	const [ slideUrl, setSlideUrl ] = useState( 'https://gslider.io' );
+	const [ urlOpenInNewTab, setUrlOpenInNewTab ] = useState( true );
 	const [ urlNofollow, setUrlNofollow ] = useState( false );
 	const [ urlSponsored, setUrlSponsored ] = useState( false );
 
 	// ── General Controls Assembly ─────────────────────────
 	const generalControls = (
 		<>
-			<PanelBody title="Slider Layout" initialOpen={ true }>
+			<PanelBody title="Layout & Presets" initialOpen={ true }>
+				<PresetSelector
+					label="Slider Layout Preset"
+					options={ SAMPLE_PRESETS }
+					value={ presetStyle }
+					onChange={ setPresetStyle }
+				/>
 				<SwitcherControl
-					label="Layout Height"
+					label="Height Mode"
 					value={ heightSwitcher }
+					onChange={ setHeightSwitcher }
 					options={ [
 						{ label: 'Auto', value: 'auto' },
-						{ label: 'Fixed', value: 'fixed' },
+						{ label: 'Custom', value: 'custom' },
 					] }
-					onChange={ setHeightSwitcher }
-					help="Choose adaptive auto-height or fixed height."
 				/>
 				<HtmlTagControl
-					label="Title HTML Tag"
-					value={ titleTag }
+					label="Slide Title HTML Tag"
+					tag={ titleTag }
 					options={ HTML_TAGS }
-					onChange={ setTitleTag }
+					onChangeTag={ setTitleTag }
 				/>
 				<ResponsiveAlignmentControl
 					label="Content Alignment"
 					deviceType={ deviceType }
-					alignmentValue={ alignment }
-					setAlignmentValue={ setAlignment }
+					alignment={ alignment }
 					options={ ALIGN_OPTIONS }
-				/>
-				<PresetSelector
-					label="Layout Preset"
-					value={ presetStyle }
-					presets={ SAMPLE_PRESETS }
-					onChange={ setPresetStyle }
+					onDeviceChange={ setDeviceType }
+					onAlignmentChange={ setAlignment }
 				/>
 			</PanelBody>
 
-			<PanelBody title="Navigation & Controls" initialOpen={ false }>
+			<PanelBody title="Navigation & Autoplay" initialOpen={ false }>
 				<ResponsiveToggleControl
-					label="Navigation Arrows"
+					label="Arrow Navigation"
 					deviceType={ deviceType }
-					toggleValue={ navigationToggle }
-					setToggleValue={ setNavigationToggle }
+					toggle={ navigationToggle }
+					onDeviceChange={ setDeviceType }
+					onToggleChange={ setNavigationToggle }
 				/>
 				<IconPicker
 					label="Navigation Arrow Icon"
 					value={ arrowIcon }
-					setIconHandler={ setArrowIcon }
+					onChange={ setArrowIcon }
 				/>
 				<ResponsiveToggleControl
 					label="Pagination Dots"
 					deviceType={ deviceType }
-					toggleValue={ paginationToggle }
-					setToggleValue={ setPaginationToggle }
+					toggle={ paginationToggle }
+					onDeviceChange={ setDeviceType }
+					onToggleChange={ setPaginationToggle }
 				/>
 				<ResponsiveToggleControl
-					label="Autoplay"
+					label="Autoplay Slides"
 					deviceType={ deviceType }
-					toggleValue={ autoplayToggle }
-					setToggleValue={ setAutoplayToggle }
+					toggle={ autoplayToggle }
+					onDeviceChange={ setDeviceType }
+					onToggleChange={ setAutoplayToggle }
 				/>
 			</PanelBody>
 
-			<PanelBody title="Slide Content Order" initialOpen={ false }>
+			<PanelBody title="Slide Content & Media" initialOpen={ false }>
 				<ContentOrderControl
-					label="Content Hierarchy"
+					label="Slide Content Order"
 					items={ SLIDE_CONTENT_ITEMS }
-					order={ contentOrder }
+					value={ contentOrder }
 					onChange={ setContentOrder }
-					help="Drag items to rearrange stacking order."
 				/>
-			</PanelBody>
-
-			<PanelBody title="Slide Media Image" initialOpen={ false }>
 				<ImageControl
 					label="Active Slide Image"
-					imageUrl={ slideImageUrl }
-					setImageUrl={ setSlideImageUrl }
-					imageAlt={ slideImageAlt }
-					setImageAlt={ setSlideImageAlt }
-					imageID={ slideImageId }
-					setImageID={ setSlideImageId }
-					imageSize={ slideImageSize }
-					setImageSize={ setSlideImageSize }
-					isImageSize={ true }
+					url={ slideImageUrl }
+					alt={ slideImageAlt }
+					id={ slideImageId }
+					size={ slideImageSize }
+					onChangeImage={ ( media ) => {
+						setSlideImageUrl( media.url );
+						setSlideImageAlt( media.alt || 'Slide image' );
+						setSlideImageId( media.id );
+					} }
+					onRemoveImage={ () => {
+						setSlideImageUrl( '' );
+						setSlideImageAlt( '' );
+						setSlideImageId( 0 );
+					} }
+					onChangeSize={ setSlideImageSize }
 				/>
 			</PanelBody>
 		</>
@@ -602,7 +517,28 @@ function FullInspectorSandbox() {
 }
 
 export const Default = {
-	render: function Render() {
-		return <FullInspectorSandbox />;
+	args: {
+		presetStyle: 'preset-classic',
+		titleTag: 'h2',
+		textColor: '#1e293b',
+		deviceType: 'Desktop',
+		zIndex: '1',
+		customClass: '',
+		htmlAnchor: '',
+	},
+	render: function Render( args ) {
+		return <FullInspectorSandbox { ...args } />;
+	},
+	play: async ( { canvasElement } ) => {
+		const canvas = within( canvasElement );
+		expect(
+			await canvas.findByRole( 'tab', { name: /General/i } )
+		).toBeInTheDocument();
+		expect(
+			await canvas.findByRole( 'tab', { name: /Style/i } )
+		).toBeInTheDocument();
+		expect(
+			await canvas.findByRole( 'tab', { name: /Advanced/i } )
+		).toBeInTheDocument();
 	},
 };

@@ -127,7 +127,7 @@ if ( typeof window !== 'undefined' ) {
 }
 
 export default {
-	title: 'GSlider Controls/Primitives/IconPicker',
+	title: 'Components/Primitives/IconPicker',
 	component: IconPicker,
 	tags: [ 'autodocs' ],
 	parameters: {

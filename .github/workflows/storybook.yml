@@ -36,7 +36,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pages: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -52,6 +51,10 @@ jobs:
 
       - name: Build Storybook static distribution
         run: npm run storybook:build
+
+      - name: Configure GitHub Pages
+        if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
         if: github.event_name != 'pull_request'
