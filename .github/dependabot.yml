@@ -101,8 +101,9 @@ updates:
     labels:
       - "focus: php-backend"
     groups:
-      dev-dependencies:
-        dependency-type: "development"
+      appsero:
+        patterns:
+          - "appsero/*"
         update-types:
           - "minor"
           - "patch"
