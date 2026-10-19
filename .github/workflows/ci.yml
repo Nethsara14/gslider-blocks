@@ -32,6 +32,9 @@ jobs:
       - name: Verify Webpack Block Build
         run: npm run build
 
+      - name: Verify Webpack Admin Build
+        run: npm run admin:build
+
       # --ignore-scripts keeps `prepare` (the build) from regenerating the
       # committed schemas before the drift test compares them.
       - name: Install MCP Server Dependencies
