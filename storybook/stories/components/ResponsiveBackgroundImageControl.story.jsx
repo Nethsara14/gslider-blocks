@@ -297,7 +297,7 @@ export const Default = {
 
 export const EmptyState = {
 	render: ( args ) => {
-		const [ device, setDevice ] = useState( 'Desktop' );
+		const device = args.deviceType || 'Desktop';
 		const [ urls, setUrls ] = useState( {
 			Desktop: '',
 			Tablet: '',
