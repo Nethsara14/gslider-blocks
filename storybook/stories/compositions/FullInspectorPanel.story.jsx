@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 import { useState } from 'react';
 import { useArgs } from '@storybook/preview-api';
 import { expect, within } from '@storybook/test';
@@ -137,28 +138,29 @@ const ALIGN_OPTIONS = [
 ];
 
 // Plain React component: must NOT call Storybook preview hooks directly.
+// See: https://storybook.js.org/docs/8/writing-stories/args#setting-args-from-within-a-story
 function FullInspectorSandbox( { updateArgs = () => {}, ...props } ) {
 	// Synced args
 	const deviceType = props.deviceType || 'Desktop';
-	const setDeviceType = ( val ) => updateArgs?.( { deviceType: val } );
+	const setDeviceType = ( val ) => updateArgs( { deviceType: val } );
 
 	const titleTag = props.titleTag || 'h2';
-	const setTitleTag = ( val ) => updateArgs?.( { titleTag: val } );
+	const setTitleTag = ( val ) => updateArgs( { titleTag: val } );
 
 	const presetStyle = props.presetStyle || 'preset-classic';
-	const setPresetStyle = ( val ) => updateArgs?.( { presetStyle: val } );
+	const setPresetStyle = ( val ) => updateArgs( { presetStyle: val } );
 
 	const textColor = props.textColor || '#1e293b';
-	const setTextColor = ( val ) => updateArgs?.( { textColor: val } );
+	const setTextColor = ( val ) => updateArgs( { textColor: val } );
 
 	const zIndex = props.zIndex || '1';
-	const setZIndex = ( val ) => updateArgs?.( { zIndex: val } );
+	const setZIndex = ( val ) => updateArgs( { zIndex: val } );
 
 	const customClass = props.customClass || 'my-custom-slider';
-	const setCustomClass = ( val ) => updateArgs?.( { customClass: val } );
+	const setCustomClass = ( val ) => updateArgs( { customClass: val } );
 
 	const htmlAnchor = props.htmlAnchor || 'hero-slider';
-	const setHtmlAnchor = ( val ) => updateArgs?.( { htmlAnchor: val } );
+	const setHtmlAnchor = ( val ) => updateArgs( { htmlAnchor: val } );
 
 	// ── General Tab State ─────────────────────────────────
 	const [ heightSwitcher, setHeightSwitcher ] = useState( 'auto' );

@@ -6,3 +6,4 @@ packages/
 coverage/
 storybook-static/
 *.min.js
+src/components/
