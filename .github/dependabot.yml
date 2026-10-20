@@ -4,39 +4,25 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
       day: "monday"
       timezone: "Asia/Dhaka"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     commit-message:
       prefix: "chore"
       include: "scope"
     labels:
       - "focus: ci-cd"
     groups:
-      wordpress:
+      all-minor-patch:
         patterns:
-          - "@wordpress/*"
-        update-types:
-          - "minor"
-          - "patch"
-      storybook:
-        patterns:
-          - "@storybook/*"
-          - "storybook"
-        update-types:
-          - "minor"
-          - "patch"
-      dev-dependencies:
-        dependency-type: "development"
-        exclude-patterns:
-          - "@wordpress/*"
-          - "@storybook/*"
-          - "storybook"
+          - "*"
         update-types:
           - "minor"
           - "patch"
     ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
       - dependency-name: "@wordpress/*"
         update-types: ["version-update:semver-major"]
       - dependency-name: "@storybook/*"
@@ -52,7 +38,7 @@ updates:
   - package-ecosystem: "npm"
     directory: "/packages/mcp-server"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
       day: "monday"
       timezone: "Asia/Dhaka"
     open-pull-requests-limit: 3
@@ -61,13 +47,15 @@ updates:
     labels:
       - "focus: mcp"
     groups:
-      wordpress:
+      all-minor-patch:
         patterns:
-          - "@wordpress/*"
+          - "*"
         update-types:
           - "minor"
           - "patch"
     ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
       - dependency-name: "react"
         update-types: ["version-update:semver-major"]
       - dependency-name: "react-dom"
@@ -79,10 +67,10 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
       day: "monday"
       timezone: "Asia/Dhaka"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     commit-message:
       prefix: "ci(actions)"
     labels:
@@ -96,7 +84,7 @@ updates:
   - package-ecosystem: "composer"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "monthly"
       day: "monday"
       timezone: "Asia/Dhaka"
     open-pull-requests-limit: 3
