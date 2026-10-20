@@ -5,7 +5,6 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
-      day: "monday"
       timezone: "Asia/Dhaka"
     open-pull-requests-limit: 3
     commit-message:
@@ -23,23 +22,14 @@ updates:
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
-      - dependency-name: "@wordpress/*"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "@storybook/*"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "storybook"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "react"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "react-dom"
-        update-types: ["version-update:semver-major"]
+      - dependency-name: "esbuild"
+        update-types: ["version-update:semver-minor"]
 
   # 2. Local MCP Server package dependencies
   - package-ecosystem: "npm"
     directory: "/packages/mcp-server"
     schedule:
       interval: "monthly"
-      day: "monday"
       timezone: "Asia/Dhaka"
     open-pull-requests-limit: 3
     commit-message:
@@ -56,19 +46,12 @@ updates:
     ignore:
       - dependency-name: "*"
         update-types: ["version-update:semver-major"]
-      - dependency-name: "react"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "react-dom"
-        update-types: ["version-update:semver-major"]
-      - dependency-name: "@wordpress/*"
-        update-types: ["version-update:semver-major"]
 
   # 3. GitHub Actions CI workflows
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "monthly"
-      day: "monday"
       timezone: "Asia/Dhaka"
     open-pull-requests-limit: 3
     commit-message:
@@ -79,13 +62,15 @@ updates:
       actions:
         patterns:
           - "*"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
 
   # 4. PHP Composer dependencies
   - package-ecosystem: "composer"
     directory: "/"
     schedule:
       interval: "monthly"
-      day: "monday"
       timezone: "Asia/Dhaka"
     open-pull-requests-limit: 3
     commit-message:
@@ -99,3 +84,6 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
