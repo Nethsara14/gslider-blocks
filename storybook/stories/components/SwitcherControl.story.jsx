@@ -4,7 +4,7 @@ import SwitcherControl from '@Components/switcher-control';
 export default {
 	title: 'Components/Primitives/SwitcherControl',
 	component: SwitcherControl,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 	parameters: {
 		docs: {
 			description: {
@@ -38,16 +38,16 @@ export default {
 };
 
 export const Default = {
-	render: (args) => {
-		const [val, setVal] = useState(args.value || 'normal');
+	render: ( args ) => {
+		const [ val, setVal ] = useState( args.value || 'normal' );
 		return (
 			<SwitcherControl
-				{...args}
-				value={val}
-				onChange={(newVal) => {
-					setVal(newVal);
-					args.onChange?.(newVal);
-				}}
+				{ ...args }
+				value={ val }
+				onChange={ ( newVal ) => {
+					setVal( newVal );
+					args.onChange?.( newVal );
+				} }
 			/>
 		);
 	},
@@ -63,16 +63,16 @@ export const Default = {
 };
 
 export const LayoutHeightSwitcher = {
-	render: (args) => {
-		const [val, setVal] = useState(args.value || 'auto');
+	render: ( args ) => {
+		const [ val, setVal ] = useState( args.value || 'auto' );
 		return (
 			<SwitcherControl
-				{...args}
-				value={val}
-				onChange={(newVal) => {
-					setVal(newVal);
-					args.onChange?.(newVal);
-				}}
+				{ ...args }
+				value={ val }
+				onChange={ ( newVal ) => {
+					setVal( newVal );
+					args.onChange?.( newVal );
+				} }
 			/>
 		);
 	},
@@ -88,16 +88,16 @@ export const LayoutHeightSwitcher = {
 };
 
 export const TripleOptions = {
-	render: (args) => {
-		const [val, setVal] = useState(args.value || 'solid');
+	render: ( args ) => {
+		const [ val, setVal ] = useState( args.value || 'solid' );
 		return (
 			<SwitcherControl
-				{...args}
-				value={val}
-				onChange={(newVal) => {
-					setVal(newVal);
-					args.onChange?.(newVal);
-				}}
+				{ ...args }
+				value={ val }
+				onChange={ ( newVal ) => {
+					setVal( newVal );
+					args.onChange?.( newVal );
+				} }
 			/>
 		);
 	},

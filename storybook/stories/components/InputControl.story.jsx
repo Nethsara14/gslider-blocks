@@ -4,7 +4,7 @@ import InputControl from '@Components/input-control';
 export default {
 	title: 'Components/Primitives/InputControl',
 	component: InputControl,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 	parameters: {
 		docs: {
 			description: {
@@ -34,16 +34,16 @@ export default {
 };
 
 export const Default = {
-	render: (args) => {
-		const [val, setVal] = useState(args.value || 'GSlider Slide 1');
+	render: ( args ) => {
+		const [ val, setVal ] = useState( args.value || 'GSlider Slide 1' );
 		return (
 			<InputControl
-				{...args}
-				value={val}
-				onChangeValue={(newVal) => {
-					setVal(newVal);
-					args.onChangeValue?.(newVal);
-				}}
+				{ ...args }
+				value={ val }
+				onChangeValue={ ( newVal ) => {
+					setVal( newVal );
+					args.onChangeValue?.( newVal );
+				} }
 			/>
 		);
 	},
@@ -55,16 +55,16 @@ export const Default = {
 };
 
 export const NumberInput = {
-	render: (args) => {
-		const [val, setVal] = useState(args.value || '5000');
+	render: ( args ) => {
+		const [ val, setVal ] = useState( args.value || '5000' );
 		return (
 			<InputControl
-				{...args}
-				value={val}
-				onChangeValue={(newVal) => {
-					setVal(newVal);
-					args.onChangeValue?.(newVal);
-				}}
+				{ ...args }
+				value={ val }
+				onChangeValue={ ( newVal ) => {
+					setVal( newVal );
+					args.onChangeValue?.( newVal );
+				} }
 			/>
 		);
 	},

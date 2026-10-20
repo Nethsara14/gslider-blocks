@@ -5,7 +5,7 @@ import { SLIDER_EFFECT_OPTIONS, BORDER_STYLES } from '@Constants';
 export default {
 	title: 'Components/Primitives/SelectControls',
 	component: SelectControls,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 	parameters: {
 		docs: {
 			description: {
@@ -29,35 +29,36 @@ export default {
 		},
 		onChange: {
 			action: 'selectChanged',
-			description: 'Callback fired when an option is chosen from the dropdown',
+			description:
+				'Callback fired when an option is chosen from the dropdown',
 		},
 	},
 };
 
 export const Default = {
-	render: (args) => {
-		const [val, setVal] = useState(args.value || 'slide');
+	render: ( args ) => {
+		const [ val, setVal ] = useState( args.value || 'slide' );
 		return (
 			<div>
 				<SelectControls
-					{...args}
-					value={val}
-					onChange={(newVal) => {
-						setVal(newVal);
-						args.onChange?.(newVal);
-					}}
+					{ ...args }
+					value={ val }
+					onChange={ ( newVal ) => {
+						setVal( newVal );
+						args.onChange?.( newVal );
+					} }
 				/>
 				<div
-					style={{
+					style={ {
 						marginTop: '16px',
 						padding: '12px',
 						background: '#f0f0f1',
 						borderRadius: '4px',
 						fontSize: '13px',
 						color: '#1e1e1e',
-					}}
+					} }
 				>
-					<strong>Selected Effect:</strong> <code>{val}</code>
+					<strong>Selected Effect:</strong> <code>{ val }</code>
 				</div>
 			</div>
 		);
@@ -70,31 +71,31 @@ export const Default = {
 };
 
 export const BorderStyles = {
-	render: (args) => {
-		const [val, setVal] = useState(args.value || 'solid');
+	render: ( args ) => {
+		const [ val, setVal ] = useState( args.value || 'solid' );
 		return (
 			<div>
 				<SelectControls
-					{...args}
-					value={val}
-					onChange={(newVal) => {
-						setVal(newVal);
-						args.onChange?.(newVal);
-					}}
+					{ ...args }
+					value={ val }
+					onChange={ ( newVal ) => {
+						setVal( newVal );
+						args.onChange?.( newVal );
+					} }
 				/>
 				<div
-					style={{
+					style={ {
 						marginTop: '16px',
 						padding: '20px',
 						background: '#fff',
-						border: `3px ${val} #2271b1`,
+						border: `3px ${ val } #2271b1`,
 						borderRadius: '4px',
 						textAlign: 'center',
 						fontSize: '13px',
 						color: '#1e1e1e',
-					}}
+					} }
 				>
-					Previewing border style: <strong>{val}</strong>
+					Previewing border style: <strong>{ val }</strong>
 				</div>
 			</div>
 		);
@@ -107,26 +108,26 @@ export const BorderStyles = {
 };
 
 export const CustomOptions = {
-	render: (args) => {
-		const [val, setVal] = useState(args.value || 'auto');
+	render: ( args ) => {
+		const [ val, setVal ] = useState( args.value || 'auto' );
 		return (
 			<div>
 				<SelectControls
-					{...args}
-					value={val}
-					onChange={(newVal) => {
-						setVal(newVal);
-						args.onChange?.(newVal);
-					}}
+					{ ...args }
+					value={ val }
+					onChange={ ( newVal ) => {
+						setVal( newVal );
+						args.onChange?.( newVal );
+					} }
 				/>
 				<div
-					style={{
+					style={ {
 						marginTop: '16px',
 						fontSize: '12px',
 						color: '#646970',
-					}}
+					} }
 				>
-					Current height mode: <code>{val}</code>
+					Current height mode: <code>{ val }</code>
 				</div>
 			</div>
 		);

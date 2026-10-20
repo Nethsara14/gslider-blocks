@@ -5,7 +5,7 @@ import { HTML_TAGS } from '@Constants';
 export default {
 	title: 'Components/Primitives/HtmlTagControl',
 	component: HtmlTagControl,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 	parameters: {
 		docs: {
 			description: {
@@ -21,7 +21,7 @@ export default {
 		},
 		value: {
 			control: { type: 'select' },
-			options: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span'],
+			options: [ 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'span' ],
 			description: 'Currently selected semantic HTML tag',
 		},
 		options: {
@@ -36,16 +36,16 @@ export default {
 };
 
 export const Default = {
-	render: (args) => {
-		const [tag, setTag] = useState(args.value || 'h2');
+	render: ( args ) => {
+		const [ tag, setTag ] = useState( args.value || 'h2' );
 		return (
 			<HtmlTagControl
-				{...args}
-				value={tag}
-				onChange={(newTag) => {
-					setTag(newTag);
-					args.onChange?.(newTag);
-				}}
+				{ ...args }
+				value={ tag }
+				onChange={ ( newTag ) => {
+					setTag( newTag );
+					args.onChange?.( newTag );
+				} }
 			/>
 		);
 	},
@@ -57,16 +57,16 @@ export const Default = {
 };
 
 export const SubtitleTag = {
-	render: (args) => {
-		const [tag, setTag] = useState(args.value || 'p');
+	render: ( args ) => {
+		const [ tag, setTag ] = useState( args.value || 'p' );
 		return (
 			<HtmlTagControl
-				{...args}
-				value={tag}
-				onChange={(newTag) => {
-					setTag(newTag);
-					args.onChange?.(newTag);
-				}}
+				{ ...args }
+				value={ tag }
+				onChange={ ( newTag ) => {
+					setTag( newTag );
+					args.onChange?.( newTag );
+				} }
 			/>
 		);
 	},

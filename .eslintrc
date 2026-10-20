@@ -1,0 +1,11 @@
+{
+	"extends": [ "plugin:@wordpress/eslint-plugin/recommended" ],
+	"rules": {
+		// TODO: fix in follow-up PR
+		"jsdoc/require-param": "warn",
+		"jsdoc/require-param-type": "warn",
+		"jsdoc/check-param-names": "warn",
+		"no-unused-vars": "warn",
+		"react-hooks/rules-of-hooks": "warn"
+	}
+}

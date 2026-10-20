@@ -4,7 +4,7 @@ import UnitControl from '@Components/unit-control';
 export default {
 	title: 'Components/Primitives/UnitControl',
 	component: UnitControl,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 	parameters: {
 		docs: {
 			description: {
@@ -16,7 +16,7 @@ export default {
 	argTypes: {
 		currentUnit: {
 			control: { type: 'select' },
-			options: ['px', '%', 'em', 'rem', 'vh', 'vw'],
+			options: [ 'px', '%', 'em', 'rem', 'vh', 'vw' ],
 			description: 'Currently selected CSS unit',
 		},
 		unitTypes: {
@@ -31,33 +31,33 @@ export default {
 };
 
 export const Default = {
-	render: (args) => {
-		const [unit, setUnit] = useState(args.currentUnit || 'px');
+	render: ( args ) => {
+		const [ unit, setUnit ] = useState( args.currentUnit || 'px' );
 		return (
 			<div
-				style={{
+				style={ {
 					display: 'flex',
 					alignItems: 'center',
 					justifyContent: 'space-between',
 					padding: '8px 0',
-				}}
+				} }
 			>
 				<span
-					style={{
+					style={ {
 						fontSize: '13px',
 						fontWeight: 500,
 						color: '#1e1e1e',
-					}}
+					} }
 				>
 					Units
 				</span>
 				<UnitControl
-					{...args}
-					currentUnit={unit}
-					onUnitChange={(newUnit) => {
-						setUnit(newUnit);
-						args.onUnitChange?.(newUnit);
-					}}
+					{ ...args }
+					currentUnit={ unit }
+					onUnitChange={ ( newUnit ) => {
+						setUnit( newUnit );
+						args.onUnitChange?.( newUnit );
+					} }
 				/>
 			</div>
 		);
@@ -68,33 +68,33 @@ export const Default = {
 };
 
 export const CustomUnits = {
-	render: (args) => {
-		const [unit, setUnit] = useState(args.currentUnit || 'rem');
+	render: ( args ) => {
+		const [ unit, setUnit ] = useState( args.currentUnit || 'rem' );
 		return (
 			<div
-				style={{
+				style={ {
 					display: 'flex',
 					alignItems: 'center',
 					justifyContent: 'space-between',
 					padding: '8px 0',
-				}}
+				} }
 			>
 				<span
-					style={{
+					style={ {
 						fontSize: '13px',
 						fontWeight: 500,
 						color: '#1e1e1e',
-					}}
+					} }
 				>
 					Typography Units
 				</span>
 				<UnitControl
-					{...args}
-					currentUnit={unit}
-					onUnitChange={(newUnit) => {
-						setUnit(newUnit);
-						args.onUnitChange?.(newUnit);
-					}}
+					{ ...args }
+					currentUnit={ unit }
+					onUnitChange={ ( newUnit ) => {
+						setUnit( newUnit );
+						args.onUnitChange?.( newUnit );
+					} }
 				/>
 			</div>
 		);

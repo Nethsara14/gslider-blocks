@@ -4,7 +4,7 @@ import ResponsiveSpacingControl from '@Components/responsive-spacing-control';
 export default {
 	title: 'Components/Responsive/ResponsiveSpacingControl',
 	component: ResponsiveSpacingControl,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 	parameters: {
 		docs: {
 			description: {
@@ -20,7 +20,7 @@ export default {
 		},
 		deviceType: {
 			control: { type: 'select' },
-			options: ['Desktop', 'Tablet', 'Mobile'],
+			options: [ 'Desktop', 'Tablet', 'Mobile' ],
 			description: 'Active viewport device preview',
 		},
 		isLinked: {
@@ -33,15 +33,18 @@ export default {
 		},
 		desktopSpacing: {
 			control: 'object',
-			description: 'Desktop 4-sided spacing object: { top, right, bottom, left }',
+			description:
+				'Desktop 4-sided spacing object: { top, right, bottom, left }',
 		},
 		tabletSpacing: {
 			control: 'object',
-			description: 'Tablet 4-sided spacing object: { top, right, bottom, left }',
+			description:
+				'Tablet 4-sided spacing object: { top, right, bottom, left }',
 		},
 		mobileSpacing: {
 			control: 'object',
-			description: 'Mobile 4-sided spacing object: { top, right, bottom, left }',
+			description:
+				'Mobile 4-sided spacing object: { top, right, bottom, left }',
 		},
 		onChangeDesktopSpacing: {
 			action: 'desktopSpacingChanged',
@@ -67,131 +70,168 @@ export default {
 };
 
 export const Linked = {
-	render: (args) => {
-		const [device, setDevice] = useState(args.deviceType || 'Desktop');
-		const [units, setUnits] = useState(
+	render: ( args ) => {
+		const [ device, setDevice ] = useState( args.deviceType || 'Desktop' );
+		const [ units, setUnits ] = useState(
 			args.units || { Desktop: 'px', Tablet: 'px', Mobile: 'px' }
 		);
-		const [isLinked, setIsLinked] = useState(args.isLinked ?? true);
-		const [desktop, setDesktop] = useState(
-			args.desktopSpacing || { top: '24', right: '24', bottom: '24', left: '24' }
+		const [ isLinked, setIsLinked ] = useState( args.isLinked ?? true );
+		const [ desktop, setDesktop ] = useState(
+			args.desktopSpacing || {
+				top: '24',
+				right: '24',
+				bottom: '24',
+				left: '24',
+			}
 		);
-		const [tablet, setTablet] = useState(
-			args.tabletSpacing || { top: '16', right: '16', bottom: '16', left: '16' }
+		const [ tablet, setTablet ] = useState(
+			args.tabletSpacing || {
+				top: '16',
+				right: '16',
+				bottom: '16',
+				left: '16',
+			}
 		);
-		const [mobile, setMobile] = useState(
-			args.mobileSpacing || { top: '12', right: '12', bottom: '12', left: '12' }
+		const [ mobile, setMobile ] = useState(
+			args.mobileSpacing || {
+				top: '12',
+				right: '12',
+				bottom: '12',
+				left: '12',
+			}
 		);
 
 		const activeSpacing =
-			device === 'Desktop' ? desktop : device === 'Tablet' ? tablet : mobile;
-		const activeUnit = units[device] || 'px';
+			device === 'Desktop'
+				? desktop
+				: device === 'Tablet'
+				? tablet
+				: mobile;
+		const activeUnit = units[ device ] || 'px';
 
 		return (
 			<div>
 				<div
-					style={{
+					style={ {
 						display: 'flex',
 						alignItems: 'center',
 						gap: '8px',
 						marginBottom: '16px',
 						paddingBottom: '12px',
 						borderBottom: '1px solid #e0e0e0',
-					}}
+					} }
 				>
 					<span
-						style={{
+						style={ {
 							fontSize: '12px',
 							fontWeight: 600,
 							color: '#50575e',
-						}}
+						} }
 					>
 						Active Viewport:
 					</span>
-					{['Desktop', 'Tablet', 'Mobile'].map((d) => (
+					{ [ 'Desktop', 'Tablet', 'Mobile' ].map( ( d ) => (
 						<button
-							key={d}
-							onClick={() => setDevice(d)}
-							style={{
+							key={ d }
+							onClick={ () => setDevice( d ) }
+							style={ {
 								padding: '4px 10px',
 								fontSize: '12px',
-								background: device === d ? '#2271b1' : '#f0f0f1',
+								background:
+									device === d ? '#2271b1' : '#f0f0f1',
 								color: device === d ? '#fff' : '#1e1e1e',
 								border: '1px solid #c3c4c7',
 								borderRadius: '3px',
 								cursor: 'pointer',
 								fontWeight: device === d ? '600' : 'normal',
-							}}
+							} }
 						>
-							{d}
+							{ d }
 						</button>
-					))}
+					) ) }
 				</div>
 
 				<ResponsiveSpacingControl
-					{...args}
-					deviceType={device}
-					units={units}
-					onChangeUnits={(newUnits) => {
-						setUnits(newUnits);
-						args.onChangeUnits?.(newUnits);
-					}}
-					desktopSpacing={desktop}
-					onChangeDesktopSpacing={(val) => {
-						setDesktop(val);
-						args.onChangeDesktopSpacing?.(val);
-					}}
-					tabletSpacing={tablet}
-					onChangeTabletSpacing={(val) => {
-						setTablet(val);
-						args.onChangeTabletSpacing?.(val);
-					}}
-					mobileSpacing={mobile}
-					onChangeMobileSpacing={(val) => {
-						setMobile(val);
-						args.onChangeMobileSpacing?.(val);
-					}}
-					isLinked={isLinked}
-					onChangeLink={(val) => {
-						setIsLinked(val);
-						args.onChangeLink?.(val);
-					}}
+					{ ...args }
+					deviceType={ device }
+					units={ units }
+					onChangeUnits={ ( newUnits ) => {
+						setUnits( newUnits );
+						args.onChangeUnits?.( newUnits );
+					} }
+					desktopSpacing={ desktop }
+					onChangeDesktopSpacing={ ( val ) => {
+						setDesktop( val );
+						args.onChangeDesktopSpacing?.( val );
+					} }
+					tabletSpacing={ tablet }
+					onChangeTabletSpacing={ ( val ) => {
+						setTablet( val );
+						args.onChangeTabletSpacing?.( val );
+					} }
+					mobileSpacing={ mobile }
+					onChangeMobileSpacing={ ( val ) => {
+						setMobile( val );
+						args.onChangeMobileSpacing?.( val );
+					} }
+					isLinked={ isLinked }
+					onChangeLink={ ( val ) => {
+						setIsLinked( val );
+						args.onChangeLink?.( val );
+					} }
 				/>
 
 				<div
-					style={{
+					style={ {
 						marginTop: '20px',
 						padding: '16px',
 						background: '#f9f9f9',
 						border: '1px dashed #c3c4c7',
 						borderRadius: '4px',
-					}}
+					} }
 				>
 					<div
-						style={{
+						style={ {
 							fontSize: '11px',
 							textTransform: 'uppercase',
 							color: '#646970',
 							marginBottom: '8px',
-						}}
+						} }
 					>
-						Live CSS Box Padding ({device}):{' '}
+						Live CSS Box Padding ({ device }):{ ' ' }
 						<code>
-							{activeSpacing.top || 0}{activeUnit} {activeSpacing.right || 0}{activeUnit}{' '}
-							{activeSpacing.bottom || 0}{activeUnit} {activeSpacing.left || 0}{activeUnit}
-						</code>{' '}
-						(Status: <strong>{isLinked ? 'Linked (All sides equal)' : 'Unlinked'}</strong>)
+							{ activeSpacing.top || 0 }
+							{ activeUnit } { activeSpacing.right || 0 }
+							{ activeUnit } { activeSpacing.bottom || 0 }
+							{ activeUnit } { activeSpacing.left || 0 }
+							{ activeUnit }
+						</code>{ ' ' }
+						(Status:{ ' ' }
+						<strong>
+							{ isLinked
+								? 'Linked (All sides equal)'
+								: 'Unlinked' }
+						</strong>
+						)
 					</div>
 					<div
-						style={{
+						style={ {
 							background: '#2271b1',
-							padding: `${activeSpacing.top || 0}${activeUnit} ${activeSpacing.right || 0}${activeUnit} ${activeSpacing.bottom || 0}${activeUnit} ${activeSpacing.left || 0}${activeUnit}`,
+							padding: `${
+								activeSpacing.top || 0
+							}${ activeUnit } ${
+								activeSpacing.right || 0
+							}${ activeUnit } ${
+								activeSpacing.bottom || 0
+							}${ activeUnit } ${
+								activeSpacing.left || 0
+							}${ activeUnit }`,
 							borderRadius: '4px',
 							transition: 'padding 0.15s ease',
-						}}
+						} }
 					>
 						<div
-							style={{
+							style={ {
 								background: '#fff',
 								padding: '16px',
 								textAlign: 'center',
@@ -199,7 +239,7 @@ export const Linked = {
 								fontSize: '13px',
 								color: '#1e1e1e',
 								fontWeight: 500,
-							}}
+							} }
 						>
 							Padded Content Area
 						</div>
@@ -224,128 +264,159 @@ export const Linked = {
 };
 
 export const Unlinked = {
-	render: (args) => {
-		const [device, setDevice] = useState(args.deviceType || 'Desktop');
-		const [units, setUnits] = useState(
+	render: ( args ) => {
+		const [ device, setDevice ] = useState( args.deviceType || 'Desktop' );
+		const [ units, setUnits ] = useState(
 			args.units || { Desktop: 'px', Tablet: 'px', Mobile: 'px' }
 		);
-		const [isLinked, setIsLinked] = useState(args.isLinked ?? false);
-		const [desktop, setDesktop] = useState(
-			args.desktopSpacing || { top: '40', right: '20', bottom: '50', left: '15' }
+		const [ isLinked, setIsLinked ] = useState( args.isLinked ?? false );
+		const [ desktop, setDesktop ] = useState(
+			args.desktopSpacing || {
+				top: '40',
+				right: '20',
+				bottom: '50',
+				left: '15',
+			}
 		);
-		const [tablet, setTablet] = useState(
-			args.tabletSpacing || { top: '30', right: '15', bottom: '35', left: '10' }
+		const [ tablet, setTablet ] = useState(
+			args.tabletSpacing || {
+				top: '30',
+				right: '15',
+				bottom: '35',
+				left: '10',
+			}
 		);
-		const [mobile, setMobile] = useState(
-			args.mobileSpacing || { top: '20', right: '10', bottom: '25', left: '10' }
+		const [ mobile, setMobile ] = useState(
+			args.mobileSpacing || {
+				top: '20',
+				right: '10',
+				bottom: '25',
+				left: '10',
+			}
 		);
 
 		const activeSpacing =
-			device === 'Desktop' ? desktop : device === 'Tablet' ? tablet : mobile;
-		const activeUnit = units[device] || 'px';
+			device === 'Desktop'
+				? desktop
+				: device === 'Tablet'
+				? tablet
+				: mobile;
+		const activeUnit = units[ device ] || 'px';
 
 		return (
 			<div>
 				<div
-					style={{
+					style={ {
 						display: 'flex',
 						alignItems: 'center',
 						gap: '8px',
 						marginBottom: '16px',
 						paddingBottom: '12px',
 						borderBottom: '1px solid #e0e0e0',
-					}}
+					} }
 				>
 					<span
-						style={{
+						style={ {
 							fontSize: '12px',
 							fontWeight: 600,
 							color: '#50575e',
-						}}
+						} }
 					>
 						Active Viewport:
 					</span>
-					{['Desktop', 'Tablet', 'Mobile'].map((d) => (
+					{ [ 'Desktop', 'Tablet', 'Mobile' ].map( ( d ) => (
 						<button
-							key={d}
-							onClick={() => setDevice(d)}
-							style={{
+							key={ d }
+							onClick={ () => setDevice( d ) }
+							style={ {
 								padding: '4px 10px',
 								fontSize: '12px',
-								background: device === d ? '#2271b1' : '#f0f0f1',
+								background:
+									device === d ? '#2271b1' : '#f0f0f1',
 								color: device === d ? '#fff' : '#1e1e1e',
 								border: '1px solid #c3c4c7',
 								borderRadius: '3px',
 								cursor: 'pointer',
 								fontWeight: device === d ? '600' : 'normal',
-							}}
+							} }
 						>
-							{d}
+							{ d }
 						</button>
-					))}
+					) ) }
 				</div>
 
 				<ResponsiveSpacingControl
-					{...args}
-					deviceType={device}
-					units={units}
-					onChangeUnits={(newUnits) => {
-						setUnits(newUnits);
-						args.onChangeUnits?.(newUnits);
-					}}
-					desktopSpacing={desktop}
-					onChangeDesktopSpacing={(val) => {
-						setDesktop(val);
-						args.onChangeDesktopSpacing?.(val);
-					}}
-					tabletSpacing={tablet}
-					onChangeTabletSpacing={(val) => {
-						setTablet(val);
-						args.onChangeTabletSpacing?.(val);
-					}}
-					mobileSpacing={mobile}
-					onChangeMobileSpacing={(val) => {
-						setMobile(val);
-						args.onChangeMobileSpacing?.(val);
-					}}
-					isLinked={isLinked}
-					onChangeLink={(val) => {
-						setIsLinked(val);
-						args.onChangeLink?.(val);
-					}}
+					{ ...args }
+					deviceType={ device }
+					units={ units }
+					onChangeUnits={ ( newUnits ) => {
+						setUnits( newUnits );
+						args.onChangeUnits?.( newUnits );
+					} }
+					desktopSpacing={ desktop }
+					onChangeDesktopSpacing={ ( val ) => {
+						setDesktop( val );
+						args.onChangeDesktopSpacing?.( val );
+					} }
+					tabletSpacing={ tablet }
+					onChangeTabletSpacing={ ( val ) => {
+						setTablet( val );
+						args.onChangeTabletSpacing?.( val );
+					} }
+					mobileSpacing={ mobile }
+					onChangeMobileSpacing={ ( val ) => {
+						setMobile( val );
+						args.onChangeMobileSpacing?.( val );
+					} }
+					isLinked={ isLinked }
+					onChangeLink={ ( val ) => {
+						setIsLinked( val );
+						args.onChangeLink?.( val );
+					} }
 				/>
 
 				<div
-					style={{
+					style={ {
 						marginTop: '20px',
 						padding: '16px',
 						background: '#f9f9f9',
 						border: '1px dashed #c3c4c7',
 						borderRadius: '4px',
-					}}
+					} }
 				>
 					<div
-						style={{
+						style={ {
 							fontSize: '11px',
 							textTransform: 'uppercase',
 							color: '#646970',
 							marginBottom: '8px',
-						}}
+						} }
 					>
-						Live Asymmetrical Spacing ({device}): Top: {activeSpacing.top}{activeUnit},
-						Right: {activeSpacing.right}{activeUnit}, Bottom: {activeSpacing.bottom}
-						{activeUnit}, Left: {activeSpacing.left}{activeUnit}
+						Live Asymmetrical Spacing ({ device }): Top:{ ' ' }
+						{ activeSpacing.top }
+						{ activeUnit }, Right: { activeSpacing.right }
+						{ activeUnit }, Bottom: { activeSpacing.bottom }
+						{ activeUnit }, Left: { activeSpacing.left }
+						{ activeUnit }
 					</div>
 					<div
-						style={{
+						style={ {
 							background: '#3858e9',
-							padding: `${activeSpacing.top || 0}${activeUnit} ${activeSpacing.right || 0}${activeUnit} ${activeSpacing.bottom || 0}${activeUnit} ${activeSpacing.left || 0}${activeUnit}`,
+							padding: `${
+								activeSpacing.top || 0
+							}${ activeUnit } ${
+								activeSpacing.right || 0
+							}${ activeUnit } ${
+								activeSpacing.bottom || 0
+							}${ activeUnit } ${
+								activeSpacing.left || 0
+							}${ activeUnit }`,
 							borderRadius: '4px',
 							transition: 'padding 0.15s ease',
-						}}
+						} }
 					>
 						<div
-							style={{
+							style={ {
 								background: '#fff',
 								padding: '16px',
 								textAlign: 'center',
@@ -353,7 +424,7 @@ export const Unlinked = {
 								fontSize: '13px',
 								color: '#1e1e1e',
 								fontWeight: 500,
-							}}
+							} }
 						>
 							Custom Asymmetric Margins/Padding
 						</div>
@@ -378,124 +449,150 @@ export const Unlinked = {
 };
 
 export const ResponsiveDeviceSync = {
-	render: (args) => {
-		const [device, setDevice] = useState(args.deviceType || 'Desktop');
-		const [units, setUnits] = useState(
+	render: ( args ) => {
+		const [ device, setDevice ] = useState( args.deviceType || 'Desktop' );
+		const [ units, setUnits ] = useState(
 			args.units || { Desktop: 'rem', Tablet: 'rem', Mobile: 'rem' }
 		);
-		const [isLinked, setIsLinked] = useState(args.isLinked ?? true);
-		const [desktop, setDesktop] = useState(
-			args.desktopSpacing || { top: '3', right: '3', bottom: '3', left: '3' }
+		const [ isLinked, setIsLinked ] = useState( args.isLinked ?? true );
+		const [ desktop, setDesktop ] = useState(
+			args.desktopSpacing || {
+				top: '3',
+				right: '3',
+				bottom: '3',
+				left: '3',
+			}
 		);
-		const [tablet, setTablet] = useState(
-			args.tabletSpacing || { top: '2', right: '2', bottom: '2', left: '2' }
+		const [ tablet, setTablet ] = useState(
+			args.tabletSpacing || {
+				top: '2',
+				right: '2',
+				bottom: '2',
+				left: '2',
+			}
 		);
-		const [mobile, setMobile] = useState(
-			args.mobileSpacing || { top: '1', right: '1', bottom: '1', left: '1' }
+		const [ mobile, setMobile ] = useState(
+			args.mobileSpacing || {
+				top: '1',
+				right: '1',
+				bottom: '1',
+				left: '1',
+			}
 		);
 
 		const activeSpacing =
-			device === 'Desktop' ? desktop : device === 'Tablet' ? tablet : mobile;
-		const activeUnit = units[device] || 'rem';
+			device === 'Desktop'
+				? desktop
+				: device === 'Tablet'
+				? tablet
+				: mobile;
+		const activeUnit = units[ device ] || 'rem';
 
 		return (
 			<div>
 				<div
-					style={{
+					style={ {
 						display: 'flex',
 						alignItems: 'center',
 						gap: '8px',
 						marginBottom: '16px',
 						paddingBottom: '12px',
 						borderBottom: '1px solid #e0e0e0',
-					}}
+					} }
 				>
 					<span
-						style={{
+						style={ {
 							fontSize: '12px',
 							fontWeight: 600,
 							color: '#50575e',
-						}}
+						} }
 					>
 						Switch Device Viewport:
 					</span>
-					{['Desktop', 'Tablet', 'Mobile'].map((d) => (
+					{ [ 'Desktop', 'Tablet', 'Mobile' ].map( ( d ) => (
 						<button
-							key={d}
-							onClick={() => setDevice(d)}
-							style={{
+							key={ d }
+							onClick={ () => setDevice( d ) }
+							style={ {
 								padding: '4px 10px',
 								fontSize: '12px',
-								background: device === d ? '#2271b1' : '#f0f0f1',
+								background:
+									device === d ? '#2271b1' : '#f0f0f1',
 								color: device === d ? '#fff' : '#1e1e1e',
 								border: '1px solid #c3c4c7',
 								borderRadius: '3px',
 								cursor: 'pointer',
 								fontWeight: device === d ? '600' : 'normal',
-							}}
+							} }
 						>
-							{d} (
-							{d === 'Desktop'
-								? `${desktop.top}${units.Desktop}`
+							{ d } (
+							{ d === 'Desktop'
+								? `${ desktop.top }${ units.Desktop }`
 								: d === 'Tablet'
-								? `${tablet.top}${units.Tablet}`
-								: `${mobile.top}${units.Mobile}`}
+								? `${ tablet.top }${ units.Tablet }`
+								: `${ mobile.top }${ units.Mobile }` }
 							)
 						</button>
-					))}
+					) ) }
 				</div>
 
 				<ResponsiveSpacingControl
-					{...args}
-					deviceType={device}
-					units={units}
-					onChangeUnits={(newUnits) => {
-						setUnits(newUnits);
-						args.onChangeUnits?.(newUnits);
-					}}
-					desktopSpacing={desktop}
-					onChangeDesktopSpacing={(val) => {
-						setDesktop(val);
-						args.onChangeDesktopSpacing?.(val);
-					}}
-					tabletSpacing={tablet}
-					onChangeTabletSpacing={(val) => {
-						setTablet(val);
-						args.onChangeTabletSpacing?.(val);
-					}}
-					mobileSpacing={mobile}
-					onChangeMobileSpacing={(val) => {
-						setMobile(val);
-						args.onChangeMobileSpacing?.(val);
-					}}
-					isLinked={isLinked}
-					onChangeLink={(val) => {
-						setIsLinked(val);
-						args.onChangeLink?.(val);
-					}}
+					{ ...args }
+					deviceType={ device }
+					units={ units }
+					onChangeUnits={ ( newUnits ) => {
+						setUnits( newUnits );
+						args.onChangeUnits?.( newUnits );
+					} }
+					desktopSpacing={ desktop }
+					onChangeDesktopSpacing={ ( val ) => {
+						setDesktop( val );
+						args.onChangeDesktopSpacing?.( val );
+					} }
+					tabletSpacing={ tablet }
+					onChangeTabletSpacing={ ( val ) => {
+						setTablet( val );
+						args.onChangeTabletSpacing?.( val );
+					} }
+					mobileSpacing={ mobile }
+					onChangeMobileSpacing={ ( val ) => {
+						setMobile( val );
+						args.onChangeMobileSpacing?.( val );
+					} }
+					isLinked={ isLinked }
+					onChangeLink={ ( val ) => {
+						setIsLinked( val );
+						args.onChangeLink?.( val );
+					} }
 				/>
 
 				<div
-					style={{
+					style={ {
 						marginTop: '20px',
 						padding: '16px',
 						background: '#f0f6fc',
 						border: '1px solid #c5d9ed',
 						borderRadius: '4px',
-					}}
+					} }
 				>
 					<div
-						style={{
+						style={ {
 							fontSize: '12px',
 							color: '#1e1e1e',
 							marginBottom: '6px',
-						}}
+						} }
 					>
-						<strong>Breakpoint Memory:</strong> Desktop is <code>3rem</code>, Tablet is{' '}
-						<code>2rem</code>, Mobile is <code>1rem</code>.
+						<strong>Breakpoint Memory:</strong> Desktop is{ ' ' }
+						<code>3rem</code>, Tablet is <code>2rem</code>, Mobile
+						is <code>1rem</code>.
 					</div>
-					<div style={{ fontSize: '11px', color: '#646970' }}>
-						Active: <code>{activeSpacing.top}{activeUnit}</code> on {device}.
+					<div style={ { fontSize: '11px', color: '#646970' } }>
+						Active:{ ' ' }
+						<code>
+							{ activeSpacing.top }
+							{ activeUnit }
+						</code>{ ' ' }
+						on { device }.
 					</div>
 				</div>
 			</div>

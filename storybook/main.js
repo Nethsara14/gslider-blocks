@@ -36,7 +36,7 @@ const config = {
 				__dirname,
 				'./mocks/block-editor.js'
 			),
-			'__real_wordpress_block_editor$': path.join(
+			__real_wordpress_block_editor$: path.join(
 				pkgDir( '@wordpress/block-editor' ),
 				'build-module/index.mjs'
 			),

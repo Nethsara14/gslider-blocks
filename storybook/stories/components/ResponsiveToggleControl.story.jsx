@@ -4,7 +4,7 @@ import ResponsiveToggleControl from '@Components/responsive-toggle-control';
 export default {
 	title: 'Components/Responsive/ResponsiveToggleControl',
 	component: ResponsiveToggleControl,
-	tags: ['autodocs'],
+	tags: [ 'autodocs' ],
 	parameters: {
 		docs: {
 			description: {
@@ -20,7 +20,7 @@ export default {
 		},
 		deviceType: {
 			control: { type: 'select' },
-			options: ['Desktop', 'Tablet', 'Mobile'],
+			options: [ 'Desktop', 'Tablet', 'Mobile' ],
 			description: 'Active viewport device preview',
 		},
 		toggleValue: {
@@ -35,9 +35,9 @@ export default {
 };
 
 export const Default = {
-	render: (args) => {
-		const [device, setDevice] = useState(args.deviceType || 'Desktop');
-		const [values, setValues] = useState(
+	render: ( args ) => {
+		const [ device, setDevice ] = useState( args.deviceType || 'Desktop' );
+		const [ values, setValues ] = useState(
 			args.toggleValue || {
 				Desktop: false,
 				Tablet: false,
@@ -48,17 +48,17 @@ export const Default = {
 		return (
 			<div>
 				<div
-					style={{
+					style={ {
 						display: 'flex',
 						gap: '8px',
 						marginBottom: '12px',
-					}}
+					} }
 				>
-					{['Desktop', 'Tablet', 'Mobile'].map((d) => (
+					{ [ 'Desktop', 'Tablet', 'Mobile' ].map( ( d ) => (
 						<button
-							key={d}
-							onClick={() => setDevice(d)}
-							style={{
+							key={ d }
+							onClick={ () => setDevice( d ) }
+							style={ {
 								padding: '4px 10px',
 								fontSize: '12px',
 								background:
@@ -67,21 +67,21 @@ export const Default = {
 								border: '1px solid #ccc',
 								borderRadius: '3px',
 								cursor: 'pointer',
-							}}
+							} }
 						>
-							{d}
+							{ d }
 						</button>
-					))}
+					) ) }
 				</div>
 				<ResponsiveToggleControl
-					{...args}
-					deviceType={device}
-					toggleValue={values}
-					setToggleValue={(newVal) => {
-						setValues(newVal);
-						args.setToggleValue?.(newVal);
-					}}
-					setAttributes={() => {}}
+					{ ...args }
+					deviceType={ device }
+					toggleValue={ values }
+					setToggleValue={ ( newVal ) => {
+						setValues( newVal );
+						args.setToggleValue?.( newVal );
+					} }
+					setAttributes={ () => {} }
 				/>
 			</div>
 		);
@@ -98,9 +98,9 @@ export const Default = {
 };
 
 export const ActiveOnDesktop = {
-	render: (args) => {
-		const [device, setDevice] = useState(args.deviceType || 'Desktop');
-		const [values, setValues] = useState(
+	render: ( args ) => {
+		const [ device, setDevice ] = useState( args.deviceType || 'Desktop' );
+		const [ values, setValues ] = useState(
 			args.toggleValue || {
 				Desktop: true,
 				Tablet: true,
@@ -111,17 +111,17 @@ export const ActiveOnDesktop = {
 		return (
 			<div>
 				<div
-					style={{
+					style={ {
 						display: 'flex',
 						gap: '8px',
 						marginBottom: '12px',
-					}}
+					} }
 				>
-					{['Desktop', 'Tablet', 'Mobile'].map((d) => (
+					{ [ 'Desktop', 'Tablet', 'Mobile' ].map( ( d ) => (
 						<button
-							key={d}
-							onClick={() => setDevice(d)}
-							style={{
+							key={ d }
+							onClick={ () => setDevice( d ) }
+							style={ {
 								padding: '4px 10px',
 								fontSize: '12px',
 								background:
@@ -130,21 +130,21 @@ export const ActiveOnDesktop = {
 								border: '1px solid #ccc',
 								borderRadius: '3px',
 								cursor: 'pointer',
-							}}
+							} }
 						>
-							{d}
+							{ d }
 						</button>
-					))}
+					) ) }
 				</div>
 				<ResponsiveToggleControl
-					{...args}
-					deviceType={device}
-					toggleValue={values}
-					setToggleValue={(newVal) => {
-						setValues(newVal);
-						args.setToggleValue?.(newVal);
-					}}
-					setAttributes={() => {}}
+					{ ...args }
+					deviceType={ device }
+					toggleValue={ values }
+					setToggleValue={ ( newVal ) => {
+						setValues( newVal );
+						args.setToggleValue?.( newVal );
+					} }
+					setAttributes={ () => {} }
 				/>
 			</div>
 		);
