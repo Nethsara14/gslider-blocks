@@ -79,7 +79,7 @@
 /** Modal scss **/
 .gslider_icon_picker_wrapper_header {
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
 
 	h2 {
 		font-size: 17px;
@@ -87,6 +87,17 @@
 		flex-shrink: 0;
 		max-width: 130px;
 		width: 100%;
+		margin: 6px 0 0;
+	}
+
+	.gslider_icon_picker_wrapper_search_wrap {
+		width: 100%;
+
+		.gslider_icon_picker_hint {
+			font-size: 11px;
+			color: #757575;
+			margin: 4px 0 0;
+		}
 	}
 
 	.gslider_icon_picker_wrapper_search {
@@ -182,21 +193,30 @@
 		&.default {
 			border-color: $primary_color;
 			box-shadow: 0 0 0 2px $primary_color;
-			pointer-events: none;
 		}
 
 		&.selected {
 			border-color: $primary_color;
 			box-shadow: 0 0 0 2px $active_bg_color;
-			pointer-events: none;
 		}
 	}
 }
 
 .gslider_icon_picker_wrapper_footer {
+	position: sticky;
+	bottom: 0;
+	background: #fff;
+	z-index: 2;
+	padding: 12px 0;
 	text-align: right;
 }
 
 .gslider_icon_picker_wrapper_modal {
 	min-width: 615px !important;
+	max-height: calc(100vh - 40px);
+
+	.components-modal__content {
+		max-height: calc(100vh - 120px);
+		overflow-y: auto;
+	}
 }
