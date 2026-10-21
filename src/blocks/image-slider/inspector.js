@@ -1,16 +1,13 @@
 import { __ } from '@wordpress/i18n';
-import { useState, useEffect, useMemo, useCallback, memo } from '@wordpress/element';
-import { PanelBody, ToggleControl, BaseControl, Button, } from '@wordpress/components';
+import { useState, useEffect, useCallback, memo } from '@wordpress/element';
+import { PanelBody, ToggleControl, BaseControl } from '@wordpress/components';
 
 /**
  * Internal Dependencies
  */
 import {
-    TEXT_ALIGN,
     ARROW_ICON_ALIGN,
     VERTICAL_ALIGN,
-    VERTICAL_ALIGN_SELF,
-    HORIZONTAL_ALIGN,
     NORMAL_HOVER,
     BORDER_STYLES,
     CAROUSEL_EFFECT_OPTIONS,
@@ -20,8 +17,6 @@ import {
     PAGINATION_POSITION_TYPE,
     NAVIGATION_ARROW_POSITION,
     NAVIGATION_ARROW_DIRECTION,
-    LAYOUT_HEIGHT_SWITCHER,
-
 } from "@Constants";
 
 import './editor.scss';
