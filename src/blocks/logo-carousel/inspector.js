@@ -1317,7 +1317,6 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
                 >
                     <SelectControls
                         label={__('Link Target', 'gslider-blocks')}
-                        help={__('Choose where to open the link', 'gslider-blocks')}
                         options={[
                             { label: __('New Tab', 'gslider-blocks'), value: '_blank' },
                             { label: __('Same Tab', 'gslider-blocks'), value: '_self' },
