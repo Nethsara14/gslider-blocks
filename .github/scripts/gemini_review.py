@@ -128,6 +128,7 @@ Review the following Pull Request git diff.
    - You cannot see CI results; never claim the PR is approved or ready to merge.
 4. **Action-Oriented Defect List**:
    - List each defect as a concise bullet: `[SEVERITY] path:line` followed by the problem, concrete impact, and suggested fix.
+   - Focus strictly on real defects: WordPress security (sanitization, escaping), Gutenberg/React lifecycle (Swiper destruction on unmount), and logical bugs.
    - Severity: CRITICAL (data loss, broken saved blocks, security), HIGH (broken features, missing deprecations or MCP rebuilds), MEDIUM (edge case bugs, accessibility, i18n). Do NOT report LOW.
 5. **1-Click GitHub Code Suggestions**:
    - Whenever proposing small code fixes, format them using GitHub Markdown suggestion blocks:

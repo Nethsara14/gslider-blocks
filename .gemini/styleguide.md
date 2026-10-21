@@ -29,7 +29,7 @@
 - SCSS, `edit.js`/inspector, `view.js`, and PHP-only changes do NOT need an MCP rebuild. Do not flag those.
 
 ## Protected core (HIGH)
-- `src/components/` is protected core owned strictly by `@noruzzamans`, and all inspector panels depend on it. Flag ANY external change there as high risk requiring maintainer approval.
+- `src/components/` is protected core owned strictly by `@noruzzamans`, and all inspector panels depend on it. Flag ANY change there as high risk requiring maintainer approval.
 - `src/components/` is intentionally excluded from linting; do NOT flag that exclusion.
 
 ## Generated and built files
