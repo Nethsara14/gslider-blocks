@@ -1328,10 +1328,9 @@ const Inspector = ({ attributes, setAttributes, clientId }) => {
 
                     <InputControls
                         label={__('Link Rel Attribute', 'gslider-blocks')}
-                        help={__('Relationship between current and linked document', 'gslider-blocks')}
+                        helpText={__('Relationship between current and linked document', 'gslider-blocks')}
                         value={logoLinkRel}
-                        onChange={(value) => setAttributes({ logoLinkRel: value })}
-                        placeholder="noopener noreferrer"
+                        onChangeValue={(value) => setAttributes({ logoLinkRel: value })}
                     />
                 </PanelBody>
             )}
