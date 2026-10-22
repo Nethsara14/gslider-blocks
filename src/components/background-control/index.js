@@ -5,6 +5,7 @@ import {
 	BaseControl,
 	TabPanel,
 } from '@wordpress/components';
+import { useInstanceId } from '@wordpress/compose';
 
 import ResponsiveBackgroundImageControl from '@Components/responsive-background-image-control';
 import GradientColorControl from '@Components/gradient-color-control';
@@ -70,6 +71,8 @@ const BackgroundControl = ( {
 	isBackgroundImage = true,
 	isHover = true,
 } ) => {
+	const instanceId = useInstanceId( BackgroundControl, 'gslider-bg-control' );
+
 	const BACKGROUND_TYPES = [
 		{ label: __( 'Classic', 'gslider-blocks' ), value: 'classic' },
 		{ label: __( 'Gradient', 'gslider-blocks' ), value: 'gradient' },
@@ -77,8 +80,14 @@ const BackgroundControl = ( {
 
 	const renderNormalControls = () => (
 		<>
-			<BaseControl label={ __( 'Background Type', 'gslider-blocks' ) }>
-				<ButtonGroup className="gslider-setting-switcher-panel-btn">
+			<BaseControl
+				id={ `${ instanceId }-normal-type` }
+				label={ __( 'Background Type', 'gslider-blocks' ) }
+			>
+				<ButtonGroup
+					id={ `${ instanceId }-normal-type` }
+					className="gslider-setting-switcher-panel-btn"
+				>
 					{ BACKGROUND_TYPES.map( ( item ) => (
 						<Button
 							key={ item.value }
@@ -183,8 +192,14 @@ const BackgroundControl = ( {
 
 	const renderHoverControls = () => (
 		<>
-			<BaseControl label={ __( 'Background Type', 'gslider-blocks' ) }>
-				<ButtonGroup className="gslider-setting-switcher-panel-btn">
+			<BaseControl
+				id={ `${ instanceId }-hover-type` }
+				label={ __( 'Background Type', 'gslider-blocks' ) }
+			>
+				<ButtonGroup
+					id={ `${ instanceId }-hover-type` }
+					className="gslider-setting-switcher-panel-btn"
+				>
 					{ BACKGROUND_TYPES.map( ( item ) => (
 						<Button
 							key={ item.value }
@@ -283,7 +298,7 @@ const BackgroundControl = ( {
 
 	return (
 		<>
-			<BaseControl label={ label }>
+			<BaseControl id={ instanceId } label={ label }>
 				{ isHover ? (
 					<TabPanel
 						className="gslider-bg-tab-panel"
