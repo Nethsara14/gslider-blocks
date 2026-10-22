@@ -5,7 +5,6 @@ import {
 	BaseControl,
 	TabPanel,
 } from '@wordpress/components';
-import { useInstanceId } from '@wordpress/compose';
 
 import ResponsiveBackgroundImageControl from '@Components/responsive-background-image-control';
 import GradientColorControl from '@Components/gradient-color-control';
@@ -71,8 +70,6 @@ const BackgroundControl = ( {
 	isBackgroundImage = true,
 	isHover = true,
 } ) => {
-	const instanceId = useInstanceId( BackgroundControl, 'gslider-bg-control' );
-
 	const BACKGROUND_TYPES = [
 		{ label: __( 'Classic', 'gslider-blocks' ), value: 'classic' },
 		{ label: __( 'Gradient', 'gslider-blocks' ), value: 'gradient' },
@@ -80,12 +77,12 @@ const BackgroundControl = ( {
 
 	const renderNormalControls = () => (
 		<>
-			<BaseControl
-				id={ `${ instanceId }-normal-type` }
-				label={ __( 'Background Type', 'gslider-blocks' ) }
-			>
+			<BaseControl>
+				<BaseControl.VisualLabel>
+					{ __( 'Background Type', 'gslider-blocks' ) }
+				</BaseControl.VisualLabel>
 				<ButtonGroup
-					id={ `${ instanceId }-normal-type` }
+					aria-label={ __( 'Background Type', 'gslider-blocks' ) }
 					className="gslider-setting-switcher-panel-btn"
 				>
 					{ BACKGROUND_TYPES.map( ( item ) => (
@@ -192,12 +189,12 @@ const BackgroundControl = ( {
 
 	const renderHoverControls = () => (
 		<>
-			<BaseControl
-				id={ `${ instanceId }-hover-type` }
-				label={ __( 'Background Type', 'gslider-blocks' ) }
-			>
+			<BaseControl>
+				<BaseControl.VisualLabel>
+					{ __( 'Background Type', 'gslider-blocks' ) }
+				</BaseControl.VisualLabel>
 				<ButtonGroup
-					id={ `${ instanceId }-hover-type` }
+					aria-label={ __( 'Background Type', 'gslider-blocks' ) }
 					className="gslider-setting-switcher-panel-btn"
 				>
 					{ BACKGROUND_TYPES.map( ( item ) => (
@@ -298,7 +295,10 @@ const BackgroundControl = ( {
 
 	return (
 		<>
-			<BaseControl id={ instanceId } label={ label }>
+			<BaseControl>
+				{ label && (
+					<BaseControl.VisualLabel>{ label }</BaseControl.VisualLabel>
+				) }
 				{ isHover ? (
 					<TabPanel
 						className="gslider-bg-tab-panel"
