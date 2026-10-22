@@ -13,7 +13,7 @@ const SwitchToBlockSettings = ( panelRef ) => {
 					);
 
 					if ( settingsTabButton ) {
-						const event = new MouseEvent( 'click', {
+						const event = new window.MouseEvent( 'click', {
 							bubbles: true,
 							cancelable: true,
 							view: window,
