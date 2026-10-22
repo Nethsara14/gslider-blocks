@@ -27,13 +27,13 @@ export const NORMAL_HOVER = [
 ];
 
 export const ARROW_ICON_ALIGN = [
-	{ label: __( <Dashicon icon={ 'admin-generic' } /> ), value: 'icon' },
-	{ label: __( <Dashicon icon={ 'format-image' } /> ), value: 'image' },
+	{ label: <Dashicon icon={ 'admin-generic' } />, value: 'icon' },
+	{ label: <Dashicon icon={ 'format-image' } />, value: 'image' },
 ];
 
 export const ICON_ALIGN = [
-	{ label: __( <Dashicon icon={ 'remove' } /> ), value: 'none' },
-	{ label: __( <Dashicon icon={ 'admin-generic' } /> ), value: 'icon' },
+	{ label: <Dashicon icon={ 'remove' } />, value: 'none' },
+	{ label: <Dashicon icon={ 'admin-generic' } />, value: 'icon' },
 ];
 
 export const ICON_IMAGE_ALIGN = [
@@ -43,12 +43,12 @@ export const ICON_IMAGE_ALIGN = [
 ];
 
 export const TEXT_ALIGN = [
-	{ label: __( <Dashicon icon={ 'editor-alignleft' } /> ), value: 'left' },
+	{ label: <Dashicon icon={ 'editor-alignleft' } />, value: 'left' },
 	{
-		label: __( <Dashicon icon={ 'editor-aligncenter' } /> ),
+		label: <Dashicon icon={ 'editor-aligncenter' } />,
 		value: 'center',
 	},
-	{ label: __( <Dashicon icon={ 'editor-alignright' } /> ), value: 'right' },
+	{ label: <Dashicon icon={ 'editor-alignright' } />, value: 'right' },
 ];
 
 export const VERTICAL_POSITION_ICONS = {
@@ -130,21 +130,21 @@ export const HORIZONTAL_POSITION_ICONS = {
 };
 
 export const VERTICAL_ALIGN = [
-	{ label: __( VERTICAL_POSITION_ICONS.top ), value: 'flex-start' },
-	{ label: __( VERTICAL_POSITION_ICONS.middle ), value: 'center' },
-	{ label: __( VERTICAL_POSITION_ICONS.bottom ), value: 'flex-end' },
+	{ label: VERTICAL_POSITION_ICONS.top, value: 'flex-start' },
+	{ label: VERTICAL_POSITION_ICONS.middle, value: 'center' },
+	{ label: VERTICAL_POSITION_ICONS.bottom, value: 'flex-end' },
 ];
 
 export const VERTICAL_ALIGN_SELF = [
-	{ label: __( VERTICAL_POSITION_ICONS.top ), value: 'start' },
-	{ label: __( VERTICAL_POSITION_ICONS.middle ), value: 'center' },
-	{ label: __( VERTICAL_POSITION_ICONS.bottom ), value: 'end' },
+	{ label: VERTICAL_POSITION_ICONS.top, value: 'start' },
+	{ label: VERTICAL_POSITION_ICONS.middle, value: 'center' },
+	{ label: VERTICAL_POSITION_ICONS.bottom, value: 'end' },
 ];
 
 export const HORIZONTAL_ALIGN = [
-	{ label: __( HORIZONTAL_POSITION_ICONS.left ), value: 'left' },
-	{ label: __( HORIZONTAL_POSITION_ICONS.center ), value: 'center' },
-	{ label: __( HORIZONTAL_POSITION_ICONS.right ), value: 'right' },
+	{ label: HORIZONTAL_POSITION_ICONS.left, value: 'left' },
+	{ label: HORIZONTAL_POSITION_ICONS.center, value: 'center' },
+	{ label: HORIZONTAL_POSITION_ICONS.right, value: 'right' },
 ];
 
 export const HTML_TAGS = [
