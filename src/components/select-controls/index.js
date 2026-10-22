@@ -7,14 +7,12 @@ const SelectControls = ( { label = '', options, value, onChange } ) => {
 			className="gslider-select-control"
 			label={ __( label, 'gslider-blocks' ) }
 		>
-			<>
-				<SelectControl
-					className="gslider-select-control-options"
-					value={ value }
-					options={ options }
-					onChange={ ( value ) => onChange( value ) }
-				/>
-			</>
+			<SelectControl
+				className="gslider-select-control-options"
+				value={ value }
+				options={ options }
+				onChange={ ( value ) => onChange( value ) }
+			/>
 		</BaseControl>
 	);
 };

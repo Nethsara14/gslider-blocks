@@ -1,5 +1,4 @@
 import React from 'react';
-import { __ } from '@wordpress/i18n';
 import { ToggleControl, BaseControl } from '@wordpress/components';
 import ResponsiveDeviceControl from '@Components/responsive-device-control';
 
@@ -29,7 +28,6 @@ const ResponsiveToggleControl = ( {
 			className={ `gslider-responsive-toggle-control-wrapper ${ className }` }
 		>
 			<ToggleControl
-				// label={`${label} (${deviceType})`}
 				checked={ toggleValue?.[ deviceType ] ?? false }
 				onChange={ handleToggleChange }
 				className="gslider-responsive-toggle-control"

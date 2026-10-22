@@ -1,11 +1,5 @@
 import { __ } from '@wordpress/i18n';
-import {
-	BaseControl,
-	Button,
-	SelectControl,
-	Dropdown,
-	Dashicon,
-} from '@wordpress/components';
+import { BaseControl, Button, Dropdown, Dashicon } from '@wordpress/components';
 import { useState, useEffect } from '@wordpress/element';
 import {
 	FONT_WEIGHT,
@@ -131,7 +125,7 @@ const ResponsiveTypographyControl = ( {
 	};
 
 	const gsliderSelect2ControlStyles = {
-		control: ( base, state ) => ( {
+		control: ( base ) => ( {
 			...base,
 			backgroundColor: '#fff',
 			borderColor: '#f0f0f0',
@@ -159,7 +153,7 @@ const ResponsiveTypographyControl = ( {
 			height: '32px',
 		} ),
 
-		dropdownIndicator: ( base, state ) => ( {
+		dropdownIndicator: ( base ) => ( {
 			...base,
 			color: '#1e1e1e',
 			transition: 'all 0.2s ease',

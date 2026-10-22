@@ -4,7 +4,6 @@ import {
 	Dropdown,
 	ColorPicker,
 	ColorPalette,
-	Dashicon,
 	Button,
 } from '@wordpress/components';
 import { useSelect } from '@wordpress/data';

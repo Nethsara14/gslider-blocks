@@ -8,7 +8,6 @@ import UnitsControl from '@Components/unit-control';
 export default function ResponsiveSpacingControl( {
 	label,
 	deviceType,
-	onChangeDeviceType,
 	units,
 	onChangeUnits,
 	desktopSpacing,

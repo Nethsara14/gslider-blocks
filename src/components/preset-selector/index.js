@@ -1,7 +1,6 @@
 import { __ } from '@wordpress/i18n';
 import { useState, useEffect, memo } from '@wordpress/element';
 import { BaseControl, Button, Dashicon, Tooltip } from '@wordpress/components';
-import { select } from '@wordpress/data';
 
 /**
  * PresetSelector — Reusable visual preset picker for all GSlider blocks.

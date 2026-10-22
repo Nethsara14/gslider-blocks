@@ -1,7 +1,7 @@
 import { __ } from '@wordpress/i18n';
 import React, { useState, useEffect } from 'react';
 import Control from './control';
-import { Dashicon, BaseControl, Button, Dropdown } from '@wordpress/components';
+import { BaseControl, Button, Dropdown } from '@wordpress/components';
 
 export default function BoxShadowSettingsControl( {
 	label = __( 'Box Shadow', 'gslider-blocks' ),

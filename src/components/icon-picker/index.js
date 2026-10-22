@@ -16,7 +16,7 @@ export default function IconPicker( props ) {
 		useState( defaultSvgIcon );
 	const [ selectedCat, setSelectedCat ] = useState( 'all-icons' );
 	const [ svgIcon, setSvgIcon ] = useState( [] );
-	const [ categories, setCategories ] = useState( [
+	const [ categories ] = useState( [
 		{
 			slug: 'all-icons',
 			title: __( 'All Icons', 'gslider-blocks' ),

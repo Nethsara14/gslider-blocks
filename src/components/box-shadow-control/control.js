@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { __ } from '@wordpress/i18n';
 import React from 'react';
 import {

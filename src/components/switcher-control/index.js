@@ -1,4 +1,3 @@
-import { __ } from '@wordpress/i18n';
 import { Button, BaseControl, ButtonGroup } from '@wordpress/components';
 
 const SwitcherControl = ( {
