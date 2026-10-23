@@ -52,6 +52,8 @@ class StyleGeneratorTest {
 		$this->test_feed_exclusion();
 		$this->test_lcp_image_optimization();
 		$this->test_ensure_image_dimensions();
+		$this->test_csp_nonce_injection();
+		$this->test_dynamic_css_file_caching();
 		$this->test_reset_styles();
 
 		echo "\nAll StyleGenerator unit tests passed successfully!\n";
@@ -422,7 +424,152 @@ class StyleGeneratorTest {
 	}
 
 	/**
-	 * Test 9: Verify reset_styles() cleans all internal state.
+	 * Test 9: Verify CSP nonce injection on dynamic <style> tags (#314).
+	 *
+	 * @return void
+	 */
+	public function test_csp_nonce_injection(): void {
+		global $is_admin_mock, $is_feed_mock;
+		$is_admin_mock = false;
+		$is_feed_mock  = false;
+
+		remove_all_filters( 'gslider_style_nonce' );
+		remove_all_filters( 'gslider_csp_nonce' );
+		remove_all_filters( 'wp_csp_nonce' );
+
+		StyleGenerator::reset_styles();
+		$generator = StyleGenerator::getInstance();
+
+		// Case 1: Custom gslider_style_nonce filter.
+		add_filter( 'gslider_style_nonce', function() {
+			return 'nonce-gslider-custom-123';
+		} );
+
+		$block_id = 'gslider-csp-block-1';
+		$block    = [
+			'blockName' => 'gslider-blocks/image-slider',
+			'attrs'     => [
+				'blockId'    => $block_id,
+				'blockStyle' => ".{$block_id} { opacity: 1; }",
+			],
+		];
+		$content  = '<div class="gslider-image-slider-wrapper">CSP Test 1</div>';
+
+		$output = $generator->collect_and_render_dynamic_styles( $content, $block );
+		$expected_nonce_tag = '<style id="gslider-style-' . $block_id . '" nonce="nonce-gslider-custom-123">';
+
+		if ( false === strpos( $output, $expected_nonce_tag ) ) {
+			fwrite( STDERR, "FAIL: Inline <style> tag missing expected nonce attribute from gslider_style_nonce: $output\n" );
+			exit( 1 );
+		}
+		echo "OK: Dynamic <style> tag receives nonce from 'gslider_style_nonce' filter\n";
+
+		remove_all_filters( 'gslider_style_nonce' );
+
+		// Case 2: Standard WordPress wp_csp_nonce fallback filter.
+		add_filter( 'wp_csp_nonce', function() {
+			return 'nonce-wp-core-456';
+		} );
+
+		StyleGenerator::reset_styles();
+		$block_id_2 = 'gslider-csp-block-2';
+		$block_2    = [
+			'blockName' => 'gslider-blocks/image-slider',
+			'attrs'     => [
+				'blockId'    => $block_id_2,
+				'blockStyle' => ".{$block_id_2} { opacity: 0.8; }",
+			],
+		];
+		$output_2   = $generator->collect_and_render_dynamic_styles( $content, $block_2 );
+		$expected_wp_tag = '<style id="gslider-style-' . $block_id_2 . '" nonce="nonce-wp-core-456">';
+
+		if ( false === strpos( $output_2, $expected_wp_tag ) ) {
+			fwrite( STDERR, "FAIL: Inline <style> tag missing fallback nonce attribute from wp_csp_nonce: $output_2\n" );
+			exit( 1 );
+		}
+		echo "OK: Dynamic <style> tag falls back cleanly to 'wp_csp_nonce' filter\n";
+
+		remove_all_filters( 'wp_csp_nonce' );
+	}
+
+	/**
+	 * Test 10: Verify external dynamic CSS file caching and cache management (#314).
+	 *
+	 * @return void
+	 */
+	public function test_dynamic_css_file_caching(): void {
+		global $is_admin_mock, $is_feed_mock, $enqueued_styles;
+		$is_admin_mock = false;
+		$is_feed_mock  = false;
+
+		remove_all_filters( 'gslider_enable_file_cache' );
+		remove_all_filters( 'gslider_style_nonce' );
+		remove_all_filters( 'wp_csp_nonce' );
+
+		StyleGenerator::reset_styles();
+		$generator = StyleGenerator::getInstance();
+		$generator->clear_dynamic_css_cache();
+
+		// Enable file caching.
+		add_filter( 'gslider_enable_file_cache', '__return_true' );
+
+		$block_id = 'gslider-file-cached-block';
+		$block    = [
+			'blockName' => 'gslider-blocks/image-slider',
+			'attrs'     => [
+				'blockId'    => $block_id,
+				'blockStyle' => ".{$block_id} { display: block; border-radius: 12px; }",
+			],
+		];
+		$content  = '<div class="gslider-image-slider-wrapper ' . $block_id . '">Cached Slider</div>';
+
+		$output = $generator->collect_and_render_dynamic_styles( $content, $block );
+
+		// Output should NOT contain inline <style> tag because CSS was written to file and enqueued.
+		if ( false !== strpos( $output, '<style' ) ) {
+			fwrite( STDERR, "FAIL: Output unexpectedly contained inline <style> tag when file caching was enabled: $output\n" );
+			exit( 1 );
+		}
+		echo "OK: External file caching bypasses inline <style> tags completely\n";
+
+		// Verify stylesheet was enqueued.
+		$handle = 'gslider-style-' . $block_id;
+		if ( empty( $enqueued_styles[ $handle ] ) ) {
+			fwrite( STDERR, "FAIL: Dynamic CSS stylesheet '$handle' was not enqueued via wp_enqueue_style\n" );
+			exit( 1 );
+		}
+		if ( false === strpos( $enqueued_styles[ $handle ]['src'], 'gslider-styles/gslider-' . $block_id ) ) {
+			fwrite( STDERR, "FAIL: Enqueued stylesheet URL does not point to cache dir: " . $enqueued_styles[ $handle ]['src'] . "\n" );
+			exit( 1 );
+		}
+		echo "OK: Dynamic CSS stylesheet was enqueued with static file URL\n";
+
+		// Verify get_cache_stats() reports file count and size.
+		$stats = $generator->get_cache_stats();
+		if ( empty( $stats['files_count'] ) || $stats['files_count'] < 1 || empty( $stats['total_size_bytes'] ) ) {
+			fwrite( STDERR, "FAIL: get_cache_stats() did not accurately report cached file: " . json_encode( $stats ) . "\n" );
+			exit( 1 );
+		}
+		echo "OK: get_cache_stats() reports cached files count and byte size\n";
+
+		// Verify clear_dynamic_css_cache() purges file.
+		$purged = $generator->clear_dynamic_css_cache();
+		if ( $purged < 1 ) {
+			fwrite( STDERR, "FAIL: clear_dynamic_css_cache() did not purge cached file\n" );
+			exit( 1 );
+		}
+		$stats_after = $generator->get_cache_stats();
+		if ( 0 !== $stats_after['files_count'] ) {
+			fwrite( STDERR, "FAIL: Cache stats still show files after clear_dynamic_css_cache\n" );
+			exit( 1 );
+		}
+		echo "OK: clear_dynamic_css_cache() successfully purges cached CSS files\n";
+
+		remove_all_filters( 'gslider_enable_file_cache' );
+	}
+
+	/**
+	 * Test 11: Verify reset_styles() cleans all internal state.
 	 *
 	 * @return void
 	 */

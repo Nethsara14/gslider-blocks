@@ -134,10 +134,20 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
                     if ( ! empty( $clean_style ) ) {
                         self::$styles[ $block_id ] = $clean_style;
 
+                        // Check if external file caching is enabled (#314).
+                        if ( $this->is_file_cache_enabled() ) {
+                            $enqueued = $this->enqueue_dynamic_css_file( $block_id, $clean_style );
+                            if ( $enqueued ) {
+                                return $block_content;
+                            }
+                        }
+
                         // Deduplicate: only render the inline <style> tag once per unique block ID per request.
                         if ( empty( self::$printed[ $block_id ] ) ) {
                             self::$printed[ $block_id ] = true;
-                            $style_tag = '<style id="gslider-style-' . esc_attr( $block_id ) . '">' . $clean_style . '</style>';
+                            $nonce      = $this->get_csp_nonce();
+                            $nonce_attr = ! empty( $nonce ) ? ' nonce="' . esc_attr( $nonce ) . '"' : '';
+                            $style_tag  = '<style id="gslider-style-' . esc_attr( $block_id ) . '"' . $nonce_attr . '>' . $clean_style . '</style>';
                             return $style_tag . $block_content;
                         }
                     }
@@ -475,40 +485,220 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
         }
 
         /**
-         * Clears collected in-memory styles.
+         * Retrieves the Content Security Policy (CSP) nonce if configured (#314).
          *
-         * @since 1.2.0
+         * Checks the 'gslider_style_nonce', 'gslider_csp_nonce', and 'wp_csp_nonce' filters.
          *
-         * @return int Number of cached files purged (always 0 since styles are inline).
+         * @since 1.2.1
+         *
+         * @return string The sanitized CSP nonce string, or empty string if not set.
          */
-        public function clear_dynamic_css_cache(): int {
-            self::reset_styles();
-            return 0;
+        public function get_csp_nonce(): string {
+            $nonce = apply_filters( 'gslider_style_nonce', '' );
+            if ( empty( $nonce ) ) {
+                $nonce = apply_filters( 'gslider_csp_nonce', '' );
+            }
+            if ( empty( $nonce ) ) {
+                $nonce = apply_filters( 'wp_csp_nonce', '' );
+            }
+            return is_string( $nonce ) ? sanitize_text_field( $nonce ) : '';
         }
 
         /**
-         * Retrieves dynamic CSS cache statistics.
+         * Determines whether external dynamic CSS file caching is enabled (#314).
+         *
+         * Can be enabled via constant GSLIDER_DYNAMIC_CSS_FILE_CACHE or filter 'gslider_enable_file_cache'.
+         *
+         * @since 1.2.1
+         *
+         * @return bool True if file caching is enabled.
+         */
+        public function is_file_cache_enabled(): bool {
+            $enabled = defined( 'GSLIDER_DYNAMIC_CSS_FILE_CACHE' ) && GSLIDER_DYNAMIC_CSS_FILE_CACHE;
+            return (bool) apply_filters( 'gslider_enable_file_cache', $enabled );
+        }
+
+        /**
+         * Writes dynamic CSS to a hashed static file in uploads and enqueues it (#314).
+         *
+         * Allows strict CSP environments (style-src 'self') to load dynamic block styles
+         * without any inline <style> tags.
+         *
+         * @since 1.2.1
+         *
+         * @param string $block_id    Block unique identifier.
+         * @param string $clean_style Sanitized CSS rules.
+         * @return bool True if successfully enqueued or file exists, false to fallback to inline style.
+         */
+        public function enqueue_dynamic_css_file( string $block_id, string $clean_style ): bool {
+            if ( empty( $block_id ) || empty( $clean_style ) ) {
+                return false;
+            }
+
+            if ( ! function_exists( 'wp_upload_dir' ) ) {
+                return false;
+            }
+
+            $upload = wp_upload_dir();
+            if ( empty( $upload['basedir'] ) || empty( $upload['baseurl'] ) ) {
+                return false;
+            }
+
+            $cache_dir = trailingslashit( $upload['basedir'] ) . 'gslider-styles';
+            $cache_url = trailingslashit( $upload['baseurl'] ) . 'gslider-styles';
+
+            if ( ! is_dir( $cache_dir ) ) {
+                if ( function_exists( 'wp_mkdir_p' ) ) {
+                    wp_mkdir_p( $cache_dir );
+                } elseif ( ! @mkdir( $cache_dir, 0755, true ) && ! is_dir( $cache_dir ) ) {
+                    return false;
+                }
+            }
+
+            $hash      = substr( md5( $clean_style ), 0, 8 );
+            $file_name = 'gslider-' . $block_id . '-' . $hash . '.css';
+            $file_path = $cache_dir . '/' . $file_name;
+            $file_url  = $cache_url . '/' . $file_name;
+
+            if ( ! file_exists( $file_path ) ) {
+                // Delete older hashed files for this block_id to prevent orphaned cache files.
+                $pattern   = $cache_dir . '/gslider-' . $block_id . '-*.css';
+                $old_files = glob( $pattern );
+                if ( ! empty( $old_files ) && is_array( $old_files ) ) {
+                    foreach ( $old_files as $old_file ) {
+                        if ( is_file( $old_file ) ) {
+                            @unlink( $old_file );
+                        }
+                    }
+                }
+
+                $written = @file_put_contents( $file_path, $clean_style );
+                if ( false === $written ) {
+                    return false;
+                }
+            }
+
+            $handle = 'gslider-style-' . $block_id;
+            if ( function_exists( 'wp_enqueue_style' ) ) {
+                wp_enqueue_style( $handle, $file_url, [], GSLIDER_VERSION );
+            }
+
+            return true;
+        }
+
+        /**
+         * Clears all cached dynamic CSS files in uploads/gslider-styles (#314).
+         *
+         * @since 1.2.0
+         *
+         * @return int Number of cached files purged.
+         */
+        public function clear_dynamic_css_cache(): int {
+            self::reset_styles();
+
+            if ( ! function_exists( 'wp_upload_dir' ) ) {
+                return 0;
+            }
+
+            $upload = wp_upload_dir();
+            if ( empty( $upload['basedir'] ) ) {
+                return 0;
+            }
+
+            $cache_dir = trailingslashit( $upload['basedir'] ) . 'gslider-styles';
+            if ( ! is_dir( $cache_dir ) ) {
+                return 0;
+            }
+
+            $files = glob( $cache_dir . '/*.css' );
+            if ( empty( $files ) || ! is_array( $files ) ) {
+                return 0;
+            }
+
+            $count = 0;
+            foreach ( $files as $file ) {
+                if ( is_file( $file ) && @unlink( $file ) ) {
+                    $count++;
+                }
+            }
+
+            return $count;
+        }
+
+        /**
+         * Retrieves dynamic CSS cache statistics (#314).
          *
          * @since 1.2.0
          *
          * @return array{files_count: int, total_size_bytes: int, total_size_formatted: string}
          */
         public function get_cache_stats(): array {
-            return [
+            $default = [
                 'files_count'          => 0,
                 'total_size_bytes'     => 0,
                 'total_size_formatted' => '0 KB',
+            ];
+
+            if ( ! function_exists( 'wp_upload_dir' ) ) {
+                return $default;
+            }
+
+            $upload = wp_upload_dir();
+            if ( empty( $upload['basedir'] ) ) {
+                return $default;
+            }
+
+            $cache_dir = trailingslashit( $upload['basedir'] ) . 'gslider-styles';
+            if ( ! is_dir( $cache_dir ) ) {
+                return $default;
+            }
+
+            $files = glob( $cache_dir . '/*.css' );
+            if ( empty( $files ) || ! is_array( $files ) ) {
+                return $default;
+            }
+
+            $total_bytes = 0;
+            $files_count = 0;
+            foreach ( $files as $file ) {
+                if ( is_file( $file ) ) {
+                    $files_count++;
+                    $total_bytes += (int) filesize( $file );
+                }
+            }
+
+            $formatted = function_exists( 'size_format' )
+                ? size_format( $total_bytes, 2 )
+                : round( $total_bytes / 1024, 2 ) . ' KB';
+
+            return [
+                'files_count'          => $files_count,
+                'total_size_bytes'     => $total_bytes,
+                'total_size_formatted' => $formatted,
             ];
         }
 
         /**
          * Prints any collected dynamic styles in wp_footer as fallback.
          *
+         * If styles remain collected and CSP nonce is present, injects nonce attribute.
+         *
          * @since 1.0.0
          *
          * @return void
          */
         public function print_footer_styles(): void {
+            if ( empty( self::$styles ) ) {
+                return;
+            }
+
+            $combined_css = implode( "\n", self::$styles );
+            if ( ! empty( $combined_css ) ) {
+                $nonce      = $this->get_csp_nonce();
+                $nonce_attr = ! empty( $nonce ) ? ' nonce="' . esc_attr( $nonce ) . '"' : '';
+                echo '<style id="gslider-blocks-footer-styles"' . $nonce_attr . ">\n" . $combined_css . "\n</style>\n";
+            }
+
             self::$styles = [];
         }
 
