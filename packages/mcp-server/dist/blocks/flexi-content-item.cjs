@@ -51,7 +51,6 @@ var block_default = {
   supports: {
     html: false,
     anchor: false,
-    customClassName: true,
     align: ["wide", "full"]
   },
   parent: ["gslider-blocks/flexi-content"],
