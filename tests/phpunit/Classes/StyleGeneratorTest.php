@@ -278,11 +278,22 @@ class StyleGeneratorTest {
 
 		$content = '<div class="gslider-image-slider-wrapper ' . $block_id . '">' .
 			'<div class="swiper"><div class="swiper-wrapper">' .
-			'<div class="swiper-slide"><img src="https://example.com/slide1.jpg" alt="Slide 1" loading="lazy"></div>' .
+			'<div class="swiper-slide"><img src="https://example.com/slide1.jpg" alt="Slide 1" loading="lazy" /></div>' .
 			'<div class="swiper-slide"><img src="https://example.com/slide2.jpg" alt="Slide 2" loading="lazy"></div>' .
 			'</div></div></div>';
 
 		$output = $generator->collect_and_render_dynamic_styles( $content, $block );
+
+		// Verify slide 1 received fetchpriority="high", loading="eager", decoding="async" and preserved self-closing syntax.
+		if ( preg_match( '/\/\s+[a-z]/i', $output ) ) {
+			fwrite( STDERR, "FAIL: Malformed slash in middle of attributes for self-closing tag: $output\n" );
+			exit( 1 );
+		}
+		if ( ! preg_match( '/<img[^>]*slide1\.jpg[^>]*\/>/i', $output ) ) {
+			fwrite( STDERR, "FAIL: Self-closing slash was lost on slide 1: $output\n" );
+			exit( 1 );
+		}
+		echo "OK: Self-closing tag properly formatted without misplaced slashes\n";
 
 		// Verify slide 1 received fetchpriority="high", loading="eager", decoding="async".
 		if ( ! preg_match( '/<img[^>]*slide1\.jpg[^>]*fetchpriority="high"[^>]*>/i', $output ) &&

@@ -171,7 +171,8 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
                 $attributes   = $matches[1][0];
                 $offset       = $matches[0][1];
 
-                $new_attributes = $attributes;
+                $is_self_closing = '/' === substr( trim( $attributes ), -1 );
+                $new_attributes  = rtrim( $attributes, " /\t\n\r\0\x0B" );
 
                 // 1. Ensure loading="eager" instead of loading="lazy".
                 if ( preg_match( '/\bloading\s*=\s*["\']lazy["\']/i', $new_attributes ) ) {
@@ -190,7 +191,7 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
                     $new_attributes .= ' decoding="async"';
                 }
 
-                $new_img_tag = '<img' . $new_attributes . '>';
+                $new_img_tag = '<img' . $new_attributes . ( $is_self_closing ? ' />' : '>' );
 
                 // Replace only the first occurrence.
                 $block_content = substr_replace( $block_content, $new_img_tag, $offset, strlen( $full_img_tag ) );
