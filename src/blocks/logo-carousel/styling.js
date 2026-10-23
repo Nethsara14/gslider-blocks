@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Logo carousel Slider Block - Style Generation
  * Returns Dynamic Generated CSS

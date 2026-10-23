@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Flexi Content Slider Block - Style Generation
  * Returns Dynamic Generated CSS

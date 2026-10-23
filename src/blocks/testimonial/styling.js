@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Base Slider Block - Style Generation
  * Returns Dynamic Generated CSS

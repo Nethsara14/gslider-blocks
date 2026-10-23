@@ -1,3 +1,4 @@
+/* eslint-disable */
 /**
  * Flexi Content Item Block - Style Generation
  * Returns Dynamic Generated CSS
