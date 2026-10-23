@@ -238,7 +238,7 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
             }
 
             foreach ( $items as $item ) {
-                if ( empty( $item['id'] ) || empty( $item['url'] ) ) {
+                if ( empty( $item['id'] ) || (int) $item['id'] <= 0 || empty( $item['url'] ) ) {
                     continue;
                 }
 
@@ -266,10 +266,11 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
 
                 // If full URL match fails, try basename matching for protocol-relative or rewritten CDN URLs.
                 if ( ! preg_match( $pattern, $block_content ) ) {
-                    $basename = basename( $item['url'] );
+                    $url_path = function_exists( 'wp_parse_url' ) ? wp_parse_url( $item['url'], PHP_URL_PATH ) : parse_url( $item['url'], PHP_URL_PATH );
+                    $basename = ! empty( $url_path ) ? basename( $url_path ) : basename( $item['url'] );
                     if ( ! empty( $basename ) ) {
                         $escaped_basename = preg_quote( $basename, '/' );
-                        $pattern          = '/<img\b([^>]*src=["\'][^"\']*' . $escaped_basename . '["\'][^>]*)>/i';
+                        $pattern          = '/<img\b([^>]*src=["\'][^"\']*\/' . $escaped_basename . '(?:[?#][^"\']*)?["\'][^>]*)>/i';
                     }
                 }
 
