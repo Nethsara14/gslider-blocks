@@ -118,6 +118,9 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
                 // Apply LCP image priority to the first slide image on the page (frontend only).
                 $block_content = $this->optimize_lcp_image( $block_content );
 
+                // Ensure explicit width and height attributes on slide images to eliminate CLS (#391).
+                $block_content = $this->ensure_image_dimensions( $block_content, $block );
+
                 if ( ! empty( $block['attrs']['blockStyle'] ) ) {
                     $block_id = isset( $block['attrs']['blockId'] ) ?
                         sanitize_key( $block['attrs']['blockId'] ) :
@@ -195,6 +198,98 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
                 // Replace only the first occurrence.
                 $block_content = substr_replace( $block_content, $new_img_tag, $offset, strlen( $full_img_tag ) );
                 self::$lcp_optimized = true;
+            }
+
+            return $block_content;
+        }
+
+        /**
+         * Ensures explicit width and height HTML attributes on slide images to eliminate CLS (#391).
+         *
+         * Inspects block attributes for attachment IDs (images or logos array) and
+         * injects missing width and height attributes based on WordPress attachment metadata.
+         *
+         * @since 1.2.1
+         *
+         * @param string $block_content The block HTML content.
+         * @param array  $block         The block data and attributes.
+         * @return string Updated block HTML with width/height attributes on slide images.
+         */
+        public function ensure_image_dimensions( string $block_content, array $block ): string {
+            if ( empty( $block_content ) || empty( $block['attrs'] ) ) {
+                return $block_content;
+            }
+
+            if ( is_admin() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || ( function_exists( 'is_feed' ) && is_feed() ) ) {
+                return $block_content;
+            }
+
+            // Extract images or logos array.
+            $items = [];
+            if ( ! empty( $block['attrs']['images'] ) && is_array( $block['attrs']['images'] ) ) {
+                $items = $block['attrs']['images'];
+            } elseif ( ! empty( $block['attrs']['logos'] ) && is_array( $block['attrs']['logos'] ) ) {
+                $items = $block['attrs']['logos'];
+            }
+
+            if ( empty( $items ) ) {
+                return $block_content;
+            }
+
+            foreach ( $items as $item ) {
+                if ( empty( $item['id'] ) || empty( $item['url'] ) ) {
+                    continue;
+                }
+
+                $attachment_id = (int) $item['id'];
+                $meta          = function_exists( 'wp_get_attachment_metadata' ) ? wp_get_attachment_metadata( $attachment_id ) : null;
+                $width         = ! empty( $meta['width'] ) ? (int) $meta['width'] : null;
+                $height        = ! empty( $meta['height'] ) ? (int) $meta['height'] : null;
+
+                if ( ! $width || ! $height ) {
+                    if ( function_exists( 'wp_get_attachment_image_src' ) ) {
+                        $src_data = wp_get_attachment_image_src( $attachment_id, 'full' );
+                        if ( ! empty( $src_data[1] ) && ! empty( $src_data[2] ) ) {
+                            $width  = (int) $src_data[1];
+                            $height = (int) $src_data[2];
+                        }
+                    }
+                }
+
+                if ( ! $width || ! $height ) {
+                    continue;
+                }
+
+                $escaped_url = preg_quote( $item['url'], '/' );
+                $pattern     = '/<img\b([^>]*src=["\']' . $escaped_url . '["\'][^>]*)>/i';
+
+                // If full URL match fails, try basename matching for protocol-relative or rewritten CDN URLs.
+                if ( ! preg_match( $pattern, $block_content ) ) {
+                    $basename = basename( $item['url'] );
+                    if ( ! empty( $basename ) ) {
+                        $escaped_basename = preg_quote( $basename, '/' );
+                        $pattern          = '/<img\b([^>]*src=["\'][^"\']*' . $escaped_basename . '["\'][^>]*)>/i';
+                    }
+                }
+
+                if ( preg_match( $pattern, $block_content, $matches, PREG_OFFSET_CAPTURE ) ) {
+                    $full_tag = $matches[0][0];
+                    $attrs    = $matches[1][0];
+                    $offset   = $matches[0][1];
+
+                    $new_attrs = $attrs;
+                    if ( ! preg_match( '/\bwidth\s*=/i', $new_attrs ) ) {
+                        $new_attrs .= ' width="' . $width . '"';
+                    }
+                    if ( ! preg_match( '/\bheight\s*=/i', $new_attrs ) ) {
+                        $new_attrs .= ' height="' . $height . '"';
+                    }
+
+                    if ( $new_attrs !== $attrs ) {
+                        $new_tag       = '<img' . $new_attrs . '>';
+                        $block_content = substr_replace( $block_content, $new_tag, $offset, strlen( $full_tag ) );
+                    }
+                }
             }
 
             return $block_content;

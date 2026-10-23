@@ -268,6 +268,20 @@ if ( ! function_exists( 'render_block' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wp_get_attachment_metadata' ) ) {
+	function wp_get_attachment_metadata( $attachment_id ) {
+		global $attachment_metadata_mock;
+		return isset( $attachment_metadata_mock[ $attachment_id ] ) ? $attachment_metadata_mock[ $attachment_id ] : false;
+	}
+}
+
+if ( ! function_exists( 'wp_get_attachment_image_src' ) ) {
+	function wp_get_attachment_image_src( $attachment_id, $size = 'thumbnail' ) {
+		global $attachment_image_src_mock;
+		return isset( $attachment_image_src_mock[ $attachment_id ] ) ? $attachment_image_src_mock[ $attachment_id ] : false;
+	}
+}
+
 if ( ! class_exists( 'WP_REST_Controller' ) ) {
 	class WP_REST_Controller {
 		protected $namespace;

@@ -51,6 +51,7 @@ class StyleGeneratorTest {
 		$this->test_dynamic_css_deduplication();
 		$this->test_feed_exclusion();
 		$this->test_lcp_image_optimization();
+		$this->test_ensure_image_dimensions();
 		$this->test_reset_styles();
 
 		echo "\nAll StyleGenerator unit tests passed successfully!\n";
@@ -341,7 +342,87 @@ class StyleGeneratorTest {
 	}
 
 	/**
-	 * Test 8: Verify reset_styles() cleans all internal state.
+	 * Test 8: Verify ensure_image_dimensions injects width and height on slide images (#391).
+	 *
+	 * @return void
+	 */
+	public function test_ensure_image_dimensions(): void {
+		global $is_admin_mock, $is_feed_mock, $attachment_metadata_mock;
+		$is_admin_mock = false;
+		$is_feed_mock  = false;
+
+		$attachment_metadata_mock = [
+			42 => [
+				'width'  => 800,
+				'height' => 600,
+			],
+			43 => [
+				'width'  => 400,
+				'height' => 300,
+			],
+		];
+
+		$generator = StyleGenerator::getInstance();
+
+		$block = [
+			'blockName' => 'gslider-blocks/image-slider',
+			'attrs'     => [
+				'blockId' => 'gslider-img-test',
+				'images'  => [
+					[
+						'id'  => 42,
+						'url' => 'https://example.com/wp-content/uploads/2026/01/photo1.jpg',
+					],
+					[
+						'id'  => 43,
+						'url' => 'https://example.com/wp-content/uploads/2026/01/photo2.jpg',
+					],
+				],
+			],
+		];
+
+		// Image 1 has no width or height. Image 2 already has width and height.
+		$content = '<div class="gslider-image-slider-wrapper">' .
+			'<div class="swiper"><div class="swiper-wrapper">' .
+			'<div class="swiper-slide"><img src="https://example.com/wp-content/uploads/2026/01/photo1.jpg" alt="Photo 1"></div>' .
+			'<div class="swiper-slide"><img src="https://example.com/wp-content/uploads/2026/01/photo2.jpg" alt="Photo 2" width="400" height="300"></div>' .
+			'</div></div></div>';
+
+		$output = $generator->ensure_image_dimensions( $content, $block );
+
+		// Check photo 1 got width="800" and height="600".
+		if ( ! preg_match( '/<img[^>]*photo1\.jpg[^>]*width="800"[^>]*height="600"[^>]*>/i', $output ) &&
+		     ! preg_match( '/<img[^>]*width="800"[^>]*height="600"[^>]*photo1\.jpg[^>]*>/i', $output ) ) {
+			fwrite( STDERR, "FAIL: Photo 1 did not have width and height injected: $output\n" );
+			exit( 1 );
+		}
+		echo "OK: ensure_image_dimensions injects width and height on image lacking them\n";
+
+		// Check photo 2 did not get duplicate width or height attributes.
+		if ( substr_count( $output, 'photo2.jpg' ) > 0 ) {
+			preg_match( '/<img[^>]*photo2\.jpg[^>]*>/i', $output, $photo2_match );
+			if ( ! empty( $photo2_match[0] ) ) {
+				if ( substr_count( $photo2_match[0], 'width=' ) > 1 || substr_count( $photo2_match[0], 'height=' ) > 1 ) {
+					fwrite( STDERR, "FAIL: Photo 2 received duplicate dimensions: {$photo2_match[0]}\n" );
+					exit( 1 );
+				}
+			}
+		}
+		echo "OK: ensure_image_dimensions does not duplicate existing dimensions\n";
+
+		// Test admin bypass.
+		$is_admin_mock = true;
+		$admin_output  = $generator->ensure_image_dimensions( $content, $block );
+		if ( $admin_output !== $content ) {
+			fwrite( STDERR, "FAIL: ensure_image_dimensions did not bypass in admin context\n" );
+			exit( 1 );
+		}
+		echo "OK: ensure_image_dimensions is safely bypassed in admin\n";
+		$is_admin_mock = false;
+	}
+
+	/**
+	 * Test 9: Verify reset_styles() cleans all internal state.
 	 *
 	 * @return void
 	 */

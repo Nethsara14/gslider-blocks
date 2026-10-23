@@ -21,6 +21,22 @@
 	.swiper {
 		position: relative !important;
 		overflow: hidden !important;
+
+		&:not(.swiper-initialized) {
+			overflow: hidden !important;
+
+			.swiper-wrapper {
+				display: flex;
+				flex-wrap: nowrap;
+				width: 100%;
+				box-sizing: border-box;
+			}
+
+			.swiper-slide {
+				flex-shrink: 0;
+				box-sizing: border-box;
+			}
+		}
 	}
 
 	.swiper-backface-hidden {

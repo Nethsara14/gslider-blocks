@@ -1,4 +1,25 @@
 .gslider-image-slider-wrapper {
+	.swiper {
+		position: relative !important;
+		overflow: hidden !important;
+
+		&:not(.swiper-initialized) {
+			overflow: hidden !important;
+
+			.swiper-wrapper {
+				display: flex;
+				flex-wrap: nowrap;
+				width: 100%;
+				box-sizing: border-box;
+			}
+
+			.swiper-slide {
+				flex-shrink: 0;
+				box-sizing: border-box;
+			}
+		}
+	}
+
 	.gslider-image-slider-content-wrapper {
 		box-sizing: border-box;
 		height: clamp(250px, 50vh, 500px);
@@ -217,7 +238,7 @@
 				font-size: 14px;
 				font-weight: 500;
 				border-radius: 4px;
-				transition: all 0.2s ease;
+				transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
 
 				&.is-primary {
 					background: #2271b1;
