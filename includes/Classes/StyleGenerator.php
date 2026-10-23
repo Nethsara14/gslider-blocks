@@ -273,24 +273,24 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
                     }
                 }
 
-                if ( preg_match( $pattern, $block_content, $matches, PREG_OFFSET_CAPTURE ) ) {
-                    $full_tag = $matches[0][0];
-                    $attrs    = $matches[1][0];
-                    $offset   = $matches[0][1];
+                $block_content = preg_replace_callback(
+                    $pattern,
+                    static function ( $matches ) use ( $width, $height ) {
+                        $attrs           = $matches[1];
+                        $is_self_closing = '/' === substr( trim( $attrs ), -1 );
+                        $new_attrs       = rtrim( $attrs, " /\t\n\r\0\x0B" );
 
-                    $new_attrs = $attrs;
-                    if ( ! preg_match( '/\bwidth\s*=/i', $new_attrs ) ) {
-                        $new_attrs .= ' width="' . $width . '"';
-                    }
-                    if ( ! preg_match( '/\bheight\s*=/i', $new_attrs ) ) {
-                        $new_attrs .= ' height="' . $height . '"';
-                    }
+                        if ( ! preg_match( '/\bwidth\s*=/i', $new_attrs ) ) {
+                            $new_attrs .= ' width="' . $width . '"';
+                        }
+                        if ( ! preg_match( '/\bheight\s*=/i', $new_attrs ) ) {
+                            $new_attrs .= ' height="' . $height . '"';
+                        }
 
-                    if ( $new_attrs !== $attrs ) {
-                        $new_tag       = '<img' . $new_attrs . '>';
-                        $block_content = substr_replace( $block_content, $new_tag, $offset, strlen( $full_tag ) );
-                    }
-                }
+                        return '<img' . $new_attrs . ( $is_self_closing ? ' />' : '>' );
+                    },
+                    $block_content
+                );
             }
 
             return $block_content;

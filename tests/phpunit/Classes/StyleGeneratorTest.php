@@ -392,22 +392,27 @@ class StyleGeneratorTest {
 			],
 		];
 
-		// Image 1 has no width or height. Image 2 already has width and height.
+		// Image 1 has no width or height (self-closing). Image 2 already has width and height. Image 3 is a duplicate of Image 1 (ticker loop).
 		$content = '<div class="gslider-image-slider-wrapper">' .
 			'<div class="swiper"><div class="swiper-wrapper">' .
-			'<div class="swiper-slide"><img src="https://example.com/wp-content/uploads/2026/01/photo1.jpg" alt="Photo 1"></div>' .
+			'<div class="swiper-slide"><img src="https://example.com/wp-content/uploads/2026/01/photo1.jpg" alt="Photo 1" /></div>' .
 			'<div class="swiper-slide"><img src="https://example.com/wp-content/uploads/2026/01/photo2.jpg" alt="Photo 2" width="400" height="300"></div>' .
+			'<div class="swiper-slide"><img src="https://example.com/wp-content/uploads/2026/01/photo1.jpg" alt="Photo 1 Dup"></div>' .
 			'</div></div></div>';
 
 		$output = $generator->ensure_image_dimensions( $content, $block );
 
-		// Check photo 1 got width="800" and height="600".
-		if ( ! preg_match( '/<img[^>]*photo1\.jpg[^>]*width="800"[^>]*height="600"[^>]*>/i', $output ) &&
-		     ! preg_match( '/<img[^>]*width="800"[^>]*height="600"[^>]*photo1\.jpg[^>]*>/i', $output ) ) {
-			fwrite( STDERR, "FAIL: Photo 1 did not have width and height injected: $output\n" );
+		// Check both photo 1 instances got width="800" and height="600".
+		$photo1_count = substr_count( $output, 'width="800" height="600"' );
+		if ( 2 !== $photo1_count ) {
+			fwrite( STDERR, "FAIL: Both photo 1 instances did not have dimensions injected (found $photo1_count): $output\n" );
 			exit( 1 );
 		}
-		echo "OK: ensure_image_dimensions injects width and height on image lacking them\n";
+		if ( preg_match( '/\/\s+[a-z]/i', $output ) ) {
+			fwrite( STDERR, "FAIL: Malformed slash in middle of attributes in ensure_image_dimensions: $output\n" );
+			exit( 1 );
+		}
+		echo "OK: ensure_image_dimensions injects dimensions on all duplicate images and handles self-closing tags\n";
 
 		// Check photo 2 did not get duplicate width or height attributes.
 		if ( substr_count( $output, 'photo2.jpg' ) > 0 ) {
