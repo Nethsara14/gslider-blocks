@@ -83,7 +83,10 @@ class StyleGeneratorTest {
 	 * @return void
 	 */
 	public function test_plugin_services_contains_class(): void {
-		$ref      = new ReflectionProperty( Plugin::class, 'services' );
+		$ref = new ReflectionProperty( Plugin::class, 'services' );
+		if ( PHP_VERSION_ID < 80100 ) {
+			$ref->setAccessible( true );
+		}
 		$services = $ref->getValue( Plugin::getInstance() );
 
 		if ( ! in_array( StyleGenerator::class, $services, true ) ) {
