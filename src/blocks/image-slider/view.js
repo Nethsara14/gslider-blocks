@@ -5,29 +5,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
         sliders.forEach((sliderContainer) => {
             try {
-                // Get the Swiper settings from the data attribute
-                const swiperSettings = sliderContainer.dataset.swiperSettings;
+                const swiperEl = sliderContainer.querySelector('.swiper');
+                if (swiperEl && !swiperEl.classList.contains('swiper-initialized')) {
+                    // Get the Swiper settings from the data attribute
+                    const swiperSettings = sliderContainer.dataset.swiperSettings;
 
-                if (swiperSettings) {
-                    const settings = JSON.parse(swiperSettings);
+                    if (swiperSettings) {
+                        const settings = JSON.parse(swiperSettings);
 
-                    if (settings.navigation && typeof settings.navigation === 'object') {
-                        const nextEl = sliderContainer.querySelector('.swiper-button-next');
-                        const prevEl = sliderContainer.querySelector('.swiper-button-prev');
-                        if (nextEl) {
-                            settings.navigation.nextEl = nextEl;
+                        if (settings.navigation && typeof settings.navigation === 'object') {
+                            const nextEl = sliderContainer.querySelector('.swiper-button-next');
+                            const prevEl = sliderContainer.querySelector('.swiper-button-prev');
+                            if (nextEl) {
+                                settings.navigation.nextEl = nextEl;
+                            }
+                            if (prevEl) {
+                                settings.navigation.prevEl = prevEl;
+                            }
                         }
-                        if (prevEl) {
-                            settings.navigation.prevEl = prevEl;
+
+                        // Initialize Swiper with parsed settings
+                        new Swiper(swiperEl, settings);
+
+                        // Refresh fsLightbox to detect new slides
+                        if (typeof refreshFsLightbox === 'function') {
+                            refreshFsLightbox();
                         }
-                    }
-
-                    // Initialize Swiper with parsed settings
-                    new Swiper(sliderContainer.querySelector('.swiper'), settings);
-
-                    // Refresh fsLightbox to detect new slides
-                    if (typeof refreshFsLightbox === 'function') {
-                        refreshFsLightbox();
                     }
                 }
 
@@ -46,6 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const imageItems = container.querySelectorAll('.gslider-image-item');
 
         imageItems.forEach((item) => {
+            if (item.dataset.hoverInitialized === 'true') {
+                return;
+            }
+            item.dataset.hoverInitialized = 'true';
+
             const hoverEffect = item.dataset.hoverEffect;
             const hoverOpacity = parseFloat(item.dataset.hoverOpacity) || 0.8;
             const hoverScale = parseFloat(item.dataset.hoverScale) || 1.05;
