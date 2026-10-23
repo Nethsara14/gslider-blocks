@@ -10,7 +10,6 @@ import save from './save';
 import metadata from './block.json';
 import attributes from './attributes.js';
 import Icon from './icon';	
-import deprecated from './deprecated';
 
 registerBlockType( metadata.name, {
 	attributes,
@@ -18,5 +17,4 @@ registerBlockType( metadata.name, {
 	edit: Edit,
 	parent: ['gslider-blocks/flexi-content'],
 	save,
-	deprecated,
 } );
