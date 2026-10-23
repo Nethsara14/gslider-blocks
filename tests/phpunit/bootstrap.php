@@ -152,6 +152,12 @@ if ( ! function_exists( 'esc_url_raw' ) ) {
 	}
 }
 
+if ( ! function_exists( 'set_url_scheme' ) ) {
+	function set_url_scheme( $url, $scheme = null ) {
+		return $url;
+	}
+}
+
 if ( ! function_exists( 'is_admin' ) ) {
 	function is_admin() {
 		global $is_admin_mock;

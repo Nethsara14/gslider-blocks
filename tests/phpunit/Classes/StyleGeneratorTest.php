@@ -54,6 +54,7 @@ class StyleGeneratorTest {
 		$this->test_ensure_image_dimensions();
 		$this->test_csp_nonce_injection();
 		$this->test_dynamic_css_file_caching();
+		$this->test_print_footer_styles_deduplication();
 		$this->test_reset_styles();
 
 		echo "\nAll StyleGenerator unit tests passed successfully!\n";
@@ -373,6 +374,10 @@ class StyleGeneratorTest {
 				'width'  => 400,
 				'height' => 300,
 			],
+			44 => [
+				'width'  => 1200,
+				'height' => 800,
+			],
 		];
 
 		$generator = StyleGenerator::getInstance();
@@ -383,6 +388,10 @@ class StyleGeneratorTest {
 				'blockId' => 'gslider-img-test',
 				'images'  => [
 					[
+						'id'  => -1, // Template mock id: must be skipped gracefully
+						'url' => 'https://example.com/template-placeholder.jpg',
+					],
+					[
 						'id'  => 42,
 						'url' => 'https://example.com/wp-content/uploads/2026/01/photo1.jpg',
 					],
@@ -390,19 +399,31 @@ class StyleGeneratorTest {
 						'id'  => 43,
 						'url' => 'https://example.com/wp-content/uploads/2026/01/photo2.jpg',
 					],
+					[
+						'id'  => 44,
+						'url' => 'https://example.com/wp-content/uploads/2026/01/photo_cdn.jpg?w=800&fit=crop',
+					],
 				],
 			],
 		];
 
-		// Image 1 has no width or height (self-closing). Image 2 already has width and height. Image 3 is a duplicate of Image 1 (ticker loop).
+		// Image 1 has no width or height (self-closing). Image 2 already has width and height. Image 3 is a duplicate of Image 1 (ticker loop). Image 4 has CDN query string.
 		$content = '<div class="gslider-image-slider-wrapper">' .
 			'<div class="swiper"><div class="swiper-wrapper">' .
 			'<div class="swiper-slide"><img src="https://example.com/wp-content/uploads/2026/01/photo1.jpg" alt="Photo 1" /></div>' .
 			'<div class="swiper-slide"><img src="https://example.com/wp-content/uploads/2026/01/photo2.jpg" alt="Photo 2" width="400" height="300"></div>' .
 			'<div class="swiper-slide"><img src="https://example.com/wp-content/uploads/2026/01/photo1.jpg" alt="Photo 1 Dup"></div>' .
+			'<div class="swiper-slide"><img src="https://example.com/wp-content/uploads/2026/01/photo_cdn.jpg?w=800&fit=crop" alt="Photo CDN"></div>' .
 			'</div></div></div>';
 
 		$output = $generator->ensure_image_dimensions( $content, $block );
+
+		// Check CDN image got width="1200" and height="800" despite query string.
+		if ( ! strpos( $output, 'photo_cdn.jpg?w=800&fit=crop" alt="Photo CDN" width="1200" height="800"' ) ) {
+			fwrite( STDERR, "FAIL: CDN image with query parameters did not have dimensions injected: $output\n" );
+			exit( 1 );
+		}
+		echo "OK: ensure_image_dimensions handles URLs with query parameters and ignores negative IDs\n";
 
 		// Check both photo 1 instances got width="800" and height="600".
 		$photo1_count = substr_count( $output, 'width="800" height="600"' );
@@ -585,7 +606,45 @@ class StyleGeneratorTest {
 	}
 
 	/**
-	 * Test 11: Verify reset_styles() cleans all internal state.
+	 * Test 11: Verify print_footer_styles() deduplicates inline printed styles and respects file caching.
+	 *
+	 * @return void
+	 */
+	public function test_print_footer_styles_deduplication(): void {
+		global $is_admin_mock, $is_feed_mock;
+		$is_admin_mock = false;
+		$is_feed_mock  = false;
+
+		StyleGenerator::reset_styles();
+		$generator = StyleGenerator::getInstance();
+
+		$block_id = 'gslider-footer-test';
+		$block    = [
+			'blockName' => 'gslider-blocks/image-slider',
+			'attrs'     => [
+				'blockId'    => $block_id,
+				'blockStyle' => ".{$block_id} { color: red; }",
+			],
+		];
+		$content  = '<div class="gslider-image-slider-wrapper ' . $block_id . '">Slider</div>';
+
+		// Render block inline (it gets printed and stored in self::$printed).
+		$generator->collect_and_render_dynamic_styles( $content, $block );
+
+		// Capture print_footer_styles() output.
+		ob_start();
+		$generator->print_footer_styles();
+		$footer_output = ob_get_clean();
+
+		if ( ! empty( $footer_output ) ) {
+			fwrite( STDERR, "FAIL: print_footer_styles() unexpectedly printed duplicate styles that were already printed inline: $footer_output\n" );
+			exit( 1 );
+		}
+		echo "OK: print_footer_styles() does not duplicate styles already rendered inline\n";
+	}
+
+	/**
+	 * Test 12: Verify reset_styles() cleans all internal state.
 	 *
 	 * @return void
 	 */

@@ -248,7 +248,7 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
             }
 
             foreach ( $items as $item ) {
-                if ( empty( $item['id'] ) || empty( $item['url'] ) ) {
+                if ( empty( $item['id'] ) || (int) $item['id'] <= 0 || empty( $item['url'] ) ) {
                     continue;
                 }
 
@@ -276,10 +276,11 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
 
                 // If full URL match fails, try basename matching for protocol-relative or rewritten CDN URLs.
                 if ( ! preg_match( $pattern, $block_content ) ) {
-                    $basename = basename( $item['url'] );
+                    $url_path = function_exists( 'wp_parse_url' ) ? wp_parse_url( $item['url'], PHP_URL_PATH ) : parse_url( $item['url'], PHP_URL_PATH );
+                    $basename = ! empty( $url_path ) ? basename( $url_path ) : basename( $item['url'] );
                     if ( ! empty( $basename ) ) {
                         $escaped_basename = preg_quote( $basename, '/' );
-                        $pattern          = '/<img\b([^>]*src=["\'][^"\']*' . $escaped_basename . '["\'][^>]*)>/i';
+                        $pattern          = '/<img\b([^>]*src=["\'][^"\']*\/' . $escaped_basename . '(?:[?#][^"\']*)?["\'][^>]*)>/i';
                     }
                 }
 
@@ -559,7 +560,9 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
             $hash      = substr( md5( $clean_style ), 0, 8 );
             $file_name = 'gslider-' . $block_id . '-' . $hash . '.css';
             $file_path = $cache_dir . '/' . $file_name;
-            $file_url  = $cache_url . '/' . $file_name;
+            $file_url  = function_exists( 'set_url_scheme' )
+                ? set_url_scheme( $cache_url . '/' . $file_name )
+                : $cache_url . '/' . $file_name;
 
             if ( ! file_exists( $file_path ) ) {
                 // Delete older hashed files for this block_id to prevent orphaned cache files.
@@ -689,15 +692,20 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
          * @return void
          */
         public function print_footer_styles(): void {
-            if ( empty( self::$styles ) ) {
+            if ( empty( self::$styles ) || $this->is_file_cache_enabled() ) {
+                self::$styles = [];
                 return;
             }
 
-            $combined_css = implode( "\n", self::$styles );
-            if ( ! empty( $combined_css ) ) {
-                $nonce      = $this->get_csp_nonce();
-                $nonce_attr = ! empty( $nonce ) ? ' nonce="' . esc_attr( $nonce ) . '"' : '';
-                echo '<style id="gslider-blocks-footer-styles"' . $nonce_attr . ">\n" . $combined_css . "\n</style>\n";
+            // Only output dynamic styles that have not already been rendered inline.
+            $unprinted_styles = array_diff_key( self::$styles, self::$printed );
+            if ( ! empty( $unprinted_styles ) ) {
+                $combined_css = implode( "\n", $unprinted_styles );
+                if ( ! empty( $combined_css ) ) {
+                    $nonce      = $this->get_csp_nonce();
+                    $nonce_attr = ! empty( $nonce ) ? ' nonce="' . esc_attr( $nonce ) . '"' : '';
+                    echo '<style id="gslider-blocks-footer-styles"' . $nonce_attr . ">\n" . $combined_css . "\n</style>\n";
+                }
             }
 
             self::$styles = [];
