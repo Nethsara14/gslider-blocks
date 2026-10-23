@@ -20,7 +20,7 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 var flexi_content_item_entry_exports = {};
 __export(flexi_content_item_entry_exports, {
   attributes: () => attributes_default,
-  deprecated: () => deprecated,
+  deprecated: () => deprecated_default,
   meta: () => block_default,
   save: () => Save,
   styling: () => styling_default
@@ -51,7 +51,7 @@ var block_default = {
   supports: {
     html: false,
     anchor: false,
-    customClassName: false,
+    customClassName: true,
     align: ["wide", "full"]
   },
   parent: ["gslider-blocks/flexi-content"],
@@ -354,8 +354,25 @@ var generateFlexiContentItemStyle = (attributes2) => {
 };
 var styling_default = generateFlexiContentItemStyle;
 
-// ../../src/blocks/flexi-content-item/flexi-content-item-entry.js
-var deprecated = [];
+// ../../src/blocks/flexi-content-item/deprecated.js
+var import_block_editor2 = require("@wordpress/block-editor");
+var import_jsx_runtime2 = require("react/jsx-runtime");
+var v1_2_0 = {
+  attributes: attributes_default,
+  supports: {
+    html: false,
+    className: false,
+    customClassName: false
+  },
+  save({ attributes: attributes2 }) {
+    const { blockId } = attributes2;
+    const blockProps = import_block_editor2.useBlockProps.save({
+      className: `flexi-content-item swiper-slide ${blockId}`
+    });
+    return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { ...blockProps, children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "gslider-content-wrapper", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "gslider-content-inner-wrapper", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(import_block_editor2.InnerBlocks.Content, {}) }) }) });
+  }
+};
+var deprecated_default = [v1_2_0];
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
   attributes,

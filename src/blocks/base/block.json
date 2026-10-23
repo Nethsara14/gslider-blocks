@@ -23,7 +23,7 @@
 	"supports": {
 		"html": false,
 		"anchor": false,
-		"customClassName": false,
+		"customClassName": true,
 		"align": ["wide", "full"]
 	},
 	"textdomain": "gslider-blocks",
