@@ -1,3 +1,5 @@
+/* global Swiper */
+
 document.addEventListener( 'DOMContentLoaded', () => {
 	const initializeSliders = () => {
 		// Select all slider containers
@@ -36,6 +38,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 					);
 				}
 			} catch ( error ) {
+				// eslint-disable-next-line no-console
 				console.error( 'Error initializing slider:', error );
 			}
 		} );
