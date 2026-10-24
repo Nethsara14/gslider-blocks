@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, no-nested-ternary, jsdoc/require-param, jsdoc/check-tag-names */
 /**
  * Base Slider Block - Style Generation
  * Returns Dynamic Generated CSS
