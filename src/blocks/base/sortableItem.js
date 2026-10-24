@@ -1,15 +1,12 @@
 import { __, sprintf } from '@wordpress/i18n';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import {
 	Button,
-	ButtonGroup,
 	BaseControl,
 	Dropdown,
 	Dashicon,
-	ColorPicker,
-	ColorPalette,
 	TextControl,
 	TextareaControl,
 	ToggleControl,
@@ -51,6 +48,7 @@ export default function SortableItem( {
 			style={ style }
 		>
 			<div className="sortable-header">
+				{ /* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */ }
 				<span className="sortable-title" onClick={ toggleOpen }>
 					{ item.title ||
 						/* translators: %d: slider item number */ sprintf(
@@ -89,6 +87,7 @@ export default function SortableItem( {
 
 			{ isOpen && (
 				<div className="sortable-item-content">
+					{ /* eslint-disable-next-line @wordpress/no-base-control-with-label-without-id */ }
 					<BaseControl
 						className="gslider-setting-background-color-setting-wrapper"
 						label={ __( 'Slide Content', 'gslider-blocks' ) }
@@ -97,6 +96,7 @@ export default function SortableItem( {
 							className="gslider-setting-icon-dropdown"
 							contentClassName="gslider-setting-icon-dropdown-content sortable-item-content-dropdown"
 							popoverProps={ { placement: 'bottom-start' } }
+							/* eslint-disable-next-line no-shadow */
 							renderToggle={ ( { isOpen, onToggle } ) => (
 								<Button
 									variant="primary"
@@ -291,6 +291,7 @@ export default function SortableItem( {
 							) }
 						/>
 					</BaseControl>
+					{ /* eslint-disable-next-line @wordpress/no-base-control-with-label-without-id */ }
 					<BaseControl
 						className="gslider-setting-background-color-setting-wrapper"
 						label={ __( 'Background', 'gslider-blocks' ) }
@@ -299,6 +300,7 @@ export default function SortableItem( {
 							className="gslider-setting-icon-dropdown"
 							contentClassName="gslider-setting-icon-dropdown-content sortable-item-content-dropdown"
 							popoverProps={ { placement: 'bottom-start' } }
+							/* eslint-disable-next-line no-shadow */
 							renderToggle={ ( { isOpen, onToggle } ) => (
 								<Button
 									onClick={ onToggle }
