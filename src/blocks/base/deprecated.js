@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, camelcase, object-shorthand, react/jsx-no-target-blank, no-shadow */
 import { RichText, useBlockProps } from '@wordpress/block-editor';
 import renderSVG from '@Components/icon-picker/components/icon-picker/controls/renderIcon';
 import attributes from './attributes';
