@@ -3674,12 +3674,10 @@ function Save({ attributes: attributes2 }) {
     navigationArrowsIconLeft,
     navigationArrowsIconLeftImageUrl,
     navigationArrowsIconLeftImageAlt,
-    navigationArrowsIconLeftImageID,
     navigationArrowsIconRightAlign,
     navigationArrowsIconRight,
     navigationArrowsIconRightImageUrl,
     navigationArrowsIconRightImageAlt,
-    navigationArrowsIconRightImageID,
     layoutHeightSwitcher
   } = attributes2;
   const blockProps = import_block_editor.useBlockProps.save({
@@ -3813,28 +3811,31 @@ function Save({ attributes: attributes2 }) {
                   }
                 ) }),
                 showButton && /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "gslider-btn-wrapper", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", { className: "gslider-btn-inner-wrapper", children: /* @__PURE__ */ (0, import_jsx_runtime2.jsxs)(import_jsx_runtime2.Fragment, { children: [
-                  item.primaryButtonLink ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-                    "a",
-                    {
-                      className: "gslider-btn primary-btn",
-                      href: item.primaryButtonLink,
-                      target: item.primaryButtonTargetLink ? "_blank" : void 0,
-                      rel: [
-                        item.primaryButtonNofollow && "nofollow",
-                        item.primaryButtonSponsored && "sponsored",
-                        item.primaryButtonTargetLink && "noopener noreferrer"
-                      ].filter(
-                        Boolean
-                      ).join(
-                        " "
-                      ),
-                      children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-                        import_block_editor.RichText.Content,
-                        {
-                          value: item.primaryButtonText
-                        }
-                      )
-                    }
+                  item.primaryButtonLink ? (
+                    // eslint-disable-next-line react/jsx-no-target-blank
+                    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+                      "a",
+                      {
+                        className: "gslider-btn primary-btn",
+                        href: item.primaryButtonLink,
+                        target: item.primaryButtonTargetLink ? "_blank" : void 0,
+                        rel: [
+                          item.primaryButtonNofollow && "nofollow",
+                          item.primaryButtonSponsored && "sponsored",
+                          item.primaryButtonTargetLink && "noopener noreferrer"
+                        ].filter(
+                          Boolean
+                        ).join(
+                          " "
+                        ),
+                        children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+                          import_block_editor.RichText.Content,
+                          {
+                            value: item.primaryButtonText
+                          }
+                        )
+                      }
+                    )
                   ) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
                     import_block_editor.RichText.Content,
                     {
@@ -3842,28 +3843,31 @@ function Save({ attributes: attributes2 }) {
                       className: "gslider-btn primary-btn"
                     }
                   ),
-                  item.secondaryButtonSwitcher && (item.secondaryButtonLink ? /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-                    "a",
-                    {
-                      className: "gslider-btn secondary-btn",
-                      href: item.secondaryButtonLink,
-                      target: item.secondaryButtonTargetLink ? "_blank" : void 0,
-                      rel: [
-                        item.secondaryButtonNofollow && "nofollow",
-                        item.secondaryButtonSponsored && "sponsored",
-                        item.secondaryButtonTargetLink && "noopener noreferrer"
-                      ].filter(
-                        Boolean
-                      ).join(
-                        " "
-                      ),
-                      children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
-                        import_block_editor.RichText.Content,
-                        {
-                          value: item.secondaryButtonText
-                        }
-                      )
-                    }
+                  item.secondaryButtonSwitcher && (item.secondaryButtonLink ? (
+                    // eslint-disable-next-line react/jsx-no-target-blank
+                    /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+                      "a",
+                      {
+                        className: "gslider-btn secondary-btn",
+                        href: item.secondaryButtonLink,
+                        target: item.secondaryButtonTargetLink ? "_blank" : void 0,
+                        rel: [
+                          item.secondaryButtonNofollow && "nofollow",
+                          item.secondaryButtonSponsored && "sponsored",
+                          item.secondaryButtonTargetLink && "noopener noreferrer"
+                        ].filter(
+                          Boolean
+                        ).join(
+                          " "
+                        ),
+                        children: /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
+                          import_block_editor.RichText.Content,
+                          {
+                            value: item.secondaryButtonText
+                          }
+                        )
+                      }
+                    )
                   ) : /* @__PURE__ */ (0, import_jsx_runtime2.jsx)(
                     import_block_editor.RichText.Content,
                     {

@@ -43,13 +43,11 @@ export default function Save( { attributes } ) {
 		navigationArrowsIconLeft,
 		navigationArrowsIconLeftImageUrl,
 		navigationArrowsIconLeftImageAlt,
-		navigationArrowsIconLeftImageID,
 
 		navigationArrowsIconRightAlign,
 		navigationArrowsIconRight,
 		navigationArrowsIconRightImageUrl,
 		navigationArrowsIconRightImageAlt,
-		navigationArrowsIconRightImageID,
 
 		layoutHeightSwitcher,
 	} = attributes;
@@ -144,11 +142,11 @@ export default function Save( { attributes } ) {
 			? {
 					pauseOnMouseEnter: pauseOnHover,
 					disableOnInteraction: false,
-					stopOnLastSlide: stopOnLastSlide,
-					reverseDirection: reverseDirection,
+					stopOnLastSlide,
+					reverseDirection,
 			  }
 			: false,
-		allowTouchMove: allowTouchMove,
+		allowTouchMove,
 		mousewheel: mousewheelControl,
 
 		keyboard: keyboardNavigation
@@ -240,6 +238,7 @@ export default function Save( { attributes } ) {
 													<div className="gslider-btn-inner-wrapper">
 														<>
 															{ item.primaryButtonLink ? (
+																// eslint-disable-next-line react/jsx-no-target-blank
 																<a
 																	className="gslider-btn primary-btn"
 																	href={
@@ -282,6 +281,7 @@ export default function Save( { attributes } ) {
 
 															{ item.secondaryButtonSwitcher &&
 																( item.secondaryButtonLink ? (
+																	// eslint-disable-next-line react/jsx-no-target-blank
 																	<a
 																		className="gslider-btn secondary-btn"
 																		href={
