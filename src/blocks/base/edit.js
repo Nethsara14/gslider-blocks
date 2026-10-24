@@ -1,10 +1,12 @@
+/* eslint-disable jsdoc/require-param, @wordpress/i18n-ellipsis */
+
 import { __ } from '@wordpress/i18n';
 import {
 	RichText,
 	useBlockProps,
 	BlockControls,
 } from '@wordpress/block-editor';
-import { Toolbar, ToolbarGroup, ToolbarButton } from '@wordpress/components';
+import { ToolbarGroup, ToolbarButton } from '@wordpress/components';
 import { useState, useEffect, useRef } from '@wordpress/element';
 import renderSVG from '@Components/icon-picker/components/icon-picker/controls/renderIcon';
 import SwitchToBlockSettings from '@Utils/switchToBlockSettings';
@@ -65,13 +67,11 @@ export default function Edit( {
 		navigationArrowsIconLeft,
 		navigationArrowsIconLeftImageUrl,
 		navigationArrowsIconLeftImageAlt,
-		navigationArrowsIconLeftImageID,
 
 		navigationArrowsIconRightAlign,
 		navigationArrowsIconRight,
 		navigationArrowsIconRightImageUrl,
 		navigationArrowsIconRightImageAlt,
-		navigationArrowsIconRightImageID,
 
 		layoutHeightSwitcher,
 	} = attributes;
@@ -92,6 +92,7 @@ export default function Edit( {
 			const css = generateBaseSliderStyle( attributes );
 			setAttributes( { blockStyle: css } );
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [ attributes, blockId ] );
 	/** End Generate Block Style */
 
@@ -182,12 +183,12 @@ export default function Edit( {
 						delay: autoplayDelay?.[ deviceType ] || 1000,
 						pauseOnMouseEnter: pauseOnHover,
 						disableOnInteraction: false,
-						stopOnLastSlide: stopOnLastSlide,
-						reverseDirection: reverseDirection,
+						stopOnLastSlide,
+						reverseDirection,
 				  }
 				: false,
 			speed: speed?.[ deviceType ] || 800,
-			allowTouchMove: allowTouchMove,
+			allowTouchMove,
 			mousewheel: mousewheelControl,
 			keyboard: keyboardNavigation
 				? {
@@ -623,6 +624,7 @@ export default function Edit( {
 														<div className="gslider-btn-inner-wrapper">
 															<>
 																{ item.primaryButtonLink ? (
+																	// eslint-disable-next-line react/jsx-no-target-blank
 																	<a
 																		className="gslider-btn primary-btn"
 																		href={
@@ -694,6 +696,7 @@ export default function Edit( {
 
 																{ item.secondaryButtonSwitcher &&
 																	( item.secondaryButtonLink ? (
+																		// eslint-disable-next-line react/jsx-no-target-blank
 																		<a
 																			className="gslider-btn secondary-btn"
 																			href={
