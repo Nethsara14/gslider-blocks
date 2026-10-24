@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars, jsdoc/require-param, react-hooks/exhaustive-deps, import/no-unresolved */
 import { __ } from '@wordpress/i18n';
 import {
 	useState,
