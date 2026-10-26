@@ -1,5 +1,4 @@
 /* global Swiper, refreshFsLightbox */
-
 document.addEventListener( 'DOMContentLoaded', () => {
 	const initializeSliders = () => {
 		// Select all slider containers
@@ -61,7 +60,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	/**
 	 * Initialize hover effects for image links
 	 *
-	 * @param {HTMLElement} container Slider container element.
+	 * @param {HTMLElement} container - Slider wrapper element.
 	 */
 	const initializeImageLinkHoverEffects = ( container ) => {
 		const imageItems = container.querySelectorAll( '.gslider-image-item' );

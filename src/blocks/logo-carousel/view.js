@@ -1,5 +1,4 @@
 /* global Swiper */
-
 document.addEventListener( 'DOMContentLoaded', () => {
 	const initializeSliders = () => {
 		// Select all slider containers
@@ -56,7 +55,7 @@ document.addEventListener( 'DOMContentLoaded', () => {
 	/**
 	 * Initialize hover effects for logo links
 	 *
-	 * @param {HTMLElement} container Slider container element.
+	 * @param {HTMLElement} container - Carousel wrapper element.
 	 */
 	const initializeLogoLinkHoverEffects = ( container ) => {
 		const logoItems = container.querySelectorAll( '.gslider-logo-item' );
