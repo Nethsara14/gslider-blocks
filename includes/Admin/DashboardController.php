@@ -143,7 +143,7 @@ if ( ! class_exists( DashboardController::class, false ) ) {
 								'type'              => 'string',
 								'enum'              => [ 'file', 'inline' ],
 								'required'          => false,
-								'default'           => 'file',
+								'default'           => 'inline',
 								'sanitize_callback' => 'sanitize_key',
 							],
 						],
@@ -512,7 +512,7 @@ if ( ! class_exists( DashboardController::class, false ) ) {
 
 			$css_delivery = isset( $settings['css_delivery'] ) && in_array( $settings['css_delivery'], [ 'file', 'inline' ], true )
 				? (string) $settings['css_delivery']
-				: 'file';
+				: 'inline';
 
 			$defaults = [
 				'google_fonts_privacy' => ! empty( $settings['google_fonts_privacy'] ),
@@ -549,10 +549,10 @@ if ( ! class_exists( DashboardController::class, false ) ) {
 
 			$css_delivery = $request->has_param( 'css_delivery' )
 				? sanitize_key( (string) $request->get_param( 'css_delivery' ) )
-				: ( isset( $existing['css_delivery'] ) ? (string) $existing['css_delivery'] : 'file' );
+				: ( isset( $existing['css_delivery'] ) ? (string) $existing['css_delivery'] : 'inline' );
 
 			if ( ! in_array( $css_delivery, [ 'file', 'inline' ], true ) ) {
-				$css_delivery = 'file';
+				$css_delivery = 'inline';
 			}
 
 			$updated = [
@@ -687,9 +687,10 @@ if ( ! class_exists( DashboardController::class, false ) ) {
 				$max_execution_time = $max_execution_time . 's';
 			}
 
-			$delivery_label = ( 'inline' === $settings['css_delivery'] )
-				? __( 'Inline Header Style', 'gslider-blocks' )
-				: __( 'External Generated Stylesheet', 'gslider-blocks' );
+			$is_file_cache  = \GSlider\Classes\StyleGenerator::getInstance()->is_file_cache_enabled();
+			$delivery_label = $is_file_cache
+				? __( 'External Generated Stylesheet (uploads/gslider-styles/)', 'gslider-blocks' )
+				: __( 'Inline per-block <style> (before each block)', 'gslider-blocks' );
 
 			$privacy_label = ! empty( $settings['google_fonts_privacy'] )
 				? __( 'Enabled (GDPR Privacy Compliant)', 'gslider-blocks' )

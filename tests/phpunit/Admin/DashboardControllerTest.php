@@ -42,6 +42,7 @@ class DashboardControllerTest {
 		$this->test_block_status_listing_and_disabling();
 		$this->test_system_metrics_payload();
 		$this->test_endpoint_response_payload_structure();
+		$this->test_settings_and_system_report_delivery_label();
 		$this->test_rest_schema_definition();
 		$this->test_plugin_service_registration();
 
@@ -419,6 +420,57 @@ class DashboardControllerTest {
 			exit( 1 );
 		}
 		echo "OK: Response system has 3 metric fields\n";
+	}
+
+	/**
+	 * Test 8b: Settings defaults and system report dynamic CSS delivery label (#314).
+	 *
+	 * @return void
+	 */
+	public function test_settings_and_system_report_delivery_label(): void {
+		global $wp_options;
+		$controller = DashboardController::getInstance();
+
+		delete_option( 'gslider_settings' );
+		remove_all_filters( 'gslider_enable_file_cache' );
+
+		// 1. Missing option defaults css_delivery to 'inline'.
+		$settings = $controller->get_settings();
+		if ( 'inline' !== $settings['css_delivery'] ) {
+			fwrite( STDERR, "FAIL: get_settings() css_delivery should default to 'inline', got: " . $settings['css_delivery'] . "\n" );
+			exit( 1 );
+		}
+		echo "OK: get_settings() defaults css_delivery to 'inline'\n";
+
+		// 2. System report accurately reflects inline delivery method.
+		$report = $controller->generate_system_report();
+		if ( false === strpos( $report['formatted_text'], '- Dynamic CSS Delivery: Inline per-block <style> (before each block)' ) ) {
+			fwrite( STDERR, "FAIL: System report does not show accurate inline delivery label: " . $report['formatted_text'] . "\n" );
+			exit( 1 );
+		}
+		echo "OK: System report displays accurate inline delivery method label\n";
+
+		// 3. Update setting to 'file' via save_settings().
+		$request = new WP_REST_Request( 'POST', '/gslider/v1/settings' );
+		$request->set_param( 'css_delivery', 'file' );
+		$response = $controller->save_settings( $request );
+		$data     = $response->get_data();
+
+		if ( 'file' !== $data['settings']['css_delivery'] ) {
+			fwrite( STDERR, "FAIL: save_settings() did not update css_delivery to 'file'\n" );
+			exit( 1 );
+		}
+		echo "OK: save_settings() updates css_delivery to 'file'\n";
+
+		// 4. System report accurately reflects external generated stylesheet when file mode is active.
+		$report_file = $controller->generate_system_report();
+		if ( false === strpos( $report_file['formatted_text'], '- Dynamic CSS Delivery: External Generated Stylesheet (uploads/gslider-styles/)' ) ) {
+			fwrite( STDERR, "FAIL: System report does not show external stylesheet label when file delivery enabled\n" );
+			exit( 1 );
+		}
+		echo "OK: System report displays external generated stylesheet label when file delivery enabled\n";
+
+		delete_option( 'gslider_settings' );
 	}
 
 	/**

@@ -78,7 +78,7 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
         }
 
         /**
-         * Registers the dynamic style handle for WordPress enqueue system.
+         * Registers the dynamic style handle for WordPress enqueue system and pre-collects styles (#314).
          *
          * @since 1.2.0
          *
@@ -88,6 +88,96 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
             if ( ! wp_style_is( 'gslider-blocks-dynamic-styles', 'registered' ) ) {
                 wp_register_style( 'gslider-blocks-dynamic-styles', false, [], GSLIDER_VERSION );
                 wp_enqueue_style( 'gslider-blocks-dynamic-styles' );
+            }
+
+            // In file mode on classic themes, pre-collect styles to avoid footer-late CSS (#314).
+            $this->pre_collect_queried_post_styles();
+        }
+
+        /**
+         * Pre-collects dynamic CSS files for the queried post during wp_enqueue_scripts (#314).
+         *
+         * On classic themes, block rendering occurs late during the_content (after wp_head has executed).
+         * If dynamic block stylesheets are only enqueued during render_block, WordPress places the
+         * <link rel="stylesheet"> tags in the footer (wp_footer), causing Flash of Unstyled Content (FOUC).
+         *
+         * When external file caching is enabled, this method pre-parses blocks in the queried singular post,
+         * generates and saves any missing static CSS files to uploads, and calls wp_enqueue_style() early
+         * so that all required block styles are placed in the <head>.
+         *
+         * Limitation Note:
+         * Pre-collection parses blocks from the main queried post (is_singular()). Dynamic sliders rendered
+         * outside the queried post (such as in sidebars, widget areas, or non-singular archive loops) will
+         * fallback to being enqueued during render_block, which classic themes output in wp_footer.
+         * Block themes (FSE) handle header style printing natively across all template parts.
+         *
+         * @since 1.2.1
+         *
+         * @return void
+         */
+        public function pre_collect_queried_post_styles(): void {
+            if ( ! $this->is_file_cache_enabled() ) {
+                return;
+            }
+
+            // Skip admin, REST requests, and feeds.
+            if ( is_admin() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || ( function_exists( 'wp_is_json_request' ) && wp_is_json_request() ) || ( function_exists( 'is_feed' ) && is_feed() ) ) {
+                return;
+            }
+
+            if ( ! function_exists( 'is_singular' ) || ! is_singular() ) {
+                return;
+            }
+
+            if ( ! function_exists( 'get_post' ) || ! function_exists( 'parse_blocks' ) ) {
+                return;
+            }
+
+            $post = get_post();
+            if ( ! $post || empty( $post->post_content ) || ! is_string( $post->post_content ) ) {
+                return;
+            }
+
+            // Fast exit if no GSlider block comments are present in post content.
+            if ( false === strpos( $post->post_content, '<!-- wp:gslider-blocks/' ) ) {
+                return;
+            }
+
+            $parsed_blocks = parse_blocks( $post->post_content );
+            if ( ! empty( $parsed_blocks ) && is_array( $parsed_blocks ) ) {
+                $this->collect_styles_from_block_list( $parsed_blocks );
+            }
+        }
+
+        /**
+         * Recursively parses blocks to pre-enqueue dynamic CSS files for GSlider blocks (#314).
+         *
+         * @since 1.2.1
+         *
+         * @param array<int, array<string, mixed>> $blocks Parsed blocks array.
+         * @return void
+         */
+        private function collect_styles_from_block_list( array $blocks ): void {
+            foreach ( $blocks as $block ) {
+                if ( ! empty( $block['blockName'] ) && false !== strpos( $block['blockName'], 'gslider-blocks/' ) ) {
+                    if ( ! empty( $block['attrs']['blockStyle'] ) ) {
+                        $block_id = isset( $block['attrs']['blockId'] )
+                            ? sanitize_key( $block['attrs']['blockId'] )
+                            : 'gslider-blocks-' . md5( serialize( $block['attrs'] ) );
+
+                        $raw_style   = is_string( $block['attrs']['blockStyle'] ) ? $block['attrs']['blockStyle'] : '';
+                        $clean_style = $this->sanitize_css( $raw_style, $block_id );
+
+                        if ( ! empty( $clean_style ) ) {
+                            self::$styles[ $block_id ] = $clean_style;
+                            $this->enqueue_dynamic_css_file( $block_id, $clean_style );
+                        }
+                    }
+                }
+
+                if ( ! empty( $block['innerBlocks'] ) && is_array( $block['innerBlocks'] ) ) {
+                    $this->collect_styles_from_block_list( $block['innerBlocks'] );
+                }
             }
         }
 
@@ -487,9 +577,18 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
         }
 
         /**
-         * Retrieves the Content Security Policy (CSP) nonce if configured (#314).
+         * Retrieves the Content Security Policy (CSP) nonce if configured (#314, #391).
          *
-         * Checks the 'gslider_style_nonce', 'gslider_csp_nonce', and 'wp_csp_nonce' filters.
+         * Checks the 'gslider_style_nonce', 'gslider_csp_nonce', and third-party 'wp_csp_nonce' filters.
+         *
+         * Compatibility Note:
+         * 'wp_csp_nonce' is widely used by popular security plugins, but is NOT a standard WordPress core filter.
+         *
+         * CSP Level 3 Consideration:
+         * Injecting nonces onto dynamic <style> tags and enqueuing external CSS files allows sites to comply
+         * with strict 'style-src' policies without 'unsafe-inline'. However, any block using inline HTML
+         * style="" attributes (such as the star rating width percentage in Testimonial blocks) still requires
+         * 'style-src-attr' (e.g. 'unsafe-inline' or attribute hash) unless rewritten.
          *
          * @since 1.2.1
          *
@@ -509,14 +608,28 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
         /**
          * Determines whether external dynamic CSS file caching is enabled (#314).
          *
-         * Can be enabled via constant GSLIDER_DYNAMIC_CSS_FILE_CACHE or filter 'gslider_enable_file_cache'.
+         * Reads get_option('gslider_settings')['css_delivery']. A missing saved option
+         * defaults to 'inline' so existing installations remain unchanged without writing
+         * to disk. Only when explicitly saved as 'file' is file caching enabled.
+         *
+         * Can be overridden via constant GSLIDER_DYNAMIC_CSS_FILE_CACHE or filter 'gslider_enable_file_cache'.
          *
          * @since 1.2.1
          *
          * @return bool True if file caching is enabled.
          */
         public function is_file_cache_enabled(): bool {
-            $enabled = defined( 'GSLIDER_DYNAMIC_CSS_FILE_CACHE' ) && GSLIDER_DYNAMIC_CSS_FILE_CACHE;
+            $settings = function_exists( 'get_option' ) ? get_option( 'gslider_settings', [] ) : [];
+            $delivery = ( is_array( $settings ) && ! empty( $settings['css_delivery'] ) )
+                ? (string) $settings['css_delivery']
+                : 'inline';
+
+            $enabled = ( 'file' === $delivery );
+
+            if ( defined( 'GSLIDER_DYNAMIC_CSS_FILE_CACHE' ) ) {
+                $enabled = (bool) GSLIDER_DYNAMIC_CSS_FILE_CACHE;
+            }
+
             return (bool) apply_filters( 'gslider_enable_file_cache', $enabled );
         }
 
@@ -525,6 +638,12 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
          *
          * Allows strict CSP environments (style-src 'self') to load dynamic block styles
          * without any inline <style> tags.
+         *
+         * Note on Cache Retention:
+         * Older hashed CSS files for the same block ID are deliberately NOT deleted at render time.
+         * Deleting previous hashes when a block's CSS changes would cause 404 errors for visitors receiving
+         * cached HTML from full-page caching plugins or CDN edge caches. Old files are retained until an
+         * administrator explicitly triggers a cache purge via the "Clear CSS cache" tool in the dashboard.
          *
          * @since 1.2.1
          *
@@ -565,17 +684,6 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
                 : $cache_url . '/' . $file_name;
 
             if ( ! file_exists( $file_path ) ) {
-                // Delete older hashed files for this block_id to prevent orphaned cache files.
-                $pattern   = $cache_dir . '/gslider-' . $block_id . '-*.css';
-                $old_files = glob( $pattern );
-                if ( ! empty( $old_files ) && is_array( $old_files ) ) {
-                    foreach ( $old_files as $old_file ) {
-                        if ( is_file( $old_file ) ) {
-                            @unlink( $old_file );
-                        }
-                    }
-                }
-
                 $written = @file_put_contents( $file_path, $clean_style );
                 if ( false === $written ) {
                     return false;
@@ -592,6 +700,13 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
 
         /**
          * Clears all cached dynamic CSS files in uploads/gslider-styles (#314).
+         *
+         * Purges all static block CSS files from disk and resets in-memory styles.
+         *
+         * Important:
+         * After clearing the dynamic CSS cache, any full-page caching plugins (e.g. WP Super Cache,
+         * W3 Total Cache, WP Rocket) or CDN edge caches (Cloudflare, Fastly) serving cached HTML pages
+         * must be purged, otherwise visitors receiving cached HTML may request deleted CSS files.
          *
          * @since 1.2.0
          *

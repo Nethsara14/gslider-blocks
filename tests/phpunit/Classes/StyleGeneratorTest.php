@@ -54,6 +54,8 @@ class StyleGeneratorTest {
 		$this->test_ensure_image_dimensions();
 		$this->test_csp_nonce_injection();
 		$this->test_dynamic_css_file_caching();
+		$this->test_option_driven_file_caching_and_cache_retention();
+		$this->test_classic_theme_pre_collection();
 		$this->test_print_footer_styles_deduplication();
 		$this->test_reset_styles();
 
@@ -503,7 +505,7 @@ class StyleGeneratorTest {
 
 		remove_all_filters( 'gslider_style_nonce' );
 
-		// Case 2: Standard WordPress wp_csp_nonce fallback filter.
+		// Case 2: Third-party security compatibility filter 'wp_csp_nonce'.
 		add_filter( 'wp_csp_nonce', function() {
 			return 'nonce-wp-core-456';
 		} );
@@ -524,7 +526,7 @@ class StyleGeneratorTest {
 			fwrite( STDERR, "FAIL: Inline <style> tag missing fallback nonce attribute from wp_csp_nonce: $output_2\n" );
 			exit( 1 );
 		}
-		echo "OK: Dynamic <style> tag falls back cleanly to 'wp_csp_nonce' filter\n";
+		echo "OK: Dynamic <style> tag falls back cleanly to 'wp_csp_nonce' compatibility filter\n";
 
 		remove_all_filters( 'wp_csp_nonce' );
 	}
@@ -658,6 +660,149 @@ class StyleGeneratorTest {
 			exit( 1 );
 		}
 		echo "OK: reset_styles() clears collected styles and flags\n";
+	}
+
+	/**
+	 * Test 13: Verify option-driven dynamic CSS delivery and render-time cache retention (#314).
+	 *
+	 * @return void
+	 */
+	public function test_option_driven_file_caching_and_cache_retention(): void {
+		global $wp_options, $enqueued_styles, $is_admin_mock, $is_feed_mock;
+		$is_admin_mock = false;
+		$is_feed_mock  = false;
+
+		remove_all_filters( 'gslider_enable_file_cache' );
+		delete_option( 'gslider_settings' );
+		StyleGenerator::reset_styles();
+		$generator = StyleGenerator::getInstance();
+		$generator->clear_dynamic_css_cache();
+
+		// 1. Missing option defaults to false (inline mode).
+		if ( true === $generator->is_file_cache_enabled() ) {
+			fwrite( STDERR, "FAIL: is_file_cache_enabled() should default to false when option is missing\n" );
+			exit( 1 );
+		}
+		echo "OK: Missing gslider_settings defaults is_file_cache_enabled to false (inline mode)\n";
+
+		// 2. Explicit 'inline' setting returns false.
+		update_option( 'gslider_settings', [ 'css_delivery' => 'inline' ] );
+		if ( true === $generator->is_file_cache_enabled() ) {
+			fwrite( STDERR, "FAIL: is_file_cache_enabled() returned true for css_delivery => inline\n" );
+			exit( 1 );
+		}
+		echo "OK: Explicit css_delivery => inline sets is_file_cache_enabled to false\n";
+
+		// 3. Explicit 'file' setting returns true.
+		update_option( 'gslider_settings', [ 'css_delivery' => 'file' ] );
+		if ( false === $generator->is_file_cache_enabled() ) {
+			fwrite( STDERR, "FAIL: is_file_cache_enabled() returned false for css_delivery => file\n" );
+			exit( 1 );
+		}
+		echo "OK: Explicit css_delivery => file sets is_file_cache_enabled to true\n";
+
+		// 4. Filter overrides option.
+		add_filter( 'gslider_enable_file_cache', '__return_false' );
+		if ( true === $generator->is_file_cache_enabled() ) {
+			fwrite( STDERR, "FAIL: gslider_enable_file_cache filter did not override option\n" );
+			exit( 1 );
+		}
+		echo "OK: gslider_enable_file_cache filter overrides option\n";
+		remove_all_filters( 'gslider_enable_file_cache' );
+
+		// 5. Render-time cache retention: old hashed files must NOT be deleted at render time.
+		$upload    = wp_upload_dir();
+		$cache_dir = trailingslashit( $upload['basedir'] ) . 'gslider-styles';
+		$block_id  = 'gslider-retention-test';
+
+		// Render version 1.
+		$block_v1 = [
+			'blockName' => 'gslider-blocks/image-slider',
+			'attrs'     => [
+				'blockId'    => $block_id,
+				'blockStyle' => ".{$block_id} { color: red; }",
+			],
+		];
+		$generator->collect_and_render_dynamic_styles( '<div class="' . $block_id . '"></div>', $block_v1 );
+
+		$files_v1 = glob( $cache_dir . '/gslider-' . $block_id . '-*.css' );
+		if ( empty( $files_v1 ) || ! file_exists( $files_v1[0] ) ) {
+			fwrite( STDERR, "FAIL: File for version 1 was not written\n" );
+			exit( 1 );
+		}
+		$file_v1 = $files_v1[0];
+
+		// Render version 2 for the same block with updated CSS.
+		StyleGenerator::reset_styles();
+		$block_v2 = [
+			'blockName' => 'gslider-blocks/image-slider',
+			'attrs'     => [
+				'blockId'    => $block_id,
+				'blockStyle' => ".{$block_id} { color: blue; }",
+			],
+		];
+		$generator->collect_and_render_dynamic_styles( '<div class="' . $block_id . '"></div>', $block_v2 );
+
+		$files_v2 = glob( $cache_dir . '/gslider-' . $block_id . '-*.css' );
+		if ( empty( $files_v2 ) || count( $files_v2 ) < 2 ) {
+			fwrite( STDERR, "FAIL: File for version 2 was not written alongside version 1\n" );
+			exit( 1 );
+		}
+
+		// Verify version 1 file was NOT deleted at render time.
+		if ( ! file_exists( $file_v1 ) ) {
+			fwrite( STDERR, "FAIL: Old hashed CSS file was deleted at render time (violates cache retention)\n" );
+			exit( 1 );
+		}
+		echo "OK: Old hashed CSS files are preserved at render time to prevent 404s on cached pages\n";
+
+		// 6. Purge tool cleans all files.
+		$purged = $generator->clear_dynamic_css_cache();
+		if ( $purged < 2 ) {
+			fwrite( STDERR, "FAIL: clear_dynamic_css_cache() did not purge both retained files (purged: $purged)\n" );
+			exit( 1 );
+		}
+		$files_after = glob( $cache_dir . '/gslider-' . $block_id . '-*.css' );
+		if ( ! empty( $files_after ) ) {
+			fwrite( STDERR, "FAIL: Retained files still exist after clear_dynamic_css_cache\n" );
+			exit( 1 );
+		}
+		echo "OK: clear_dynamic_css_cache() successfully purges all retained versions\n";
+
+		delete_option( 'gslider_settings' );
+	}
+
+	/**
+	 * Test 14: Verify classic theme pre-collection at wp_enqueue_scripts (#314).
+	 *
+	 * @return void
+	 */
+	public function test_classic_theme_pre_collection(): void {
+		global $wp_options, $enqueued_styles, $wp_post_content, $is_admin_mock, $is_feed_mock, $is_singular_mock;
+		$is_admin_mock    = false;
+		$is_feed_mock     = false;
+		$is_singular_mock = true;
+
+		update_option( 'gslider_settings', [ 'css_delivery' => 'file' ] );
+		StyleGenerator::reset_styles();
+		$generator = StyleGenerator::getInstance();
+		$generator->clear_dynamic_css_cache();
+
+		$block_id        = 'slider-abc123';
+		$wp_post_content = '<!-- wp:gslider-blocks/image-slider {"blockId":"' . $block_id . '"} --><div class="gslider-image-slider-wrapper"></div><!-- /wp:gslider-blocks/image-slider -->';
+
+		// Trigger pre-collection.
+		$generator->pre_collect_queried_post_styles();
+
+		$handle = 'gslider-style-' . $block_id;
+		if ( empty( $enqueued_styles[ $handle ] ) ) {
+			fwrite( STDERR, "FAIL: Classic theme pre-collection did not enqueue stylesheet for block: $handle\n" );
+			exit( 1 );
+		}
+		echo "OK: Classic theme pre-collection parses queried post and enqueues stylesheet early for <head>\n";
+
+		$generator->clear_dynamic_css_cache();
+		delete_option( 'gslider_settings' );
 	}
 }
 

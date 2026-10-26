@@ -329,8 +329,13 @@ if ( ! class_exists( 'WP_REST_Server' ) ) {
 if ( ! class_exists( 'WP_REST_Request' ) ) {
 	class WP_REST_Request {
 		public $params = [];
-		public function __construct( array $params = [] ) {
-			$this->params = $params;
+		public function __construct( $method_or_params = [], $route = '', $attributes = [] ) {
+			if ( is_array( $method_or_params ) ) {
+				$this->params = $method_or_params;
+			}
+		}
+		public function set_param( $key, $value ) {
+			$this->params[ $key ] = $value;
 		}
 		public function get_param( $key ) {
 			return $this->params[ $key ] ?? null;
@@ -563,23 +568,33 @@ if ( ! class_exists( 'WP_Post' ) ) {
 	}
 }
 
+if ( ! function_exists( 'is_singular' ) ) {
+	function is_singular( $post_types = '' ) {
+		global $is_singular_mock;
+		return isset( $is_singular_mock ) ? (bool) $is_singular_mock : true;
+	}
+}
+
 if ( ! function_exists( 'get_post' ) ) {
-	function get_post( $id ) {
-		global $wp_post_content, $wp_mock_posts;
-		$post_id = (int) ( $id instanceof WP_Post ? $id->ID : $id );
+	function get_post( $id = null ) {
+		global $wp_post_content, $wp_mock_posts, $post;
+		if ( null === $id && ! empty( $post ) ) {
+			return $post;
+		}
+		$post_id = (int) ( $id instanceof WP_Post ? $id->ID : ( $id ?? 1 ) );
 		if ( isset( $wp_mock_posts[ $post_id ] ) ) {
 			return $wp_mock_posts[ $post_id ];
 		}
 		if ( 99 === $post_id ) {
 			return null;
 		}
-		$post               = new WP_Post();
-		$post->ID           = $post_id;
-		$post->post_status  = 'publish';
-		$post->post_type    = 'post';
-		$post->post_title   = 'Post ' . $post_id;
-		$post->post_content = $wp_post_content;
-		return $post;
+		$mock_post               = new WP_Post();
+		$mock_post->ID           = $post_id;
+		$mock_post->post_status  = 'publish';
+		$mock_post->post_type    = 'post';
+		$mock_post->post_title   = 'Post ' . $post_id;
+		$mock_post->post_content = $wp_post_content ?? '';
+		return $mock_post;
 	}
 }
 
