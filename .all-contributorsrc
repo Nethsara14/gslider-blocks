@@ -86,6 +86,33 @@
       "contributions": [
         "code"
       ]
+    },
+    {
+      "login": "huzaifaalmesbah",
+      "name": "Huzaifa Al Mesbah",
+      "avatar_url": "https://avatars.githubusercontent.com/u/63150399?v=4",
+      "profile": "https://github.com/huzaifaalmesbah",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "ect2000",
+      "name": "Emilio Castejón",
+      "avatar_url": "https://avatars.githubusercontent.com/u/107069576?v=4",
+      "profile": "https://github.com/ect2000",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "hmbashar",
+      "name": "Md Abul Bashar",
+      "avatar_url": "https://avatars.githubusercontent.com/u/7321834?v=4",
+      "profile": "https://www.linuxhostlab.com/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
