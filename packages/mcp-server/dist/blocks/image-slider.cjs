@@ -16,7 +16,7 @@ var __copyProps = (to, from, except, desc) => {
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// src/blocks/image-slider/image-slider-entry.js
+// ../../src/blocks/image-slider/image-slider-entry.js
 var image_slider_entry_exports = {};
 __export(image_slider_entry_exports, {
   attributes: () => attributes_default,
@@ -27,7 +27,7 @@ __export(image_slider_entry_exports, {
 });
 module.exports = __toCommonJS(image_slider_entry_exports);
 
-// src/blocks/image-slider/block.json
+// ../../src/blocks/image-slider/block.json
 var block_default = {
   $schema: "https://schemas.wp.org/trunk/block.json",
   apiVersion: 3,
@@ -82,7 +82,7 @@ var block_default = {
   ]
 };
 
-// src/blocks/image-slider/attributes.js
+// ../../src/blocks/image-slider/attributes.js
 var attributes = {
   blockId: {
     type: "string",
@@ -2536,13 +2536,13 @@ var attributes = {
 };
 var attributes_default = attributes;
 
-// src/blocks/image-slider/save.js
+// ../../src/blocks/image-slider/save.js
 var import_block_editor = require("@wordpress/block-editor");
 
-// src/components/icon-picker/components/icon-picker/controls/renderIcon.js
+// ../../src/components/icon-picker/components/icon-picker/controls/renderIcon.js
 var import_i18n = require("@wordpress/i18n");
 
-// src/components/icon-picker/components/icon-picker/controls/parseIcon.js
+// ../../src/components/icon-picker/components/icon-picker/controls/parseIcon.js
 function parseSVG(svg) {
   svg = svg.replace("far ", "");
   svg = svg.replace("fas ", "");
@@ -2553,7 +2553,7 @@ function parseSVG(svg) {
 }
 var parseIcon_default = parseSVG;
 
-// src/components/icon-picker/components/icon-picker/controls/renderIcon.js
+// ../../src/components/icon-picker/components/icon-picker/controls/renderIcon.js
 var import_jsx_runtime = require("react/jsx-runtime");
 var getIconsUrl = () => {
   if (typeof window !== "undefined" && window.GSliderBlocksData) {
@@ -2697,7 +2697,7 @@ function renderSVG(svg, setAttributes = false, extraProps = {}) {
 }
 var renderIcon_default = renderSVG;
 
-// src/blocks/image-slider/save.js
+// ../../src/blocks/image-slider/save.js
 var import_jsx_runtime2 = require("react/jsx-runtime");
 function Save({ attributes: attributes2 }) {
   const {
@@ -3050,7 +3050,7 @@ function Save({ attributes: attributes2 }) {
   ] });
 }
 
-// src/blocks/image-slider/styling.js
+// ../../src/blocks/image-slider/styling.js
 var generateImageSliderStyle = (attributes2) => {
   const {
     blockId,
@@ -4364,7 +4364,7 @@ var generateImageSliderStyle = (attributes2) => {
 };
 var styling_default = generateImageSliderStyle;
 
-// src/blocks/image-slider/deprecated.js
+// ../../src/blocks/image-slider/deprecated.js
 var import_block_editor2 = require("@wordpress/block-editor");
 var import_jsx_runtime3 = require("react/jsx-runtime");
 var v1_1_5 = {

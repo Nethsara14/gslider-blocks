@@ -16,7 +16,7 @@ var __copyProps = (to, from, except, desc) => {
 };
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
-// src/blocks/flexi-content-item/flexi-content-item-entry.js
+// ../../src/blocks/flexi-content-item/flexi-content-item-entry.js
 var flexi_content_item_entry_exports = {};
 __export(flexi_content_item_entry_exports, {
   attributes: () => attributes_default,
@@ -27,7 +27,7 @@ __export(flexi_content_item_entry_exports, {
 });
 module.exports = __toCommonJS(flexi_content_item_entry_exports);
 
-// src/blocks/flexi-content-item/block.json
+// ../../src/blocks/flexi-content-item/block.json
 var block_default = {
   $schema: "https://schemas.wp.org/trunk/block.json",
   apiVersion: 3,
@@ -60,7 +60,7 @@ var block_default = {
   style: "file:./style-index.css"
 };
 
-// src/blocks/flexi-content-item/attributes.js
+// ../../src/blocks/flexi-content-item/attributes.js
 var attributes = {
   blockId: {
     type: "string",
@@ -199,7 +199,7 @@ var attributes = {
 };
 var attributes_default = attributes;
 
-// src/blocks/flexi-content-item/save.js
+// ../../src/blocks/flexi-content-item/save.js
 var import_block_editor = require("@wordpress/block-editor");
 var import_jsx_runtime = require("react/jsx-runtime");
 function Save({ attributes: attributes2 }) {
@@ -210,7 +210,7 @@ function Save({ attributes: attributes2 }) {
   return /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { ...blockProps, children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "gslider-content-wrapper", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)("div", { className: "gslider-content-inner-wrapper", children: /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_block_editor.InnerBlocks.Content, {}) }) }) });
 }
 
-// src/blocks/flexi-content-item/styling.js
+// ../../src/blocks/flexi-content-item/styling.js
 var generateFlexiContentItemStyle = (attributes2) => {
   const {
     blockId,
@@ -361,7 +361,7 @@ var generateFlexiContentItemStyle = (attributes2) => {
 };
 var styling_default = generateFlexiContentItemStyle;
 
-// src/blocks/flexi-content-item/flexi-content-item-entry.js
+// ../../src/blocks/flexi-content-item/flexi-content-item-entry.js
 var deprecated = [];
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
