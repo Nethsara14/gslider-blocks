@@ -84,6 +84,32 @@ if ( ! function_exists( 'apply_filters' ) ) {
 	}
 }
 
+if ( ! function_exists( 'remove_filter' ) ) {
+	function remove_filter( $hook, $callback, $priority = 10 ) {
+		global $wp_filters;
+		if ( ! empty( $wp_filters[ $hook ] ) ) {
+			foreach ( $wp_filters[ $hook ] as $index => $filter ) {
+				if ( $filter['callback'] === $callback && $filter['priority'] === $priority ) {
+					unset( $wp_filters[ $hook ][ $index ] );
+				}
+			}
+		}
+		return true;
+	}
+}
+
+if ( ! function_exists( '__return_true' ) ) {
+	function __return_true() {
+		return true;
+	}
+}
+
+if ( ! function_exists( '__return_false' ) ) {
+	function __return_false() {
+		return false;
+	}
+}
+
 if ( ! function_exists( 'do_action' ) ) {
 	function do_action( $tag, ...$args ) {
 		// Mock do_action.
@@ -487,6 +513,59 @@ if ( ! function_exists( 'wp_register_style' ) ) {
 	}
 }
 
+if ( ! function_exists( 'wp_is_json_request' ) ) {
+	function wp_is_json_request() {
+		global $is_json_mock;
+		return ! empty( $is_json_mock );
+	}
+}
+
+if ( ! function_exists( 'wp_style_is' ) ) {
+	function wp_style_is( $handle, $list = 'enqueued' ) {
+		global $wp_styles, $enqueued_styles;
+		if ( 'registered' === $list ) {
+			return isset( $wp_styles[ $handle ] );
+		}
+		if ( 'enqueued' === $list ) {
+			return in_array( $handle, $enqueued_styles, true );
+		}
+		return false;
+	}
+}
+
+if ( ! function_exists( 'wp_script_is' ) ) {
+	function wp_script_is( $handle, $list = 'enqueued' ) {
+		global $wp_scripts, $enqueued_scripts;
+		if ( 'registered' === $list ) {
+			return isset( $wp_scripts[ $handle ] );
+		}
+		if ( 'enqueued' === $list ) {
+			return in_array( $handle, $enqueued_scripts, true );
+		}
+		return false;
+	}
+}
+
+if ( ! function_exists( 'wp_script_add_data' ) ) {
+	function wp_script_add_data( $handle, $key, $value ) {
+		global $wp_scripts;
+		if ( ! isset( $wp_scripts[ $handle ] ) ) {
+			return false;
+		}
+		if ( ! isset( $wp_scripts[ $handle ]['extra'] ) ) {
+			$wp_scripts[ $handle ]['extra'] = [];
+		}
+		$wp_scripts[ $handle ]['extra'][ $key ] = $value;
+		if ( 'strategy' === $key ) {
+			if ( ! is_array( $wp_scripts[ $handle ]['args'] ) ) {
+				$wp_scripts[ $handle ]['args'] = [];
+			}
+			$wp_scripts[ $handle ]['args']['strategy'] = $value;
+		}
+		return true;
+	}
+}
+
 global $wp_scripts;
 $wp_scripts = [];
 
@@ -494,10 +573,11 @@ if ( ! function_exists( 'wp_register_script' ) ) {
 	function wp_register_script( $handle, $src, $deps = [], $ver = false, $args = false ) {
 		global $wp_scripts;
 		$wp_scripts[ $handle ] = [
-			'src'  => $src,
-			'deps' => $deps,
-			'ver'  => $ver,
-			'args' => $args,
+			'src'   => $src,
+			'deps'  => $deps,
+			'ver'   => $ver,
+			'args'  => $args,
+			'extra' => is_array( $args ) && isset( $args['strategy'] ) ? [ 'strategy' => $args['strategy'] ] : [],
 		];
 		return true;
 	}

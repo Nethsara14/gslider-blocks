@@ -108,6 +108,17 @@ if ( ! class_exists( RegistrationBlocks::class, false ) ) {
             if ( false === register_block_type( $block_dir ) ) {
                 throw new \Exception( 'Block registration failed for ' . esc_html( $block ) );
             }
+
+            // Ensure the generated viewScript handles have 'defer' strategy so WP Script Loader does not drop defer from dependencies.
+            $view_handles = [
+                'gslider-blocks-' . sanitize_file_name( $block ) . '-view-script',
+                'gslider-' . sanitize_file_name( $block ) . '-view-script',
+            ];
+            foreach ( $view_handles as $view_handle ) {
+                if ( function_exists( 'wp_script_add_data' ) && function_exists( 'wp_script_is' ) && wp_script_is( $view_handle, 'registered' ) ) {
+                    wp_script_add_data( $view_handle, 'strategy', 'defer' );
+                }
+            }
         }
 
         /**

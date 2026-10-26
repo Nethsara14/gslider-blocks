@@ -109,8 +109,8 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
                 return $block_content;
             }
 
-            // Exclude styles and optimizations from RSS feeds to prevent feed validation errors.
-            if ( function_exists( 'is_feed' ) && is_feed() ) {
+            // Exclude styles and optimizations from RSS feeds and REST requests to prevent feed validation errors and content.rendered CSS leakage (#312).
+            if ( ( function_exists( 'is_feed' ) && is_feed() ) || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || ( function_exists( 'wp_is_json_request' ) && wp_is_json_request() ) ) {
                 return $block_content;
             }
 
@@ -162,6 +162,21 @@ if ( ! class_exists( StyleGenerator::class, false ) ) {
 
             // Only run on frontend page loads (skip admin, REST requests, and feeds).
             if ( is_admin() || ( defined( 'REST_REQUEST' ) && REST_REQUEST ) || ( function_exists( 'wp_is_json_request' ) && wp_is_json_request() ) ) {
+                return $block_content;
+            }
+
+            /**
+             * Filters whether to optimize the first slider image for LCP on the frontend.
+             *
+             * Allows developers or site administrators to disable or customize
+             * automatic LCP image priority injection (fetchpriority="high", loading="eager", decoding="async").
+             *
+             * @since 1.2.1
+             *
+             * @param bool   $optimize      Whether to optimize the LCP image. Default true.
+             * @param string $block_content The block HTML content.
+             */
+            if ( ! apply_filters( 'gslider_lcp_optimize', true, $block_content ) ) {
                 return $block_content;
             }
 

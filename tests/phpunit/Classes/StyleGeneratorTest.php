@@ -50,7 +50,9 @@ class StyleGeneratorTest {
 		$this->test_css_scoping_and_sanitization();
 		$this->test_dynamic_css_deduplication();
 		$this->test_feed_exclusion();
+		$this->test_rest_request_exclusion();
 		$this->test_lcp_image_optimization();
+		$this->test_gslider_lcp_optimize_filter();
 		$this->test_reset_styles();
 
 		echo "\nAll StyleGenerator unit tests passed successfully!\n";
@@ -255,6 +257,45 @@ class StyleGeneratorTest {
 	}
 
 	/**
+	 * Test 7: Verify <style> tags are excluded from REST requests (#312).
+	 *
+	 * @return void
+	 */
+	public function test_rest_request_exclusion(): void {
+		global $is_admin_mock, $is_feed_mock, $is_json_mock;
+		$is_admin_mock = false;
+		$is_feed_mock  = false;
+		$is_json_mock  = true; // Simulate REST / JSON request.
+
+		StyleGenerator::reset_styles();
+		$generator = StyleGenerator::getInstance();
+
+		$block_id = 'gslider-rest-block';
+		$block    = [
+			'blockName' => 'gslider-blocks/image-slider',
+			'attrs'     => [
+				'blockId'    => $block_id,
+				'blockStyle' => ".{$block_id} { opacity: 0.9; }",
+			],
+		];
+		$content  = '<div class="gslider-image-slider-wrapper">REST Content</div>';
+
+		$output = $generator->collect_and_render_dynamic_styles( $content, $block );
+
+		if ( false !== strpos( $output, '<style' ) ) {
+			fwrite( STDERR, "FAIL: <style> tag leaked into REST request output\n" );
+			exit( 1 );
+		}
+		if ( $output !== $content ) {
+			fwrite( STDERR, "FAIL: Block content was altered in REST context\n" );
+			exit( 1 );
+		}
+		echo "OK: Dynamic <style> tags are completely excluded from REST requests\n";
+
+		$is_json_mock = false;
+	}
+
+	/**
 	 * Test 7: Verify LCP image optimization on first slide of first slider on the frontend (#391).
 	 *
 	 * @return void
@@ -352,7 +393,63 @@ class StyleGeneratorTest {
 	}
 
 	/**
-	 * Test 8: Verify reset_styles() cleans all internal state.
+	 * Test 9: Verify 'gslider_lcp_optimize' filter allows disabling or customizing LCP optimization.
+	 *
+	 * @return void
+	 */
+	public function test_gslider_lcp_optimize_filter(): void {
+		global $is_admin_mock, $is_feed_mock, $is_json_mock;
+		$is_admin_mock = false;
+		$is_feed_mock  = false;
+		$is_json_mock  = false;
+
+		StyleGenerator::reset_styles();
+		$generator = StyleGenerator::getInstance();
+
+		// Add filter to disable LCP optimization.
+		add_filter( 'gslider_lcp_optimize', '__return_false' );
+
+		$block_id = 'gslider-filtered-slider';
+		$block    = [
+			'blockName' => 'gslider-blocks/image-slider',
+			'attrs'     => [
+				'blockId'    => $block_id,
+				'blockStyle' => ".{$block_id} { height: 400px; }",
+			],
+		];
+
+		$content = '<div class="gslider-image-slider-wrapper ' . $block_id . '">' .
+			'<div class="swiper"><div class="swiper-wrapper">' .
+			'<div class="swiper-slide"><img src="https://example.com/filtered.jpg" alt="Filtered" loading="lazy" /></div>' .
+			'</div></div></div>';
+
+		$output = $generator->collect_and_render_dynamic_styles( $content, $block );
+
+		// Should retain loading="lazy" and NOT have fetchpriority="high" because filter returned false.
+		if ( false !== strpos( $output, 'fetchpriority' ) ) {
+			fwrite( STDERR, "FAIL: LCP optimization ran despite gslider_lcp_optimize filter returning false\n" );
+			exit( 1 );
+		}
+		if ( false === strpos( $output, 'loading="lazy"' ) ) {
+			fwrite( STDERR, "FAIL: Image lost loading=\"lazy\" despite filter returning false\n" );
+			exit( 1 );
+		}
+		echo "OK: 'gslider_lcp_optimize' filter returning false successfully disables LCP image optimization\n";
+
+		// Remove filter and test with filter returning true.
+		remove_filter( 'gslider_lcp_optimize', '__return_false' );
+		StyleGenerator::reset_styles();
+
+		$output_enabled = $generator->collect_and_render_dynamic_styles( $content, $block );
+		if ( false === strpos( $output_enabled, 'fetchpriority="high"' ) ) {
+			fwrite( STDERR, "FAIL: LCP optimization did not run when gslider_lcp_optimize was unhooked\n" );
+			exit( 1 );
+		}
+		echo "OK: 'gslider_lcp_optimize' filter default true successfully performs LCP optimization\n";
+	}
+
+	/**
+	 * Test 10: Verify reset_styles() cleans all internal state.
 	 *
 	 * @return void
 	 */

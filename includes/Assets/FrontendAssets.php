@@ -80,6 +80,54 @@ class FrontendAssets implements Registrable {
             ]
         );
 
+        // Register block viewScript handles with 'defer' strategy and Swiper dependency.
+        // WordPress 6.3+ drops 'defer' from a dependency (like swiper-script) if any dependent script is blocking.
+        $block_slugs = [
+            'base',
+            'flexi-content',
+            'image-slider',
+            'logo-carousel',
+            'testimonial',
+        ];
+
+        foreach ( $block_slugs as $slug ) {
+            $handle        = "gslider-blocks-{$slug}-view-script";
+            $legacy_handle = "gslider-{$slug}-view-script";
+
+            $asset_file = ( defined( 'GSLIDER_DIR_PATH' ) ? trailingslashit( GSLIDER_DIR_PATH ) : dirname( __DIR__, 2 ) . '/' ) . "build/blocks/{$slug}/view.asset.php";
+            $asset_deps = [ 'gslider-blocks-swiper-script' ];
+            $asset_ver  = GSLIDER_VERSION;
+
+            if ( file_exists( $asset_file ) ) {
+                $asset = require $asset_file;
+                if ( ! empty( $asset['dependencies'] ) && is_array( $asset['dependencies'] ) ) {
+                    $asset_deps = array_unique( array_merge( $asset['dependencies'], $asset_deps ) );
+                }
+                if ( ! empty( $asset['version'] ) ) {
+                    $asset_ver = $asset['version'];
+                }
+            }
+
+            foreach ( [ $handle, $legacy_handle ] as $script_handle ) {
+                if ( function_exists( 'wp_script_is' ) && wp_script_is( $script_handle, 'registered' ) ) {
+                    if ( function_exists( 'wp_script_add_data' ) ) {
+                        wp_script_add_data( $script_handle, 'strategy', 'defer' );
+                    }
+                } else {
+                    wp_register_script(
+                        $script_handle,
+                        GSLIDER_PLUGIN_URL . "build/blocks/{$slug}/view.js",
+                        $asset_deps,
+                        $asset_ver,
+                        [
+                            'in_footer' => true,
+                            'strategy'  => 'defer',
+                        ]
+                    );
+                }
+            }
+        }
+
         // Enqueue fsLightbox for admin editor only.
         if ( is_admin() ) {
             wp_enqueue_script( 'gslider-blocks-fslightbox-script' );

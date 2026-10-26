@@ -44,6 +44,7 @@ class FrontendAssetsTest {
 		$this->test_plugin_services_contains_class();
 		$this->test_register_hooks();
 		$this->test_enqueue_assets_registers_scripts_with_defer();
+		$this->test_viewscript_handles_defer_and_dependencies();
 		$this->test_fslightbox_admin_enqueue();
 
 		echo "\nAll FrontendAssets unit tests passed successfully!\n";
@@ -162,7 +163,56 @@ class FrontendAssetsTest {
 	}
 
 	/**
-	 * Test 5: Verify fsLightbox script is enqueued only in admin.
+	 * Test 5: Verify block viewScript handles are registered with strategy 'defer' and depend on swiper-script.
+	 *
+	 * WordPress drops 'defer' from a dependency (like Swiper) if any dependent script is blocking.
+	 * Registering viewScript handles with strategy 'defer' guarantees that both Swiper and the block
+	 * scripts execute in order without parser blocking or strategy downgrade.
+	 *
+	 * @return void
+	 */
+	public function test_viewscript_handles_defer_and_dependencies(): void {
+		global $wp_scripts;
+
+		$assets = FrontendAssets::getInstance();
+		$assets->enqueue_assets();
+
+		$slugs = [ 'base', 'flexi-content', 'image-slider', 'logo-carousel', 'testimonial' ];
+
+		foreach ( $slugs as $slug ) {
+			$handle = "gslider-blocks-{$slug}-view-script";
+
+			if ( empty( $wp_scripts[ $handle ] ) ) {
+				fwrite( STDERR, "FAIL: Block view script '{$handle}' is not registered\n" );
+				exit( 1 );
+			}
+
+			$script = $wp_scripts[ $handle ];
+
+			// Verify strategy => defer.
+			if ( empty( $script['args']['strategy'] ) || 'defer' !== $script['args']['strategy'] ) {
+				fwrite( STDERR, "FAIL: Block view script '{$handle}' is missing strategy => defer\n" );
+				exit( 1 );
+			}
+
+			// Verify in_footer => true.
+			if ( empty( $script['args']['in_footer'] ) ) {
+				fwrite( STDERR, "FAIL: Block view script '{$handle}' is not set to load in_footer\n" );
+				exit( 1 );
+			}
+
+			// Verify dependency on Swiper script.
+			if ( ! in_array( 'gslider-blocks-swiper-script', $script['deps'], true ) ) {
+				fwrite( STDERR, "FAIL: Block view script '{$handle}' does not declare dependency on gslider-blocks-swiper-script\n" );
+				exit( 1 );
+			}
+
+			echo "OK: View script '{$handle}' registered with strategy => defer and swiper dependency\n";
+		}
+	}
+
+	/**
+	 * Test 6: Verify fsLightbox script is enqueued only in admin.
 	 *
 	 * @return void
 	 */
