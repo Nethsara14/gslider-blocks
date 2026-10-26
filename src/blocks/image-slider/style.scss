@@ -1,23 +1,18 @@
 .gslider-image-slider-wrapper {
 
-	.swiper {
-		position: relative !important;
-		overflow: hidden !important;
+	.swiper:not(.swiper-initialized) {
+		overflow: hidden;
 
-		&:not(.swiper-initialized) {
-			overflow: hidden !important;
+		.swiper-wrapper {
+			display: flex;
+			flex-wrap: nowrap;
+			width: 100%;
+			box-sizing: border-box;
+		}
 
-			.swiper-wrapper {
-				display: flex;
-				flex-wrap: nowrap;
-				width: 100%;
-				box-sizing: border-box;
-			}
-
-			.swiper-slide {
-				flex-shrink: 0;
-				box-sizing: border-box;
-			}
+		.swiper-slide {
+			flex-shrink: 0;
+			box-sizing: border-box;
 		}
 	}
 
@@ -51,6 +46,7 @@
 		display: block;
 		text-decoration: none;
 		outline: none;
+		transition: opacity 0.3s ease, transform 0.3s ease;
 
 		&:focus {
 			outline: 2px solid #2271b1;

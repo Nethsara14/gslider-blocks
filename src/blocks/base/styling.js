@@ -666,7 +666,7 @@ const generateBaseSliderStyle = ( attributes ) => {
 			if ( gradientValue ) {
 				const gradientStyle = `.${ blockId } .gslider-content-wrapper.${ item.id } {
                         background: ${ gradientValue };
-                        transition: background .3s ease-in-out;
+                        transition: background .3s ease-in-out, background-color .3s ease-in-out;
                     }`;
 				sliderItemColorStyle += gradientStyle;
 			}
@@ -698,13 +698,13 @@ const generateBaseSliderStyle = ( attributes ) => {
 			}
 
 			backgroundImageStyle += `
-                    transition: background .3s ease-in-out;
+                    transition: background .3s ease-in-out, background-color .3s ease-in-out;
                 }`;
 			sliderItemColorStyle += backgroundImageStyle;
 		} else if ( item.normalItemClassicColor ) {
 			const classicStyle = `.${ blockId } .gslider-content-wrapper.${ item.id } {
                     background: ${ item.normalItemClassicColor };
-                    transition: background .3s ease-in-out;
+                    transition: background .3s ease-in-out, background-color .3s ease-in-out;
                 }`;
 			sliderItemColorStyle += classicStyle;
 		}

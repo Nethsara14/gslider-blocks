@@ -3699,7 +3699,7 @@ var generateImageSliderStyle = (attributes2) => {
 
         .${blockId}.gslider-image-slider-wrapper .gslider-image-item {
             display: block;
-            transition: transform ${imageLinkTransitionDuration?.Desktop || 300}ms ease, opacity ${imageLinkTransitionDuration?.Desktop || 300}ms ease;
+            transition: transform ${imageLinkTransitionDuration?.Desktop || 300}ms ease, opacity ${imageLinkTransitionDuration?.Desktop || 300}ms ease, filter ${imageLinkTransitionDuration?.Desktop || 300}ms ease;
             --hover-opacity: ${imageLinkHoverOpacity?.Desktop || 0.8};
             --hover-scale: ${imageLinkHoverScale?.Desktop || 1.05};
             --hover-lift: ${imageLinkHoverLift?.Desktop || 10}${imageLinkHoverLiftUnits?.Desktop || "px"};
@@ -4009,7 +4009,7 @@ var generateImageSliderStyle = (attributes2) => {
 
             .${blockId}.gslider-image-slider-wrapper .gslider-image-item {
                 display: block;
-                transition: transform ${imageLinkTransitionDuration?.Tablet || 300}ms ease, opacity ${imageLinkTransitionDuration?.Tablet || 300}ms ease;
+                transition: transform ${imageLinkTransitionDuration?.Tablet || 300}ms ease, opacity ${imageLinkTransitionDuration?.Tablet || 300}ms ease, filter ${imageLinkTransitionDuration?.Tablet || 300}ms ease;
                 --hover-opacity: ${imageLinkHoverOpacity?.Tablet || 0.8};
                 --hover-scale: ${imageLinkHoverScale?.Tablet || 1.05};
                 --hover-lift: ${imageLinkHoverLift?.Tablet || 10}${imageLinkHoverLiftUnits?.Tablet || "px"};
@@ -4200,7 +4200,7 @@ var generateImageSliderStyle = (attributes2) => {
 
             .${blockId}.gslider-image-slider-wrapper .gslider-image-item {
                 display: block;
-                transition: transform ${imageLinkTransitionDuration?.Mobile || 300}ms ease, opacity ${imageLinkTransitionDuration?.Mobile || 300}ms ease;
+                transition: transform ${imageLinkTransitionDuration?.Mobile || 300}ms ease, opacity ${imageLinkTransitionDuration?.Mobile || 300}ms ease, filter ${imageLinkTransitionDuration?.Mobile || 300}ms ease;
                 --hover-opacity: ${imageLinkHoverOpacity?.Mobile || 0.8};
                 --hover-scale: ${imageLinkHoverScale?.Mobile || 1.05};
                 --hover-lift: ${imageLinkHoverLift?.Mobile || 10}${imageLinkHoverLiftUnits?.Mobile || "px"};

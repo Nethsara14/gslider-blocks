@@ -5536,7 +5536,7 @@ var generateBaseSliderStyle = (attributes2) => {
             ${authorImageDesktopMarginCssStyle ? `margin: ${authorImageDesktopMarginCssStyle};` : ""}
             ${authorImageDesktopPaddingCssStyle ? `padding: ${authorImageDesktopPaddingCssStyle};` : ""}
             object-fit: cover;
-            transition: border-color 0.3s ease-in-out;
+            transition: border-color 0.3s ease-in-out, opacity 0.3s ease-in-out, transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
         .${blockId}.gslider-testimonial-wrapper:hover .gslider-testimonial-author-image-wrapper .gslider-testimonial-author-image {
             ${authorImageBorderHoverColor ? `border-color: ${authorImageBorderHoverColor};` : ""}
@@ -5609,7 +5609,7 @@ var generateBaseSliderStyle = (attributes2) => {
                 ${quoteIconPositionLeft.Desktop ? `left: ${quoteIconPositionLeft.Desktop}${quoteIconPositionLeftUnits.Desktop};` : ""}
                 ${quoteIconPositionRight.Desktop ? `right: ${quoteIconPositionRight.Desktop}${quoteIconPositionRightUnits.Desktop};` : ""}
             ` : "position: relative;"}
-            transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transition: background 0.3s ease-in-out, background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
             line-height: 0;
             display: inline-block;
         }
@@ -5629,7 +5629,7 @@ var generateBaseSliderStyle = (attributes2) => {
         .${blockId} .gslider-testimonial-quote-icon-wrapper img {
             ${quoteIconSize.Desktop && quoteIconSizeUnits.Desktop ? `width: ${quoteIconSize.Desktop}${quoteIconSizeUnits.Desktop};` : ""}
             ${quoteIconSize.Desktop && quoteIconSizeUnits.Desktop ? `height: ${quoteIconSize.Desktop}${quoteIconSizeUnits.Desktop};` : ""}
-            transition: fill 0.3s ease-in-out;
+            transition: fill 0.3s ease-in-out, opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
         }
 
         .${blockId} .gslider-testimonial-quote-icon-wrapper svg {

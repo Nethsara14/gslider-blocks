@@ -968,6 +968,8 @@ const generateLogoCarouselStyle = ( attributes ) => {
 				logoLinkTransitionDuration?.Desktop || 300
 			}ms ease, opacity ${
 				logoLinkTransitionDuration?.Desktop || 300
+			}ms ease, filter ${
+				logoLinkTransitionDuration?.Desktop || 300
 			}ms ease;
             --hover-opacity: ${ logoLinkHoverOpacity?.Desktop || 0.8 };
             --hover-scale: ${ logoLinkHoverScale?.Desktop || 1.05 };
@@ -1836,6 +1838,8 @@ const generateLogoCarouselStyle = ( attributes ) => {
 					logoLinkTransitionDuration?.Tablet || 300
 				}ms ease, opacity ${
 					logoLinkTransitionDuration?.Tablet || 300
+				}ms ease, filter ${
+					logoLinkTransitionDuration?.Tablet || 300
 				}ms ease;
                 --hover-opacity: ${ logoLinkHoverOpacity?.Tablet || 0.8 };
                 --hover-scale: ${ logoLinkHoverScale?.Tablet || 1.05 };
@@ -2390,6 +2394,8 @@ const generateLogoCarouselStyle = ( attributes ) => {
                 transition: transform ${
 					logoLinkTransitionDuration?.Mobile || 300
 				}ms ease, opacity ${
+					logoLinkTransitionDuration?.Mobile || 300
+				}ms ease, filter ${
 					logoLinkTransitionDuration?.Mobile || 300
 				}ms ease;
                 --hover-opacity: ${ logoLinkHoverOpacity?.Mobile || 0.8 };

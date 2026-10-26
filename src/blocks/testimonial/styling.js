@@ -1322,7 +1322,7 @@ const generateBaseSliderStyle = ( attributes ) => {
 					: ''
 			}
             object-fit: cover;
-            transition: border-color 0.3s ease-in-out;
+            transition: border-color 0.3s ease-in-out, opacity 0.3s ease-in-out, transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
         .${ blockId }.gslider-testimonial-wrapper:hover .gslider-testimonial-author-image-wrapper .gslider-testimonial-author-image {
             ${
@@ -1578,7 +1578,7 @@ const generateBaseSliderStyle = ( attributes ) => {
             `
 					: 'position: relative;'
 			}
-            transition: background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+            transition: background 0.3s ease-in-out, background-color 0.3s ease-in-out, border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
             line-height: 0;
             display: inline-block;
         }
@@ -1633,7 +1633,7 @@ const generateBaseSliderStyle = ( attributes ) => {
 					? `height: ${ quoteIconSize.Desktop }${ quoteIconSizeUnits.Desktop };`
 					: ''
 			}
-            transition: fill 0.3s ease-in-out;
+            transition: fill 0.3s ease-in-out, opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
         }
 
         .${ blockId } .gslider-testimonial-quote-icon-wrapper svg {

@@ -832,6 +832,8 @@ const generateImageSliderStyle = ( attributes ) => {
 				imageLinkTransitionDuration?.Desktop || 300
 			}ms ease, opacity ${
 				imageLinkTransitionDuration?.Desktop || 300
+			}ms ease, filter ${
+				imageLinkTransitionDuration?.Desktop || 300
 			}ms ease;
             --hover-opacity: ${ imageLinkHoverOpacity?.Desktop || 0.8 };
             --hover-scale: ${ imageLinkHoverScale?.Desktop || 1.05 };
@@ -1714,6 +1716,8 @@ const generateImageSliderStyle = ( attributes ) => {
 					imageLinkTransitionDuration?.Tablet || 300
 				}ms ease, opacity ${
 					imageLinkTransitionDuration?.Tablet || 300
+				}ms ease, filter ${
+					imageLinkTransitionDuration?.Tablet || 300
 				}ms ease;
                 --hover-opacity: ${ imageLinkHoverOpacity?.Tablet || 0.8 };
                 --hover-scale: ${ imageLinkHoverScale?.Tablet || 1.05 };
@@ -2263,6 +2267,8 @@ const generateImageSliderStyle = ( attributes ) => {
                 transition: transform ${
 					imageLinkTransitionDuration?.Mobile || 300
 				}ms ease, opacity ${
+					imageLinkTransitionDuration?.Mobile || 300
+				}ms ease, filter ${
 					imageLinkTransitionDuration?.Mobile || 300
 				}ms ease;
                 --hover-opacity: ${ imageLinkHoverOpacity?.Mobile || 0.8 };

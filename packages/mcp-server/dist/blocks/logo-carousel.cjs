@@ -3848,7 +3848,7 @@ var generateLogoCarouselStyle = (attributes2) => {
 
         .${blockId}.gslider-logo-carousel-wrapper .gslider-logo-item {
             display: block;
-            transition: transform ${logoLinkTransitionDuration?.Desktop || 300}ms ease, opacity ${logoLinkTransitionDuration?.Desktop || 300}ms ease;
+            transition: transform ${logoLinkTransitionDuration?.Desktop || 300}ms ease, opacity ${logoLinkTransitionDuration?.Desktop || 300}ms ease, filter ${logoLinkTransitionDuration?.Desktop || 300}ms ease;
             --hover-opacity: ${logoLinkHoverOpacity?.Desktop || 0.8};
             --hover-scale: ${logoLinkHoverScale?.Desktop || 1.05};
             --hover-lift: ${logoLinkHoverLift?.Desktop || 10}${logoLinkHoverLiftUnits?.Desktop || "px"};
@@ -4160,7 +4160,7 @@ var generateLogoCarouselStyle = (attributes2) => {
 
             .${blockId}.gslider-logo-carousel-wrapper .gslider-logo-item {
                 display: block;
-                transition: transform ${logoLinkTransitionDuration?.Tablet || 300}ms ease, opacity ${logoLinkTransitionDuration?.Tablet || 300}ms ease;
+                transition: transform ${logoLinkTransitionDuration?.Tablet || 300}ms ease, opacity ${logoLinkTransitionDuration?.Tablet || 300}ms ease, filter ${logoLinkTransitionDuration?.Tablet || 300}ms ease;
                 --hover-opacity: ${logoLinkHoverOpacity?.Tablet || 0.8};
                 --hover-scale: ${logoLinkHoverScale?.Tablet || 1.05};
                 --hover-lift: ${logoLinkHoverLift?.Tablet || 10}${logoLinkHoverLiftUnits?.Tablet || "px"};
@@ -4356,7 +4356,7 @@ var generateLogoCarouselStyle = (attributes2) => {
 
             .${blockId}.gslider-logo-carousel-wrapper .gslider-logo-item {
                 display: block;
-                transition: transform ${logoLinkTransitionDuration?.Mobile || 300}ms ease, opacity ${logoLinkTransitionDuration?.Mobile || 300}ms ease;
+                transition: transform ${logoLinkTransitionDuration?.Mobile || 300}ms ease, opacity ${logoLinkTransitionDuration?.Mobile || 300}ms ease, filter ${logoLinkTransitionDuration?.Mobile || 300}ms ease;
                 --hover-opacity: ${logoLinkHoverOpacity?.Mobile || 0.8};
                 --hover-scale: ${logoLinkHoverScale?.Mobile || 1.05};
                 --hover-lift: ${logoLinkHoverLift?.Mobile || 10}${logoLinkHoverLiftUnits?.Mobile || "px"};
