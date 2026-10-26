@@ -1,5 +1,4 @@
 /* global Swiper */
-
 document.addEventListener( 'DOMContentLoaded', () => {
 	const initializeSliders = () => {
 		// Select all slider containers
