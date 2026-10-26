@@ -7,6 +7,7 @@
     "README.md"
   ],
   "imageSize": 100,
+  "contributorTemplate": "<a href=\"<%= contributor.profile %>\"><img src=\"<%= contributor.avatar_url %>\" width=\"<%= options.imageSize %>px;\" alt=\"<%= contributor.name %>\"/><br /><sub><b><%= contributor.name %></b></sub></a>",
   "commit": false,
   "contributors": [
     {
@@ -49,8 +50,45 @@
         "code",
         "doc"
       ]
+    },
+    {
+      "login": "blank-0007",
+      "name": "blank-0007",
+      "avatar_url": "https://avatars.githubusercontent.com/u/285468035?v=4",
+      "profile": "https://github.com/blank-0007",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Sinkleberg",
+      "name": "Sgt_Sinky",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1676751?v=4",
+      "profile": "https://github.com/Sinkleberg",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "Pushkar-Shahi",
+      "name": "Pushkar Shahi",
+      "avatar_url": "https://avatars.githubusercontent.com/u/273587221?v=4",
+      "profile": "https://portfolio-website.riseinspirethrive2008.workers.dev/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "p00jitha",
+      "name": "DASARI PUJITHA",
+      "avatar_url": "https://avatars.githubusercontent.com/u/129841150?v=4",
+      "profile": "https://github.com/p00jitha",
+      "contributions": [
+        "code"
+      ]
     }
   ],
   "contributorsPerLine": 7,
-  "linkToUsage": false
+  "linkToUsage": false,
+  "commitConvention": "angular"
 }
